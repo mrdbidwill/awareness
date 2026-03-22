@@ -5,12 +5,12 @@
 
 <%= form_with url: '/contact', method: :post, local: true,
               class: "max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md" do %>
-  <% recipients = ENV.fetch("CONTACT_RECIPIENTS", "contact@awareness.example.com,webmaster@awareness.example.com")
+  <% recipients = ENV.fetch("CONTACT_RECIPIENTS", "contact@awareness.mrdbid.com,webmaster@awareness.mrdbid.com")
                    .split(",")
                    .map(&:strip)
                    .reject(&:blank?) %>
   <% recipient_options = recipients.map { |email| [email, email] } %>
-  <% default_recipient = recipients.first || "contact@awareness.example.com" %>
+  <% default_recipient = recipients.first || "contact@awareness.mrdbid.com" %>
 
   <!-- Recipient Field -->
   <div class="mb-4">

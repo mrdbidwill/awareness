@@ -2,7 +2,7 @@
 lock "~> 3.20.0"
 
 set :application, "awareness"
-set :repo_url, ENV.fetch("DEPLOY_REPO_URL", "git@github.com:your-org/awareness.git")
+set :repo_url, ENV.fetch("DEPLOY_REPO_URL", "git@github.com:mrdbidwill/awareness.git")
 
 set :branch, ENV.fetch('BRANCH', 'main')
 # Default branch is :master

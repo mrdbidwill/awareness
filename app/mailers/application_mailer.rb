@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class ApplicationMailer < ActionMailer::Base
-  default from: ENV.fetch("MAILER_FROM", "contact@awareness.example.com")
+  default from: ENV.fetch("MAILER_FROM", "contact@awareness.mrdbid.com")
   layout "mailer"
 
   # Use deliver_later by default for async email delivery

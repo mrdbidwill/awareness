@@ -5,7 +5,7 @@ class GuestSessionsController < ApplicationController
   skip_after_action :verify_authorized, only: [:create], raise: false
 
   def create
-    support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.example.com")
+    support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.mrdbid.com")
     token = InvitationToken.find_by(token: params[:token])
 
     if token.nil?

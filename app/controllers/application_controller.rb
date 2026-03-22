@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
 
     if current_user.check_and_downgrade_expired_admin!
       sign_out current_user
-      support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.example.com")
+      support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.mrdbid.com")
       redirect_to root_path, alert: "Your temporary admin access has expired. To continue, please create a regular account and email #{support_email} to request permanent admin access."
     end
   end

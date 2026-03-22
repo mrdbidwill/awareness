@@ -1,5 +1,5 @@
 # Set the host name for URL creation
-SitemapGenerator::Sitemap.default_host = "https://#{ENV.fetch('APP_HOST', 'awareness.example.com')}"
+SitemapGenerator::Sitemap.default_host = "https://#{ENV.fetch('APP_HOST', 'awareness.mrdbid.com')}"
 
 SitemapGenerator::Sitemap.create do
   # Root path is added automatically

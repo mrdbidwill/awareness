@@ -48,7 +48,7 @@ WorkingDirectory=/opt/awareness/current
 # ⚠️  MISSING ENVIRONMENT VARIABLES:
 # The following are loaded from /opt/awareness/shared/.env via Capistrano:
 # - MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD: Database credentials
-# - APP_HOST: Used for mailer URLs (awareness.com)
+# - APP_HOST: Used for mailer URLs (awareness.mrdbid.com)
 # - RAILS_MASTER_KEY: Decrypts credentials.yml.enc
 # - SOLID_QUEUE_IN_PUMA: Optional - enables Solid Queue in Puma process
 #
