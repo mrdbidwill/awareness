@@ -1,0 +1,8 @@
+<%# app/views/kaminari/tailwind_bar/_first_page.html.erb %>
+<li>
+  <% if current_page.first? %>
+    <span class="inline-flex items-center h-8 px-3 rounded-md bg-gray-100 text-gray-500 cursor-not-allowed">First</span>
+  <% else %>
+    <%= link_to "First", url_for(params.permit!.to_h.merge(page: 1)), class: "inline-flex items-center h-8 px-3 rounded-md bg-white text-gray-700 border border-gray-300 hover:bg-gray-50" %>
+  <% end %>
+</li>

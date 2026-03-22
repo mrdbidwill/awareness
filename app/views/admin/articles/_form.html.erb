@@ -1,0 +1,185 @@
+<%= form_with model: [:admin, @article], html: { class: "space-y-4" } do |f| %>
+  <% if @article.errors.any? %>
+    <div class="border border-red-200 bg-red-50 text-red-700 rounded p-3">
+      <p class="font-semibold"><%= pluralize(@article.errors.count, "error") %> prohibited this article from being saved:</p>
+      <ul class="list-disc ml-6 text-sm">
+        <% @article.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, class: "block text-sm font-medium" %>
+    <div class="relative" data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= f.text_field :title,
+          class: "border rounded px-2 py-1 w-full",
+          data: {
+            inline_autocomplete_target: "textarea",
+            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+          } %>
+      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :slug, "Slug (URL)", class: "block text-sm font-medium" %>
+    <%= f.text_field :slug, class: "border rounded px-2 py-1 w-full", placeholder: "e.g., why-colors" %>
+    <p class="text-xs text-gray-500 mt-1">If blank, it will be generated from the title.</p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div>
+      <%= f.label :subject_id, "Subject", class: "block text-sm font-medium" %>
+      <%= f.select :subject_id,
+                   options_from_collection_for_select(Subject.alphabetical, :id, :name, @article.subject_id),
+                   { include_blank: "(none)" },
+                   class: "border rounded px-2 py-1 w-full" %>
+      <p class="text-xs text-gray-500 mt-1">Subjects are normalized and reusable across archive filters.</p>
+    </div>
+    <div>
+      <%= f.label :published_at, class: "block text-sm font-medium" %>
+      <%= f.datetime_field :published_at, class: "border rounded px-2 py-1 w-full" %>
+    </div>
+  </div>
+
+  <div>
+    <%= f.label :summary, class: "block text-sm font-medium" %>
+    <div class="relative" data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= f.text_area :summary,
+          rows: 3,
+          class: "border rounded px-2 py-1 w-full",
+          data: {
+            inline_autocomplete_target: "textarea",
+            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+          } %>
+      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+    </div>
+  </div>
+
+  <div data-controller="text-formatter inline-autocomplete"
+       data-text-formatter-max-length-value="16777215"
+       data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+       data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+       data-inline-autocomplete-min-value="4">
+    <div class="flex justify-between items-center mb-2">
+      <%= f.label :body, class: "block text-sm font-medium" %>
+      <span data-text-formatter-target="charCount" class="text-xs text-gray-500"></span>
+    </div>
+
+    <!-- Formatting toolbar -->
+    <div class="flex flex-wrap gap-1 mb-2 p-2 bg-gray-50 border rounded">
+      <button type="button" data-action="click->text-formatter#makeBold" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Bold">
+        <strong>B</strong>
+      </button>
+      <button type="button" data-action="click->text-formatter#makeItalic" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Italic">
+        <em>I</em>
+      </button>
+      <button type="button" data-action="click->text-formatter#makeUnderline" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Underline">
+        <u>U</u>
+      </button>
+      <button type="button" data-action="click->text-formatter#makeStrikethrough" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Strikethrough">
+        <s>S</s>
+      </button>
+      <span class="border-r mx-1"></span>
+      <button type="button" data-action="click->text-formatter#makeH1" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Heading 1">
+        H1
+      </button>
+      <button type="button" data-action="click->text-formatter#makeH2" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Heading 2">
+        H2
+      </button>
+      <button type="button" data-action="click->text-formatter#makeH3" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Heading 3">
+        H3
+      </button>
+      <span class="border-r mx-1"></span>
+      <button type="button" data-action="click->text-formatter#makeBulletList" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Bullet List">
+        • List
+      </button>
+      <button type="button" data-action="click->text-formatter#makeNumberedList" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Numbered List">
+        1. List
+      </button>
+      <span class="border-r mx-1"></span>
+      <button type="button" data-action="click->text-formatter#insertLink" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="Insert Link">
+        🔗 Link
+      </button>
+      <button type="button" data-action="click->text-formatter#insertParagraph" class="px-2 py-1 text-xs border rounded hover:bg-gray-100" title="New Paragraph">
+        ¶ Para
+      </button>
+    </div>
+
+    <div class="relative">
+      <%= f.text_area :body,
+          rows: 12,
+          class: "border rounded px-2 py-1 w-full font-mono",
+          data: {
+            text_formatter_target: "textarea",
+            inline_autocomplete_target: "textarea",
+            action: "input->text-formatter#updateCharCount input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+          } %>
+      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+    </div>
+    <details class="text-xs text-gray-700 mt-2 bg-gray-50 p-3 rounded border">
+      <summary class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600">💡 Click for HTML styling guide</summary>
+      <div class="mt-2 space-y-2">
+        <p><strong>Allowed HTML tags:</strong> div, p, span, br, ul, ol, li, h1-h4, strong, em, a, blockquote, code, pre, img, table, b, u, i</p>
+
+        <p><strong>Text colors (use with &lt;span&gt;):</strong></p>
+        <ul class="list-disc ml-4">
+          <li><code>class="text-orange"</code> - <span style="color: #E55300;">Orange (brand color)</span></li>
+          <li><code>class="text-red"</code> - <span style="color: #dc2626;">Red</span></li>
+          <li><code>class="text-blue"</code> - <span style="color: #2563eb;">Blue</span></li>
+          <li><code>class="text-green"</code> - <span style="color: #16a34a;">Green</span></li>
+          <li><code>class="text-purple"</code> - <span style="color: #9333ea;">Purple</span></li>
+        </ul>
+
+        <p><strong>🍄 Mycowriter Autocomplete:</strong></p>
+        <p class="ml-4 bg-orange-50 p-2 rounded border border-orange-300">
+          <strong>While typing, genus and species names auto-complete!</strong><br>
+          • Type a <strong>capital letter + 4 characters</strong> (e.g., "Gano") → red dropdown shows genus matches<br>
+          • Select "Ganoderma" → automatically italicized: <em>Ganoderma</em><br>
+          • Continue typing after genus (e.g., " sess") → <strong>keep typing until dropdown shows species</strong><br>
+          • Select "Ganoderma sessile" → replaces with properly formatted: <em>Ganoderma sessile</em><br>
+          • <strong>Scientific names are automatically italicized</strong> per binomial nomenclature standards<br>
+          <em>Watch for the red bordered dropdown as you type!</em>
+        </p>
+
+        <p><strong>📚 Auto-Glossary (For Readers):</strong></p>
+        <p class="ml-4 bg-blue-50 p-2 rounded border border-blue-200">
+          Mycology terms are <strong>automatically highlighted</strong> with definitions from Wikipedia!<br>
+          Just write terms like "basidiospore", "cap", "hymenium" naturally in your text.<br>
+          When published, readers can hover for quick definitions or click for full details. No special markup needed!
+        </p>
+
+        <p><strong>Examples:</strong></p>
+        <code class="block bg-white p-2 rounded text-xs">
+          &lt;p&gt;&lt;span class="text-orange"&gt;Important text&lt;/span&gt; regular text&lt;/p&gt;<br>
+          &lt;h2&gt;Section Title&lt;/h2&gt;<br>
+          &lt;ul&gt;&lt;li&gt;Bullet point&lt;/li&gt;&lt;/ul&gt;<br>
+          &lt;a href="URL" class="text-blue-600 underline"&gt;Link text&lt;/a&gt;
+        </code>
+      </div>
+    </details>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.check_box :published %>
+    <%= f.label :published, "Published", class: "text-sm" %>
+  </div>
+
+  <div class="flex gap-2">
+    <%= button_tag "Preview", name: "preview", value: "1", formnovalidate: true, class: "rounded px-3 py-1.5 border text-sm" %>
+    <%= f.submit(@article.persisted? ? "Update" : "Create", class: "rounded px-3 py-1.5 bg-blue-600 text-white text-sm") %>
+    <%= link_to "Cancel", @article.persisted? ? admin_article_path(@article) : admin_articles_path, class: "rounded px-3 py-1.5 border text-sm" %>
+  </div>
+<% end %>

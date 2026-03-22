@@ -1,0 +1,30 @@
+<%= form_with model: [:admin, @admin_todo], html: { class: "space-y-4" } do |f| %>
+  <% if @admin_todo.errors.any? %>
+    <div class="border border-red-200 bg-red-50 text-red-700 rounded p-3">
+      <p class="font-semibold"><%= pluralize(@admin_todo.errors.count, "error") %> prohibited this to do from being saved:</p>
+      <ul class="list-disc ml-6 text-sm">
+        <% @admin_todo.errors.full_messages.each do |m| %><li><%= m %></li><% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :title, class: "block text-sm font-medium" %>
+    <%= f.text_field :title, class: "border rounded px-2 py-1 w-full", placeholder: "Enter to do title" %>
+  </div>
+
+  <div>
+    <%= f.label :description, class: "block text-sm font-medium" %>
+    <%= f.text_area :description, rows: 5, class: "border rounded px-2 py-1 w-full", placeholder: "Optional description or notes" %>
+  </div>
+
+  <div class="flex items-center gap-3">
+    <%= f.check_box :done, class: "rounded" %>
+    <%= f.label :done, "Mark as Done", class: "text-sm font-medium" %>
+  </div>
+
+  <div class="flex gap-2">
+    <%= f.submit(@admin_todo.persisted? ? "Update To Do" : "Create To Do", class: "rounded px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium") %>
+    <%= link_to "Cancel", admin_admin_todos_path, class: "rounded px-3 py-1.5 border hover:bg-gray-50 text-sm" %>
+  </div>
+<% end %>

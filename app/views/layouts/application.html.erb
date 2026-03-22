@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="preload" href="<%= asset_path('application.css') %>" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="<%= asset_path('application.css') %>"></noscript>
+    <%= stylesheet_link_tag "tailwind", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag "glossary", "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+
+    <style>
+        html{visibility:visible}
+        body{margin:0}
+    </style>
+
+    <title><%= content_for(:title) || "Awareness" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <% if render_adsense_script? %>
+      <script async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=<%= adsense_client_id %>"
+              crossorigin="anonymous"></script>
+    <% end %>
+
+    <%# SEO: Add noindex for non-public pages %>
+    <% if controller_path.start_with?('admin/') || action_name.in?(['edit', 'new']) || controller_path.start_with?('users/') %>
+      <meta name="robots" content="noindex, nofollow">
+    <% end %>
+
+    <%# SEO: Canonical URL %>
+    <% if content_for?(:canonical_url) %>
+      <link rel="canonical" href="<%= yield(:canonical_url) %>">
+    <% end %>
+
+    <%# PWA manifest for installable progressive web app %>
+    <link rel="manifest" href="/manifest.json">
+
+    <%# Ignore the warning for favicons and app in next 6 lines  %>
+    <link rel="icon" href="<%= asset_path('favicon-32x32.png') %>" type="image/png">
+    <link rel="apple-touch-icon" href="<%= asset_path('favicon-16x16.png') %>" type="image/png">
+  </head>
+
+  <body class="bg-gray-100 text-gray-800" data-controller="glossary">
+  <%# Removed horizontal menu - all navigation now in sidebar %>
+
+  <%# Dev/Test view origin banner %>
+  <% if Rails.env.development? || Rails.env.test? %>
+    <div class="w-full bg-yellow-50 text-yellow-800 text-xs px-3 py-1 border-b border-yellow-200">
+      <span class="font-semibold">View:</span>
+      <%= @view_debug_identifier.presence || "#{controller.controller_path}##{action_name}" %>
+    </div>
+  <% end %>
+
+
+  <%# Visible list of all rendered templates/partials, scoped to the current view's directory %>
+  <% if Rails.env.development? || Rails.env.test? %>
+    <% current_dir =
+         if @view_debug_identifier.present?
+           File.dirname(@view_debug_identifier) # e.g., "app/views/mushrooms"
+         else
+           "app/views/#{controller.controller_path}" # fallback, e.g., "app/views/mushrooms"
+         end %>
+
+    <% # Start with the main template if it belongs to this directory %>
+    <% items = [] %>
+    <% if @view_debug_identifier.present? && @view_debug_identifier.start_with?("#{current_dir}/") %>
+      <% items << @view_debug_identifier %>
+    <% end %>
+
+    <% # Add ONLY partials rendered from this directory %>
+    <% partials = Array(Thread.current[:rendered_partials]).uniq.select { |p| p.start_with?("#{current_dir}/") } %>
+    <% items.concat(partials) %>
+
+    <div class="w-full bg-yellow-50 text-yellow-800 text-xs px-3 py-1 border-b border-yellow-200">
+      <span class="font-semibold">Rendered views:</span>
+      <% items.each do |path| %>
+        <span class="ml-2 inline-block px-1.5 py-0.5 bg-yellow-100 border border-yellow-200 rounded"><%= path %></span>
+      <% end %>
+    </div>
+  <% end %>
+
+
+
+  <%#= <main class="max-w-full mx-auto px-4 sm:px-6 lg:px-8 py-1"> %>
+  <%#= <main class="min-h-screen mx-auto pl-10 pr-4 pt-2 pb-32 md:pb-16"> %>
+
+  <!-- Full-width layout with sidebar -->
+  <div class="flex gap-0 w-full min-h-screen">
+    <!-- Left Sidebar -->
+    <%= render 'shared/sidebar' %>
+
+    <!-- Main Content Area - add left margin on mobile to avoid hamburger button -->
+    <main class="prose prose-lg max-w-none flex-1 px-4 pt-16 pb-32 md:pb-16 lg:px-6 lg:pt-4 w-full lg:w-auto">
+      <%# Temporary admin expiration banner %>
+      <% if user_signed_in? && current_user.temporary_admin? && !current_user.admin_expired? %>
+        <div class="bg-gradient-to-r from-orange-50 to-amber-50 border-l-4 border-orange-500 px-4 py-3 rounded mb-4 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <p class="font-bold text-orange-800 text-lg">⏱️ Temporary Admin Access</p>
+              <p class="text-orange-700 text-sm mt-1">
+                Your admin access expires in <strong><%= current_user.time_until_expiration %></strong>.
+                After that, you'll have read-only access.
+              </p>
+            </div>
+            <div class="text-sm text-orange-700 sm:text-right">
+              <p class="font-semibold">Want to continue?</p>
+              <% support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.example.com") %>
+              <p>Create a regular account and email <a href="mailto:<%= support_email %>" class="underline hover:text-orange-900"><%= support_email %></a> for permanent admin.</p>
+            </div>
+          </div>
+        </div>
+      <% end %>
+
+      <% if flash[:alert].present? %>
+        <div class="alert bg-red-50 border border-red-200 text-red-700 font-bold text-lg md:text-xl px-4 py-3 rounded mb-4">
+          <%= flash[:alert] %>
+        </div>
+      <% end %>
+      <% if flash[:notice].present? %>
+        <div class="notice bg-emerald-50 border-2 border-emerald-400 text-emerald-800 font-bold text-lg md:text-xl px-6 py-4 rounded-lg mb-4 shadow-lg transition-opacity duration-500" data-auto-dismiss="true">
+          <%= flash[:notice] %>
+        </div>
+      <% end %>
+      <% if flash[:error].present? %>
+        <div class="error bg-red-50 border border-red-200 text-red-700 font-bold text-lg md:text-xl px-4 py-3 rounded mb-4">
+          <%= flash[:error] %>
+        </div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </div>
+
+    <%# Quick Add To Do button for admin pages %>
+    <% if current_user&.admin? && controller.class.name.start_with?('Admin::') %>
+      <%= render 'admin/shared/quick_todo' %>
+    <% end %>
+  </body>
+</html>

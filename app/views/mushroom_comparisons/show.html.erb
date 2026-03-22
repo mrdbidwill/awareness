@@ -1,0 +1,118 @@
+<% content_for :title, "Comparison Details" %>
+<div class="w-full">
+  <%= render "shared/page_actions",
+        left: content_tag(:h1, "Comparison Details", class: "title-xl"),
+        right: link_to("Back to Comparisons", mushroom_mushroom_comparisons_path(mushroom_id: @comparison.mushroom_id), class: "btn-primary").html_safe
+  %>
+
+  <div class="mb-6 p-4 bg-white border border-gray-300 rounded shadow-sm">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+      <div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">Primary Mushroom</h3>
+        <%= link_to @comparison.mushroom.name, mushroom_path(@comparison.mushroom), class: "text-lg text-blue-600 hover:underline" %>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">Compared Against</h3>
+        <%= link_to @comparison.compared_mushroom.name, mushroom_path(@comparison.compared_mushroom), class: "text-lg text-blue-600 hover:underline" %>
+      </div>
+      <div>
+        <h3 class="text-sm font-semibold text-gray-600 mb-1">Similarity Score</h3>
+        <% color_class = if @comparison.similarity_score >= 75
+                           "bg-green-100 text-green-800"
+                         elsif @comparison.similarity_score >= 50
+                           "bg-yellow-100 text-yellow-800"
+                         else
+                           "bg-red-100 text-red-800"
+                         end %>
+        <span class="inline-block px-4 py-2 rounded-full text-xl font-bold <%= color_class %>">
+          <%= @comparison.similarity_score %>%
+        </span>
+      </div>
+    </div>
+    <div class="text-sm text-gray-600">
+      <strong>Matching Characters:</strong> <%= @comparison.matching_characters %> /
+      <strong>Total Characters:</strong> <%= @comparison.total_characters %>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <!-- Primary Mushroom Characters -->
+    <div>
+      <h2 class="text-xl font-semibold mb-3 text-gray-800">
+        <%= @comparison.mushroom.name %>
+      </h2>
+      <div class="bg-white border border-gray-300 rounded">
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Part</th>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Character</th>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @mushroom_characters.sort_by { |c| [c[:part], c[:name]] }.each do |char| %>
+              <% compared = @compared_characters.find { |cc| cc[:id] == char[:id] && cc[:value] == char[:value] } %>
+              <tr class="border-t <%= compared ? 'bg-green-50' : '' %>">
+                <td class="px-3 py-2 text-sm text-gray-600"><%= char[:part] %></td>
+                <td class="px-3 py-2 text-sm text-gray-800"><%= char[:name] %></td>
+                <td class="px-3 py-2 text-sm">
+                  <span class="<%= compared ? 'font-semibold text-green-800' : 'text-gray-700' %>">
+                    <%= char[:value] %>
+                  </span>
+                  <% if compared %>
+                    <span class="ml-2 text-xs text-green-600">✓ Match</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Compared Mushroom Characters -->
+    <div>
+      <h2 class="text-xl font-semibold mb-3 text-gray-800">
+        <%= @comparison.compared_mushroom.name %>
+      </h2>
+      <div class="bg-white border border-gray-300 rounded">
+        <table class="min-w-full">
+          <thead class="bg-gray-100">
+            <tr>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Part</th>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Character</th>
+              <th class="px-3 py-2 text-left text-xs font-semibold text-gray-700">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @compared_characters.sort_by { |c| [c[:part], c[:name]] }.each do |char| %>
+              <% match = @mushroom_characters.find { |mc| mc[:id] == char[:id] && mc[:value] == char[:value] } %>
+              <tr class="border-t <%= match ? 'bg-green-50' : '' %>">
+                <td class="px-3 py-2 text-sm text-gray-600"><%= char[:part] %></td>
+                <td class="px-3 py-2 text-sm text-gray-800"><%= char[:name] %></td>
+                <td class="px-3 py-2 text-sm">
+                  <span class="<%= match ? 'font-semibold text-green-800' : 'text-gray-700' %>">
+                    <%= char[:value] %>
+                  </span>
+                  <% if match %>
+                    <span class="ml-2 text-xs text-green-600">✓ Match</span>
+                  <% end %>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="mt-6 p-4 bg-blue-50 border border-blue-200 rounded">
+    <h3 class="font-semibold mb-2">How to Read This Comparison</h3>
+    <ul class="text-sm text-gray-700 list-disc list-inside space-y-1">
+      <li>Rows highlighted in <span class="bg-green-50 px-1">green</span> indicate matching character values</li>
+      <li>The similarity score is calculated using the Jaccard similarity index</li>
+      <li>Formula: (Matching Characters) / (Total Unique Characters) × 100</li>
+    </ul>
+  </div>
+</div>

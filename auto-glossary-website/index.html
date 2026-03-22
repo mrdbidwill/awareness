@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auto-Glossary - Making Technical Content Accessible</title>
+    <meta name="description" content="Automatically highlight technical terms with instant definitions from Wikipedia. Open source tool for educational websites.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #2c3e50;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            padding: 60px 40px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #667eea;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .tagline {
+            font-size: 1.3rem;
+            color: #5a67d8;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .description {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 40px;
+            line-height: 1.8;
+        }
+
+        .demo-example {
+            background: #f7fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 25px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .demo-example h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+        }
+
+        .demo-text {
+            font-size: 1rem;
+            line-height: 1.8;
+            color: #4a5568;
+        }
+
+        .glossary-term {
+            text-decoration: underline dotted;
+            text-decoration-color: #667eea;
+            text-underline-offset: 3px;
+            color: #5a67d8;
+            font-weight: 500;
+            cursor: help;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+            text-align: left;
+        }
+
+        .feature {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .feature h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .feature p {
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .cta {
+            margin-top: 40px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+
+        .github-link {
+            display: inline-block;
+            background: #2d3748;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+            margin: 10px;
+        }
+
+        .github-link:hover {
+            background: #1a202c;
+        }
+
+        .email-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: background 0.3s ease;
+            margin: 10px;
+        }
+
+        .email-link:hover {
+            background: #5a67d8;
+        }
+
+        .footer {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
+            color: #718096;
+            font-size: 0.9rem;
+        }
+
+        .use-cases {
+            background: #edf2f7;
+            padding: 25px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+
+        .use-cases h3 {
+            color: #2d3748;
+            margin-bottom: 15px;
+        }
+
+        .use-cases ul {
+            list-style: none;
+            text-align: left;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .use-cases li {
+            padding: 8px 0;
+            color: #4a5568;
+        }
+
+        .use-cases li:before {
+            content: "✓ ";
+            color: #48bb78;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 640px) {
+            .container {
+                padding: 40px 25px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .tagline {
+                font-size: 1.1rem;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">📚</div>
+        <h1>Auto-Glossary</h1>
+        <div class="status-badge">🚀 In Development</div>
+        <p class="tagline">Making Technical Content Accessible to Everyone</p>
+
+        <p class="description">
+            Auto-Glossary automatically highlights specialized terms in your content and provides instant definitions from Wikipedia.
+            No more confusing jargon stopping readers in their tracks.
+        </p>
+
+        <div class="demo-example">
+            <h3>How it works (Example from Mycology):</h3>
+            <p class="demo-text">
+                "The <span class="glossary-term">basidiospores</span> are produced by the <span class="glossary-term">basidium</span>
+                on the <span class="glossary-term">hymenium</span> surface of the <span class="glossary-term">cap</span>."
+            </p>
+            <p style="font-size: 0.9rem; color: #718096; margin-top: 15px; font-style: italic;">
+                → Hover over underlined terms for definitions, click for details
+            </p>
+        </div>
+
+        <div class="features">
+            <div class="feature">
+                <h4>⚡ Instant Setup</h4>
+                <p>Add one helper to your templates. That's it.</p>
+            </div>
+            <div class="feature">
+                <h4>🎯 Smart Matching</h4>
+                <p>Handles plurals, variations, and edge cases automatically.</p>
+            </div>
+            <div class="feature">
+                <h4>📱 Responsive</h4>
+                <p>Beautiful tooltips and modals on all devices.</p>
+            </div>
+            <div class="feature">
+                <h4>♿ Accessible</h4>
+                <p>Full keyboard navigation and screen reader support.</p>
+            </div>
+            <div class="feature">
+                <h4>⚖️ Open Source</h4>
+                <p>MIT licensed, built with Rails, Stimulus, and Wikipedia's API.</p>
+            </div>
+            <div class="feature">
+                <h4>🚀 Fast</h4>
+                <p>Aggressive caching, zero slowdown for readers.</p>
+            </div>
+        </div>
+
+        <div class="use-cases">
+            <h3>Perfect For:</h3>
+            <ul>
+                <li>Educational websites (mycology, botany, medicine)</li>
+                <li>Scientific documentation and research portals</li>
+                <li>Technical blogs and knowledge bases</li>
+                <li>Online textbooks and learning platforms</li>
+                <li>Museum and natural history websites</li>
+                <li>Field guide applications</li>
+            </ul>
+        </div>
+
+        <div class="cta">
+            <h2 style="margin-bottom: 20px; color: #2d3748;">Get Notified When We Launch</h2>
+            <p style="color: #4a5568; margin-bottom: 25px;">
+                Currently in active development. Ruby gem, documentation, and demo coming soon.
+            </p>
+            <a href="mailto:will@mrdbid.com?subject=Auto-Glossary Updates" class="email-link">
+                📧 Email for Updates
+            </a>
+            <a href="https://github.com/[YOUR-USERNAME]/auto-glossary" class="github-link">
+                ⭐ Star on GitHub
+            </a>
+        </div>
+
+        <div class="footer">
+            <p><strong>Auto-Glossary</strong> is being developed as open source software.</p>
+            <p style="margin-top: 10px;">Powered by Wikipedia's Glossary of Mycology (CC BY-SA 4.0)</p>
+            <p style="margin-top: 10px;">Built by <a href="https://mrdbid.com" style="color: #667eea; text-decoration: none;">MRDBID</a></p>
+        </div>
+    </div>
+</body>
+</html>

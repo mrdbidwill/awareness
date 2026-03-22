@@ -1,0 +1,96 @@
+<% content_for :title, "Core Character Entry" %>
+
+<div class="w-full auto-margins">
+  <div class="bg-gradient-to-r from-purple-50 to-indigo-50 border border-purple-200 rounded-lg p-4 mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2"><%= @mushroom.name %></h1>
+    <div class="flex flex-wrap items-center gap-3 text-sm">
+      <span class="inline-flex items-center gap-1 bg-purple-100 text-purple-800 px-3 py-1 rounded-full font-medium">
+        <span>Core Character Entry</span>
+      </span>
+      <span class="text-gray-400">-</span>
+      <span class="inline-flex items-center gap-1 bg-gray-100 text-gray-700 px-3 py-1 rounded-full">
+        <span><%= @index + 1 %> of <%= @total %></span>
+      </span>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
+    <div class="flex items-start justify-between gap-4">
+      <div class="min-w-0">
+        <h2 class="text-xl font-semibold text-gray-900 break-words"><%= @character.name.to_s.tr("_", " ") %></h2>
+        <p class="text-sm text-gray-600 mt-1">
+          <span class="font-semibold">Part:</span> <%= @character.part&.name %>
+          <span class="mx-2 text-gray-400">|</span>
+          <span class="font-semibold">Observation:</span> <%= @character.observation_method&.name %>
+        </p>
+        <% if @character.description.present? %>
+          <p class="text-sm text-gray-700 mt-2"><%= @character.description %></p>
+        <% end %>
+      </div>
+      <% if respond_to?(:admin_user?) && admin_user? %>
+        <%= link_to edit_admin_mr_character_path(@character, return_to: request.fullpath),
+                    class: "inline-flex items-center px-2 py-1 border border-blue-600 text-xs font-medium rounded text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500" do %>
+          <span>Edit Character</span>
+        <% end %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <% is_color = (@character.display_option&.name&.downcase == "color") || @character.display_option_id == 6 %>
+    <% if is_color %>
+      <%= render "shared/color_picker_modal",
+                 character: @character,
+                 mushroom_id: @mushroom.id,
+                 current_color_id: @character_mushroom&.color_ids&.first,
+                 redirect_path: @stay_url %>
+    <% else %>
+      <%= form_with url: mr_character_mushrooms_path, method: :post, data: { turbo: true } do |f| %>
+        <%= hidden_field_tag :mushroom_id, @mushroom.id %>
+        <%= hidden_field_tag :mr_character_id, @character.id %>
+        <%= hidden_field_tag :redirect_to, @stay_url %>
+        <% next_index = [@index + 1, @total - 1].min %>
+        <% next_url = mushroom_core_character_entry_path(@mushroom, index: next_index, core_only: true, return_to: @return_to) %>
+        <%= hidden_field_tag :next_url, next_url %>
+
+        <div class="flex items-center gap-2">
+          <%= render partial: "mushrooms/character_input",
+                     locals: { f: f, character: @character, current_value: @character_mushroom&.character_value, compact_radio: false } %>
+          <%= f.submit "Save Character", class: "rounded px-3 py-1.5 text-sm bg-green-600 hover:bg-green-700 text-white font-medium transition" %>
+          <%= f.submit "Save & Next",
+                       name: "save_next",
+                       class: "rounded px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white font-medium transition" %>
+        </div>
+
+        <div class="mt-4 flex flex-wrap items-center gap-3">
+          <%= link_to "Show all characters",
+                      edit_mushroom_path(@mushroom, core_only: false),
+                      class: "text-sm text-blue-700 hover:text-blue-900" %>
+        </div>
+      <% end %>
+    <% end %>
+  </div>
+
+  <div class="mt-6 flex items-center justify-between">
+    <div>
+      <% if @index > 0 %>
+        <%= link_to "Back",
+                    mushroom_core_character_entry_path(@mushroom, index: @index - 1, core_only: true, return_to: @return_to),
+                    class: "inline-flex items-center px-4 py-2 rounded-md bg-gray-100 hover:bg-gray-200 text-gray-800 font-medium" %>
+      <% else %>
+        <span class="inline-flex items-center px-4 py-2 rounded-md bg-gray-100 text-gray-400 font-medium">Back</span>
+      <% end %>
+    </div>
+    <div>
+      <% if @index < (@total - 1) %>
+        <%= link_to "Next",
+                    mushroom_core_character_entry_path(@mushroom, index: @index + 1, core_only: true, return_to: @return_to),
+                    class: "inline-flex items-center px-4 py-2 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium" %>
+      <% else %>
+        <%= link_to "Done",
+                    @done_url,
+                    class: "inline-flex items-center px-4 py-2 rounded-md bg-purple-600 hover:bg-purple-700 text-white font-medium" %>
+      <% end %>
+    </div>
+  </div>
+</div>

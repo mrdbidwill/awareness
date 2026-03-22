@@ -1,0 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles: */
+.admin-layout {
+    @apply bg-red-100 border-8 border-red-600 min-h-screen;
+}

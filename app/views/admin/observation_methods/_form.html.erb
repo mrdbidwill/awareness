@@ -1,0 +1,35 @@
+<%= form_with(model: [:admin, observation_method], class: "contents") do |form| %>
+  <% if observation_method.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(observation_method.errors.count, "error") %> prohibited this observation_method from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% observation_method.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": observation_method.errors[:name].none?, "border-red-400 focus:outline-red-600": observation_method.errors[:name].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.textarea :description, rows: 4, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": observation_method.errors[:description].none?, "border-red-400 focus:outline-red-600": observation_method.errors[:description].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :comments %>
+    <%= form.textarea :comments, rows: 4, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": observation_method.errors[:comments].none?, "border-red-400 focus:outline-red-600": observation_method.errors[:comments].any?}] %>
+  </div>
+
+  <%= render "admin/shared/form_actions",
+             record: observation_method,
+             back_path: admin_observation_methods_path,
+             submit_text: (observation_method.persisted? ? "Update" : "Create"),
+             show_text: "Show this observation method",
+             back_text: "Back to observation methods" %>
+<% end %>

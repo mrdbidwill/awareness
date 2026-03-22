@@ -1,0 +1,13 @@
+one:
+  name: "Canon EOS 5D"
+  camera_make: one
+  camera_model: one
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+two:
+  name: "Nikon D850"
+  camera_make: two
+  camera_model: two
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>

@@ -1,0 +1,17 @@
+# .reek.yml
+---
+# Configuration for Reek code smell detectors
+detectors:
+  InstanceVariableAssumption:
+    enabled: true
+  DuplicateMethodCall:
+    enabled: true
+  TooManyStatements:
+    max_statements: 10 # Default is 5; increase if necessary
+  FeatureEnvy:
+    enabled: false # Example for disabling a smell
+
+# Exclude specific files or directories
+exclude_paths:
+  - 'db/migrate/*'
+  - 'app/views/*'

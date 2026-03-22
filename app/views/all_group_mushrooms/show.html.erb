@@ -1,0 +1,11 @@
+<% content_for :title, "Mushroom Group Added" %>
+
+<div class="md:w-2/3 w-full">
+
+  <h1 class="font-bold text-2xl">Showing Mushroom Groups</h1>
+
+  <%= render @all_group_mushroom %>
+
+  <%= link_to "Back to mushrooms", mushrooms_path, class: "btn-primary" %>
+  <%= button_to "Remove this mushroom group", @all_group_mushroom, method: :delete, form_class: "sm:inline-block mt-2 sm:mt-0 sm:ml-2", class: "btn-danger", data: { turbo_confirm: "Are you sure?" } %>
+</div>

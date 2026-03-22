@@ -1,0 +1,57 @@
+<%#
+  Unified Actions Grid - All mushroom editing actions in one place
+  Uses button-style borders with tight spacing for clean, organized layout
+%>
+
+<div class="bg-gray-50 border border-gray-300 rounded-lg p-4 my-6">
+  <h3 class="text-lg font-bold text-gray-800 mb-3">Quick Actions</h3>
+
+  <%# Precompute counts for display %>
+  <% images_count = @mushroom.image_mushrooms.select { |im| im.image_file.attached? }.size %>
+  <% trees_count = @mushroom.trees.size %>
+  <% plants_count = @mushroom.plants.size %>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-1.5">
+
+    <%# 1. View Images - Toggle button %>
+    <button type="button"
+            onclick="togglePanel('images-panel')"
+            class="border-2 border-blue-600 bg-white text-blue-700 hover:bg-blue-50 font-medium px-4 py-2.5 rounded transition text-center cursor-pointer">
+      <%= images_count > 0 ? "View Images (#{images_count})" : "View Images" %>
+    </button>
+
+    <%# 2. Upload Image - Navigation link %>
+    <% if !defined?(policy) || policy(mushroom)&.mushroom_image_mushroom? %>
+      <%= link_to "Upload Image",
+          new_mushroom_image_mushroom_path(mushroom),
+          class: "border-2 border-sky-600 bg-white text-sky-700 hover:bg-sky-50 font-medium px-4 py-2.5 rounded transition text-center" %>
+    <% end %>
+
+    <%# 3. Compare Mushrooms - Navigation link %>
+    <%= link_to "Compare",
+        mushroom_mushroom_comparisons_path(mushroom_id: mushroom.id),
+        class: "border-2 border-violet-600 bg-white text-violet-700 hover:bg-violet-50 font-medium px-4 py-2.5 rounded transition text-center" %>
+
+    <%# 4. Delete This Mushroom - Destructive action %>
+    <% if user_signed_in? && (defined?(policy) ? policy(mushroom)&.destroy? : (current_user && mushroom.user == current_user)) %>
+      <%= button_to "Delete Mushroom",
+                    mushroom,
+                    method: :delete,
+                    form: { class: "contents" },
+                    class: "border-2 border-red-600 bg-white text-red-700 hover:bg-red-50 font-medium px-4 py-2.5 rounded transition text-center cursor-pointer",
+                    data: { turbo_confirm: "Are you sure you want to delete this mushroom? This action cannot be undone." } %>
+    <% end %>
+
+  </div>
+
+  <%# Optional: Add navigation links if desired %>
+  <div class="mt-4 pt-3 border-t border-gray-300 flex flex-wrap gap-2">
+    <%= link_to "← Your Mushrooms", mushrooms_path,
+        class: "inline-block px-3 py-1.5 rounded bg-indigo-600 text-white text-sm font-semibold hover:bg-indigo-500 transition" %>
+
+    <% if current_user&.admin? %>
+      <%= link_to "Admin Dashboard", admin_root_path,
+          class: "inline-block px-3 py-1.5 rounded bg-gray-600 text-yellow-400 text-sm font-semibold hover:bg-gray-500 transition" %>
+    <% end %>
+  </div>
+</div>

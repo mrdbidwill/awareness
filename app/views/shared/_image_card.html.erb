@@ -1,0 +1,12 @@
+<!-- app/views/shared/_image_card.html.erb -->
+<div class="image-card">
+  <%= image_tag(
+        url_for(image_mushroom.image_file.variant(
+          resize_to_fill: [120, 120],
+          format: :webp,
+          saver: { strip: true, quality: 60, effort: 4 }
+        )),
+        alt: image_mushroom.part&.name.presence || mushroom_name || "Mushroom image",
+        loading: "eager"
+      ) %>
+</div>

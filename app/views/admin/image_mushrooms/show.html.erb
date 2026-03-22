@@ -1,0 +1,19 @@
+<div>
+  <h1 class="font-bold text-2xl"><%= @image_mushroom.image_name %></h1>
+
+  <p><strong>Mushroom:</strong> <%= @image_mushroom.mushroom&.name || 'N/A' %></p>
+  <p><strong>Part:</strong> <%= @image_mushroom.part&.name || 'N/A' %></p>
+  <p><strong>Camera Make:</strong> <%= @image_mushroom.camera_make || 'N/A' %></p>
+  <p><strong>Camera Model:</strong> <%= @image_mushroom.camera_model || 'N/A' %></p>
+  <p><strong>Width:</strong> <%= @image_mushroom.image_width || 'N/A' %></p>
+  <p><strong>Height:</strong> <%= @image_mushroom.image_height || 'N/A' %></p>
+  <p><strong>Lens:</strong> <%= @image_mushroom.lens %></p>
+  <p><strong>Exposure:</strong> <%= @image_mushroom.exposure %></p>
+  <p><strong>Aperture:</strong> <%= @image_mushroom.aperture %></p>
+  <p><strong>ISO:</strong> <%= @image_mushroom.iso %></p>
+  <p><strong>Created at (entered for this mushroom):</strong> <%= @image_mushroom.created_at %></p>
+  <p><strong>Last update:</strong> <%= @image_mushroom.updated_at %></p>
+
+  <%= link_to 'Edit', edit_admin_image_mushroom_path(@image_mushroom), class: 'text-yellow-500' %>
+  <%= link_to 'Back to List', admin_image_mushrooms_path, class: 'text-blue-500' %>
+</div>

@@ -1,0 +1,13 @@
+one:
+  name: "Oak Tree Host"
+  description: "Oak tree that hosts mushrooms"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+two:
+  name: "Pine Tree Host"
+  description: "Pine tree that hosts mushrooms"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+

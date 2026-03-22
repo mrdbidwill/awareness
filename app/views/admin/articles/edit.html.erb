@@ -1,0 +1,8 @@
+<% content_for :title, "Admin · Edit Article" %>
+<div class="flex items-center justify-between">
+<h1 class="font-bold text-2xl mb-4">Edit Article</h1>
+  <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded-md px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white block font-medium" %>
+  <%= link_to "Back to Articles", admin_articles_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+</div>
+
+<%= render "form" %>

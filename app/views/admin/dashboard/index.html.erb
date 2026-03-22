@@ -1,0 +1,196 @@
+<h1 class="bg-gray-100 text-red-800 mx-auto px-2 py-1 text-4xl text-center">Admin Dashboard</h1>
+<p class="text-center text-red-800 mb-4">You are in the Admin section. The links below are to various tables and tools for improving the mushroom identification process.</p>
+<nav class="admin-dashboard-nav">
+  <ul class="space-y-3 ml-6">
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span>All code for this project is freely available at <%= link_to "https://github.com/mrdbidwill/mrdbid", "https://github.com/mrdbidwill/mrdbid", class: "text-blue-600 hover:text-blue-800 hover:underline font-medium", target: "_blank", rel: "noopener noreferrer" %></span>
+    </li>
+
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span>Note: If you add data and there is not currently a data source form field, please include the source in the description or comments field.</span>
+    </li>
+
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <div>
+        <strong>Download Database Backup Options:</strong>
+        <div class="ml-4 mt-2 space-y-2">
+          <!-- Option 1: Lookup Tables with MBList -->
+          <div>
+            <span id="db-export-link-1">
+              <%= link_to "1. Lookup Tables (includes MBList)", admin_database_export_path(export_type: 'lookup_tables'),
+                  data: { turbo: false },
+                  onclick: "return confirm('⚠️ This file is approximately 400MB and may take 10-30 seconds to download. Continue?');",
+                  class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+            </span>
+            <span id="db-export-mobile-warning-1" style="display: none;">
+              <strong>1. Lookup Tables (Desktop Only)</strong>
+            </span>
+            <br>
+            <small class="text-gray-600" style="font-size: 0.85em;">
+              <span id="db-export-desktop-warning-1">
+                Complete lookup/reference tables ready for data entry. Excludes all user input data.<br/>
+                ⚠️ Large file (~400MB). Download may take 10-30 seconds.
+              </span>
+              <span id="db-export-mobile-msg-1" style="display: none; color: #d97706;">
+                ⚠️ Not available on mobile devices. Please use a desktop computer.
+              </span>
+            </small>
+          </div>
+
+          <!-- Option 2: Lookup Tables without MBList -->
+          <div>
+            <span id="db-export-link-2">
+              <%= link_to "2. Lookup Tables (excludes MBList)", admin_database_export_path(export_type: 'lookup_no_mblist'), data: { turbo: false }, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+            </span>
+            <span id="db-export-mobile-warning-2" style="display: none;">
+              <strong>2. Lookup Tables without MBList (Desktop Only)</strong>
+            </span>
+            <br>
+            <small class="text-gray-600" style="font-size: 0.85em;">
+              <span id="db-export-desktop-warning-2">
+                All lookup/reference tables except the large MBList taxonomy table. Excludes all user input data.<br/>
+                ⚠️ Smaller file (~20MB). Faster download.
+              </span>
+              <span id="db-export-mobile-msg-2" style="display: none; color: #d97706;">
+                ⚠️ Not available on mobile devices. Please use a desktop computer.
+              </span>
+            </small>
+          </div>
+
+          <!-- Option 3: MBList Only -->
+          <div>
+            <span id="db-export-link-3">
+              <%= link_to "3. MBList Database Only", admin_database_export_path(export_type: 'mblist_only'),
+                  data: { turbo: false },
+                  onclick: "return confirm('⚠️ This file is approximately 380MB and may take 10-30 seconds to download. Continue?');",
+                  class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+            </span>
+            <span id="db-export-mobile-warning-3" style="display: none;">
+              <strong>3. MBList Database Only (Desktop Only)</strong>
+            </span>
+            <br>
+            <small class="text-gray-600" style="font-size: 0.85em;">
+              <span id="db-export-desktop-warning-3">
+                Only the MBList taxonomy reference table. Combine with Option 2 for complete lookup tables.<br/>
+                ⚠️ Large file (~380MB). Download may take 10-30 seconds.
+              </span>
+              <span id="db-export-mobile-msg-3" style="display: none; color: #d97706;">
+                ⚠️ Not available on mobile devices. Please use a desktop computer.
+              </span>
+            </small>
+          </div>
+        </div>
+        <small class="text-gray-600 mt-2 block" style="font-size: 0.85em;">
+          ℹ️ All options exclude user data and security tables. Use these to populate a fresh installation.
+        </small>
+        <script>
+          // Detect if user is on mobile device
+          if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            for (let i = 1; i <= 3; i++) {
+              document.getElementById('db-export-link-' + i).style.display = 'none';
+              document.getElementById('db-export-mobile-warning-' + i).style.display = 'inline';
+              document.getElementById('db-export-desktop-warning-' + i).style.display = 'none';
+              document.getElementById('db-export-mobile-msg-' + i).style.display = 'inline';
+            }
+          }
+        </script>
+      </div>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Admin To Do List", admin_admin_todos_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> Or just click on 'Admin To Do' buttons throughout site.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Users", admin_users_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Articles", admin_articles_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Newsletter Campaigns", admin_newsletter_campaigns_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> Send group emails to confirmed subscribers via background jobs.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Colors", admin_colors_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>  (Not editable here.)</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Countries", admin_countries_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <!-- <li><%# link_to "DNA Sequences", admin_dna_sequences_path %></li> -->
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Fungus Types", admin_fungus_types_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+
+    <li> Genus & Species are at the root of all mushroom identification. I am using the MBList database from MycoBank (<%= link_to "www.mycobank.org", "https://www.mycobank.org", class: "text-blue-600 hover:text-blue-800 hover:underline font-medium", target: "_blank", rel: "noopener noreferrer" %>) which is included in the database download above. The MBList data is licensed under CC BY-NC-ND (non-commercial use only, with attribution, no modifications).</li>
+    <!-- <li><%# link_to "Genus", admin_genera_path %></li>  -->
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><strong>Organization Tools:</strong> <%= link_to "Clusters", clusters_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> | <%= link_to "Groups", all_groups_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> | <%= link_to "Projects (Universal)", admin_projects_path, class: "text-purple-600 hover:text-purple-800 hover:underline font-semibold" %> - User-defined collections for organizing mushroom specimens. Projects are universal and available to all users.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Lens", admin_lenses_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Lookup Items", admin_lookup_items_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> There are a lot of these that make up the radio and drop-down list options for a character. These are part of the core goal to provide all the options for a character.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Observation Methods", admin_observation_methods_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> With hundreds of characters with hundreds more lookup items, Observation Methods and Parts are used to organize them.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span>MBList (not able to modify here)</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Mushroom Characters", admin_mr_characters_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> These work in tandem with Lookup Items as part of the core goal to provide all the options for a character.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Sequence Core Characters", admin_core_character_sequences_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> Set the display order for core characters.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Parts", admin_parts_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> Used to identify and organize characters.</span>
+    </li>
+    <!-- <li><%# link_to "Permissions", admin_permissions_path %></li>  -->
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Plants", admin_plants_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <!-- <li><%# link_to "Roles", admin_roles_path %></li>  -->
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Source Data", admin_source_data_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> I have made an effort to provide sources for important data. Not as simple as I originally thought, since <strong>my</strong> source for a particular piece of data may be different from <strong>your</strong> source of that same data. A work in progress, like others.</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Source Data Types", admin_source_data_types_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <span><%= link_to "Storage Locations", admin_storage_locations_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %> This may be a "to do" list of herbariums?</span>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "States", admin_states_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <li class="flex items-start">
+      <span class="text-blue-600 mr-2 flex-shrink-0">▸</span>
+      <%= link_to "Trees", admin_trees_path, class: "text-blue-600 hover:text-blue-800 hover:underline font-medium" %>
+    </li>
+    <!-- Add more as needed, or generate dynamically -->
+  </ul>
+</nav>
+
+<!-- Optionally: Add summary stats, recent changes, versioning quick links, etc. -->

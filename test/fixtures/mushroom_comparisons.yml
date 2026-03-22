@@ -1,0 +1,45 @@
+# Mushroom comparison fixtures
+
+completed_high_similarity:
+  mushroom: one
+  compared_mushroom: two
+  similarity_score: 85
+  matching_characters: 17
+  total_characters: 20
+  status: completed
+  completed_at: <%= Time.current - 1.hour %>
+  created_at: <%= Time.current - 2.hours %>
+  updated_at: <%= Time.current - 1.hour %>
+
+completed_low_similarity:
+  mushroom: one
+  compared_mushroom: three
+  similarity_score: 25
+  matching_characters: 5
+  total_characters: 20
+  status: completed
+  completed_at: <%= Time.current - 1.hour %>
+  created_at: <%= Time.current - 2.hours %>
+  updated_at: <%= Time.current - 1.hour %>
+
+pending_comparison:
+  mushroom: two
+  compared_mushroom: one
+  similarity_score: 0
+  matching_characters: 0
+  total_characters: 0
+  status: pending
+  completed_at: null
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+failed_comparison:
+  mushroom: two
+  compared_mushroom: three
+  similarity_score: 0
+  matching_characters: 0
+  total_characters: 0
+  status: failed
+  completed_at: <%= Time.current - 30.minutes %>
+  created_at: <%= Time.current - 1.hour %>
+  updated_at: <%= Time.current - 30.minutes %>

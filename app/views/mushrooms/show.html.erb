@@ -1,0 +1,255 @@
+<% content_for :title, "Showing mushroom" %>
+<% content_for :canonical_url, mushroom_url(@mushroom) %>
+<div class="md:w-full w-full">
+
+  <% unless user_signed_in? %>
+    <!-- Demo Mode Banner -->
+    <div class="mb-4 bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+      <div class="flex items-start gap-3">
+        <svg class="w-6 h-6 text-blue-600 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <div class="flex-1">
+          <p class="font-semibold text-blue-900 mb-1">Demo Mode - Read Only</p>
+          <p class="text-sm text-blue-800">
+            You're viewing a specimen from the demo collection.
+            <%= link_to "Sign in", new_user_session_path, class: "underline font-medium" %> or
+            <%= link_to "create an account", new_user_registration_path, class: "underline font-medium" %>
+            to add your own mushroom specimens and use all features.
+          </p>
+        </div>
+      </div>
+    </div>
+  <% end %>
+
+  <h1 class="font-bold text-2xl">Showing mushroom:</h1>
+
+  <%= render @mushroom %>
+
+  <% images = @mushroom.image_mushrooms.select { |im| im.image_file.attached? } %>
+  <% if images.any? %>
+    <div class="w-full">
+      <h2 class="text-lg font-semibold mb-3 text-gray-700">
+        Images (<%= images.count %>) — <span class="text-sm font-normal text-gray-600">Click any image to view full size</span>
+      </h2>
+      <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2">
+        <% images.each do |image_mushroom| %>
+          <%= link_to image_mushroom_path(image_mushroom), class: "block border rounded-md overflow-hidden bg-gray-50 aspect-square hover:shadow-lg hover:border-blue-400 transition-all" do %>
+            <%# Use WebP with JPEG fallback, strip metadata, and lower quality %>
+            <picture>
+              <%= tag.source(
+                    srcset: url_for(
+                      image_mushroom.image_file.variant(
+                        resize_to_fill: [120, 120],
+                        format: :webp,
+                        saver: { strip: true, quality: 60, effort: 4 } # try 50–65 for tiny files
+                      ).processed
+                    ),
+                    type: "image/webp"
+                  ) %>
+              <%= image_tag(
+                    image_mushroom.image_file.variant(
+                      resize_to_fill: [120, 120],
+                      saver: { strip: true, quality: 72, optimize_coding: true } # try 65–75 for clarity vs. size
+                    ).processed,
+                    width: 120,
+                    height: 120,
+                    class: "w-full h-full object-cover block",
+                    loading: "eager",
+                    decoding: "async",
+                    fetchpriority: "high",
+                    alt: image_mushroom.image_name.presence || @mushroom.name
+                  ) %>
+            </picture>
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-sm text-gray-500">No images for this mushroom.</p>
+  <% end %>
+
+  <!-- Associated Trees -->
+  <% if @mushroom.trees.any? %>
+    <div class="mt-6">
+      <details class="bg-white border rounded-md p-4" open>
+        <summary class="font-semibold cursor-pointer text-green-700">Associated Trees (<%= @mushroom.trees.count %>)</summary>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <% @mushroom.trees.order(:name).each do |tree| %>
+            <span class="inline-flex items-center bg-green-100 border border-green-300 rounded px-3 py-1 text-sm">
+              <%= tree.name %>
+            </span>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  <% end %>
+
+  <!-- Associated Plants -->
+  <% if @mushroom.plants.any? %>
+    <div class="mt-4">
+      <details class="bg-white border rounded-md p-4" open>
+        <summary class="font-semibold cursor-pointer text-purple-700">Associated Plants (<%= @mushroom.plants.count %>)</summary>
+        <div class="mt-3 flex flex-wrap gap-2">
+          <% @mushroom.plants.order(:name).each do |plant| %>
+            <span class="inline-flex items-center bg-purple-100 border border-purple-300 rounded px-3 py-1 text-sm">
+              <%= plant.name %>
+            </span>
+          <% end %>
+        </div>
+      </details>
+    </div>
+  <% end %>
+
+  <!-- Characters, grouped by part -->
+  <% character_rows = @mushroom.mr_character_mushrooms.includes(mr_character: [:part, :display_option]).order('parts.name ASC, mr_characters.name ASC') %>
+  <% grouped = character_rows.group_by { |rc| rc.mr_character&.part&.name || "Other" } %>
+  <% entered_character_pairs = character_rows.map do |rc|
+       c = rc.mr_character
+       next unless c
+
+       name = c.name.to_s.tr("_", " ")
+       display_option_name = c.display_option&.name&.downcase
+       is_color = display_option_name == "color" || c.display_option_id == 6
+
+       if is_color
+         colors = rc.ordered_colors
+         value = colors.map(&:common_name).join(" / ")
+         value = "No colors selected" if value.blank?
+       elsif display_option_name == "radio" || display_option_name == "drop-down"
+         lookup_item = LookupItem.find_by(id: rc.character_value)
+         value = lookup_item&.name || rc.character_value
+       else
+         value = rc.character_value
+       end
+
+       value = value.to_s.strip
+       next if value.blank?
+       "#{name}: #{value}"
+     end.compact %>
+  <% entered_character_text = entered_character_pairs.join(", ") %>
+
+  <div class="mt-6 space-y-3">
+    <details class="bg-white border rounded-md p-4" open>
+      <summary class="font-semibold cursor-pointer">Copy characters</summary>
+      <div class="mt-2" data-copy-characters>
+        <% if entered_character_text.present? %>
+          <p class="text-xs text-gray-600 mb-2">Copy these entries to paste into iNaturalist comments or elsewhere.</p>
+          <textarea class="w-full border border-gray-300 rounded p-2 text-xs text-gray-800 bg-gray-50"
+                    rows="4"
+                    readonly><%= entered_character_text %></textarea>
+          <div class="mt-2 flex items-center gap-2">
+            <button type="button"
+                    onclick="copyEnteredCharacters(this)"
+                    class="rounded px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white font-medium transition">
+              Copy Entered Characters
+            </button>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-600">No characters entered yet.</p>
+        <% end %>
+      </div>
+    </details>
+
+    <% grouped.each do |part_name, rows| %>
+      <details class="bg-white border rounded-md p-4" open>
+        <summary class="font-semibold cursor-pointer"><%= part_name %> (<%= rows.size %>)</summary>
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <% rows.each do |rc| %>
+            <% c = rc.mr_character %>
+            <div class="flex items-center justify-between border rounded p-1">
+              <div>
+                <div class="text-sm text-gray-500"><%= c&.name %></div>
+                <div class="font-medium">
+                  <% display_opt_name = c&.display_option&.name %>
+                  <% case display_opt_name %>
+                  <% when "color" %>
+                    <% colors = rc.ordered_colors %>
+                    <% if colors.any? %>
+                      <div class="inline-flex items-center gap-2 flex-wrap">
+                        <% colors.each_with_index do |color, index| %>
+                          <span class="inline-flex items-center gap-1">
+                            <% if color.is_simplified? %>
+                              <div class="w-6 h-6 rounded border flex-shrink-0 <%= index == 0 ? 'border-blue-500 border-2' : 'border-gray-300' %>"
+                                   style="background-color: <%= color.hex %>"></div>
+                            <% else %>
+                              <%= image_tag "AMS_colors/banner_50x50/banner_#{color.id}.jpg",
+                                            alt: color.latin_name,
+                                            class: "w-6 h-6 rounded border flex-shrink-0 #{index == 0 ? 'border-blue-500 border-2' : 'border-gray-300'}" %>
+                            <% end %>
+                            <span class="<%= index == 0 ? 'font-semibold' : '' %>">
+                              <%= color.common_name %>
+                            </span>
+                          </span>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      <span class="text-gray-500 italic">No colors</span>
+                    <% end %>
+                  <% when "radio", "drop-down" %>
+                    <% lookup_item = LookupItem.find_by(id: rc.character_value.to_i) %>
+                    <% if lookup_item %>
+                      <div>
+                        <div><%= lookup_item.name %></div>
+                        <% if lookup_item.description.present? %>
+                          <div class="text-sm text-gray-600"><%= raw mark_glossary_terms(lookup_item.description) %></div>
+                        <% end %>
+                      </div>
+                    <% else %>
+                      <%= rc.character_value %>
+                    <% end %>
+                  <% when "boolean_yes_no" %>
+                    <%= rc.character_value.to_s.downcase == "true" ? "Yes" : "No" %>
+                  <% when "boolean_true_false" %>
+                    <%= rc.character_value.to_s.downcase == "true" ? "True" : "False" %>
+                  <% when "boolean_present_absent" %>
+                    <%= rc.character_value.to_s.downcase == "true" ? "Present" : "Absent" %>
+                  <% when "checkbox" %>
+                    <%= rc.character_value.to_s.downcase == "true" ? "✓ Yes" : "✗ No" %>
+                  <% else %>
+                    <%= rc.character_value %>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+  </div>
+</div>
+
+<script>
+  function copyEnteredCharacters(button) {
+    const container = button.closest('[data-copy-characters]');
+    if (!container) return;
+
+    const textarea = container.querySelector('textarea');
+    if (!textarea) return;
+
+    const text = textarea.value || '';
+    if (!text.trim()) return;
+
+    const originalText = button.textContent;
+    const setCopied = () => {
+      button.textContent = 'Copied';
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 1500);
+    };
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(setCopied).catch(() => {
+        textarea.select();
+        textarea.setSelectionRange(0, text.length);
+        document.execCommand('copy');
+        setCopied();
+      });
+    } else {
+      textarea.select();
+      textarea.setSelectionRange(0, text.length);
+      document.execCommand('copy');
+      setCopied();
+    }
+  }
+</script>

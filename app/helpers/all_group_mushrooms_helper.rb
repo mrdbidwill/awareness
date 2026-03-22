@@ -1,0 +1,2 @@
+module AllGroupMushroomsHelper
+end

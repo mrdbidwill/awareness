@@ -1,0 +1,12 @@
+one:
+  name: "Gills"
+  description: "Gills fungus type description"
+  comments: "Gill comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+two:
+  name: "Cup Fungi"
+  description: "Cup Fungi description"
+  comments: "Cup Fungi comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

@@ -1,0 +1,4 @@
+# config/tailwindcss.yml
+
+input: app/assets/stylesheets/application.css
+output: app/assets/builds/application.css

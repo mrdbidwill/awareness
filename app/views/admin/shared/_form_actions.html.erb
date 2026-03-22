@@ -1,0 +1,35 @@
+<%# app/views/admin/shared/_form_actions.html.erb %>
+<%# Required locals:
+# - record: the AR object (e.g., @lookup_item)
+# - back_path: where the "Back" link should go
+# Optional locals:
+# - submit_text: override submit button text
+# - show: boolean to display the "Show" link (default: record.persisted?)
+# - back_text: override back link text
+# - show_text: override show link text
+# Do not show the "Show" link if the record is not persisted.
+%>
+
+<% show = local_assigns.fetch(:show, record&.persisted?) %>
+
+<div class="mt-4 flex flex-col sm:flex-row gap-2 mx-1 my-1">
+  <%= submit_tag(local_assigns[:submit_text] || "Save",
+                 class: "btn-primary btn-responsive") %>
+
+  <%# INLINE EDITING SUPPORT: If user came from another page via return_to parameter,
+      show a Cancel button that returns them to that page without saving changes %>
+  <% if params[:return_to].present? %>
+    <%= link_to "Cancel", params[:return_to],
+                class: "rounded-md px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white inline-block font-medium cursor-pointer text-center" %>
+  <% end %>
+
+  <% if show %>
+    <%= link_to (local_assigns[:show_text] || "Show this #{record.model_name.human.downcase}"),
+                [:admin, record],
+                class: "btn-primary btn-responsive" %>
+  <% end %>
+
+  <%= link_to (local_assigns[:back_text] || "Back"),
+              back_path,
+              class: "btn-secondary btn-responsive" %>
+</div>

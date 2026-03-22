@@ -1,0 +1,239 @@
+<%#
+  Color Picker Modal Component
+  Usage:
+    render "shared/color_picker_modal",
+           character: character,
+           mushroom_id: @mushroom.id,
+           current_color_id: color_id,
+           redirect_path: edit_characters_mushroom_path(@mushroom, ...)
+%>
+<% character_id = character.id %>
+<% current_color_id ||= nil %>
+<% redirect_path ||= nil %>
+
+<%
+  # Get current colors for this character-mushroom combination
+  current_mr_char_mushroom = mushroom_id && character_id ?
+    MrCharacterMushroom.find_by(mushroom_id: mushroom_id, mr_character_id: character_id) : nil
+  current_colors = current_mr_char_mushroom&.ordered_colors || []
+  selected_color_ids = current_colors.map(&:id)
+
+  # Get all colors for picker (simplified first, then AMS)
+  all_colors = Color.all_for_picker
+  simplified_colors = all_colors.select(&:is_simplified?)
+  ams_colors = all_colors.reject(&:is_simplified?)
+  color_families = simplified_colors.group_by(&:color_family)
+
+  # Build color ID to hex mapping for JavaScript (all colors)
+  color_hex_map = {}
+  all_colors.each do |color|
+    color_hex_map[color.id] = color.hex
+  end
+
+  # Build color ID to image URL mapping for AMS colors
+  color_image_urls = {}
+  ams_colors.each do |color|
+    color_image_urls[color.id] = image_path("AMS_colors/banner_50x50/banner_#{color.id}.jpg")
+  end
+%>
+
+<div data-controller="multicolor-picker"
+     data-multicolor-picker-character-id-value="<%= character_id %>"
+     data-multicolor-picker-selected-ids-value="<%= selected_color_ids.to_json %>"
+     data-multicolor-picker-color-hex-map-value="<%= color_hex_map.to_json %>"
+     data-multicolor-picker-color-images-value="<%= color_image_urls.to_json %>">
+  <!-- Modal Trigger Button -->
+  <button type="button"
+          data-action="click->multicolor-picker#open"
+          data-character-id="<%= character_id %>"
+          class="inline-flex items-center gap-2 px-3 py-1.5 text-sm bg-blue-600 hover:bg-blue-700 text-white font-medium rounded transition">
+  <% if current_colors.any? %>
+    <div class="flex -space-x-2">
+      <% current_colors.first(3).each do |color| %>
+        <% if color.is_simplified? %>
+          <div class="w-5 h-5 rounded-full border-2 border-white" style="background-color: <%= color.hex %>"></div>
+        <% else %>
+          <%= image_tag "AMS_colors/banner_50x50/banner_#{color.id}.jpg",
+                        alt: color.common_name,
+                        class: "w-5 h-5 rounded-full border-2 border-white" %>
+        <% end %>
+      <% end %>
+      <% if current_colors.size > 3 %>
+        <span class="w-5 h-5 rounded-full bg-gray-200 border-2 border-white flex items-center justify-center text-xs">
+          +<%= current_colors.size - 3 %>
+        </span>
+      <% end %>
+    </div>
+    <span>Change Colors</span>
+  <% else %>
+    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+    </svg>
+    <span>Choose Colors</span>
+  <% end %>
+  </button>
+
+  <!-- Modal Backdrop and Container -->
+  <div id="colorPickerModal<%= character_id %>"
+       class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4"
+       data-character-id="<%= character_id %>"
+       data-action="click->multicolor-picker#closeOnBackdrop">
+
+  <div class="bg-white rounded-lg shadow-xl max-w-5xl w-full max-h-[90vh] overflow-y-auto"
+       data-action="click->multicolor-picker#stopPropagation">
+
+    <!-- Modal Header -->
+    <div class="sticky top-0 bg-white border-b px-6 py-4 flex items-start justify-between">
+      <div class="flex-1 min-w-0">
+        <h3 class="text-lg font-semibold text-gray-900 break-words">
+          <%= character.name.to_s.tr("_", " ") %>
+        </h3>
+        <% if character.description.present? %>
+          <p class="text-sm text-gray-600 mt-1"><%= character.description %></p>
+        <% end %>
+      </div>
+      <button type="button"
+              data-action="click->multicolor-picker#close"
+              class="ml-4 text-gray-400 hover:text-gray-600 transition">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="p-3">
+      <%= form_with url: mr_character_mushrooms_path,
+                    method: :post,
+                    data: { turbo: true, multicolor_picker_target: "form" } do |f| %>
+        <%= hidden_field_tag :mushroom_id, mushroom_id %>
+        <%= hidden_field_tag :mr_character_id, character.id %>
+        <% if redirect_path %>
+          <%= hidden_field_tag :redirect_to, redirect_path %>
+        <% end %>
+
+        <!-- Selected Colors Section -->
+        <div class="mb-6">
+          <h4 class="text-sm font-semibold text-gray-700 mb-3">
+            Selected Colors
+            <span class="text-xs font-normal text-gray-500">(Click color below to add/remove, drag to reorder)</span>
+          </h4>
+          <div data-multicolor-picker-target="selectedColors" class="flex flex-col gap-2 min-h-[60px]">
+            <!-- Dynamic content rendered by Stimulus -->
+          </div>
+        </div>
+
+        <hr class="my-6" />
+
+        <p class="text-sm text-gray-600 mb-4">
+          Click colors to add or remove from selection. Family samples appear first, followed by the Alabama Mushroom Society (AMS) chart.
+        </p>
+
+        <!-- Grouped Color Grid -->
+        <div class="space-y-6" data-multicolor-picker-target="colorGrid">
+          <!-- Simplified Colors (27 colors, grouped by family) -->
+          <% color_families.each do |family_name, colors| %>
+            <div class="color-family-group">
+              <h5 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded-full" style="background-color: <%= colors.first.hex %>"></span>
+                <%= family_name %> Family
+                <span class="text-xs text-gray-500 font-normal">(<%= colors.size %> colors)</span>
+              </h5>
+              <div class="grid grid-cols-2 xl:grid-cols-3 gap-2">
+                <% colors.each do |color| %>
+                  <% is_selected = selected_color_ids.include?(color.id) %>
+                  <button type="button"
+                          data-color-id="<%= color.id %>"
+                          data-action="click->multicolor-picker#toggleColor"
+                          title="<%= color.latin_name %> (<%= color.common_name %>)"
+                          class="group relative p-1 border rounded-lg transition-all hover:scale-105 hover:shadow-lg <%= is_selected ? 'border-blue-600 bg-blue-50 border-2' : 'border-gray-300 hover:border-blue-400' %> w-full aspect-square">
+                    <!-- Color swatch -->
+                    <div class="w-full h-full rounded-md relative"
+                         style="background-color: <%= color.hex %>">
+                      <!-- Color name overlaid on swatch -->
+                      <span class="absolute bottom-0 left-0 right-0 text-xs text-center font-semibold text-white bg-black bg-opacity-50 py-0.5 rounded-b-md">
+                        <%= color.common_name %>
+                      </span>
+                    </div>
+
+                    <!-- Tooltip with Latin name on hover -->
+                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                      <%= color.latin_name %>
+                    </span>
+
+                    <!-- Checkmark for selected colors (will be enhanced by JavaScript) -->
+                    <% if is_selected %>
+                      <svg class="absolute top-1 right-1 w-5 h-5 text-blue-600" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                    <% end %>
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+
+          <!-- AMS Colors (50 colors, the original Alabama Mushroom Society palette) -->
+          <% if ams_colors.any? %>
+            <div class="color-family-group">
+              <h5 class="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
+                <span class="inline-block w-3 h-3 rounded border border-gray-300 bg-gradient-to-br from-amber-200 via-orange-300 to-red-200"></span>
+                Alabama Mushroom Society (AMS) Colors
+                <span class="text-xs text-gray-500 font-normal">(<%= ams_colors.size %> colors)</span>
+              </h5>
+              <p class="text-xs text-gray-600 mb-3">Original 50-color AMS palette with Latin botanical names</p>
+              <div class="grid grid-cols-5 sm:grid-cols-8 md:grid-cols-10 gap-2">
+                <% ams_colors.each do |color| %>
+                  <% is_selected = selected_color_ids.include?(color.id) %>
+                  <button type="button"
+                          data-color-id="<%= color.id %>"
+                          data-action="click->multicolor-picker#toggleColor"
+                          title="<%= color.latin_name %> (<%= color.common_name %>)"
+                          class="group relative aspect-square border-2 rounded-lg transition-all hover:scale-110 hover:shadow-lg <%= is_selected ? 'border-blue-600 bg-blue-50' : 'border-gray-300 hover:border-blue-400' %>">
+                    <%= image_tag "AMS_colors/banner_50x50/banner_#{color.id}.jpg",
+                                  alt: color.common_name,
+                                  loading: "eager",
+                                  fetchpriority: "high",
+                                  class: "w-full h-full object-cover rounded-md" %>
+
+                    <!-- Tooltip on hover -->
+                    <span class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-10">
+                      <%= color.latin_name %> (<%= color.common_name %>)
+                    </span>
+
+                    <!-- Checkmark for selected colors (will be enhanced by JavaScript) -->
+                    <% if is_selected %>
+                      <svg class="absolute top-1 right-1 w-5 h-5 text-blue-600 bg-white rounded-full" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                      </svg>
+                    <% end %>
+                  </button>
+                <% end %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
+
+    <!-- Modal Footer -->
+    <div class="sticky bottom-0 bg-gray-50 border-t px-6 py-4 flex flex-wrap gap-3">
+      <button type="button"
+              data-action="click->multicolor-picker#submitColors"
+              class="flex-1 sm:flex-none px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition">
+        Save Colors
+      </button>
+      <button type="button"
+              data-action="click->multicolor-picker#clearAll"
+              class="flex-1 sm:flex-none px-4 py-2 bg-red-100 hover:bg-red-200 text-red-700 font-medium rounded-lg transition">
+        Clear All
+      </button>
+      <button type="button"
+              data-action="click->multicolor-picker#close"
+              class="flex-1 sm:flex-none px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg transition">
+        Cancel
+      </button>
+    </div>
+  </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<% content_for :title, "Admin · Articles" %>
+
+<div class="w-full">
+
+  <div class="w-full bg-green-50 text-green-800 text-xs px-3 py-1 border-b border-green-200 p-4 m-4">
+    <span class="font-semibold">In case you wondered, "I am ON the 'Articles' page, why do I still see the 'Articles' button?</span>
+    <span class="ml-2 mt-2 inline-block px-1.5 py-0.5 bg-green-50 border border-green-200 rounded"><u>This</u> is the 'Admin' version of 'Articles.' The blue button to the left is for the user's version where articles can only be read. You are in the right place now to create and edit your articles.</span>
+  </div>
+
+  <div class="w-full bg-orange-50 text-orange-800 text-xs px-3 py-1 border-b border-orange-200 p-4 m-4">
+    <span class="font-semibold">Please use email to webmaster to report website issues such as broken links, correct spelling, missing content, or any other problems you encounter on the website.</span>
+    </span>
+  </div>
+
+  <div class="flex items-center justify-between">
+    <h1 class="font-bold text-2xl">Articles (Admin)</h1>
+
+    <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded-md px-2 py-1 bg-gray-600 hover:bg-gray-500 text-white block font-medium" %>
+    <%= link_to "New article", new_admin_article_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white block font-medium" %>
+  </div>
+
+  <div class="mt-4 space-y-1">
+    <% @articles.each do |a| %>
+      <div class="border rounded p-3 bg-white">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <div class="font-semibold"><%= link_to sanitize(a.title, tags: %w[em i]), admin_article_path(a) %></div>
+            <div class="text-xs text-gray-500">
+              <span>Slug: <%= a.slug %></span>
+              <% if a.subject.present? %><span class="ml-2">Subject: <%= a.subject.name %></span><% end %>
+              <% if a.published_at.present? %><span class="ml-2"><%= a.published_at.to_date %></span><% end %>
+              <span class="ml-2"><%= a.published? ? "Published" : "Draft" %></span>
+            </div>
+          </div>
+          <div class="w-full sm:w-auto flex flex-col sm:flex-row space-x-2 space-y-1">
+            <%= render "admin/shared/resource_actions", record: a, delete: true %>
+          </div>
+        </div>
+        <% if a.summary.present? %>
+          <p class="text-sm text-gray-700 mt-2"><%= sanitize(truncate(a.summary, length: 200), tags: %w[em i]) %></p>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <%= paginate @articles %>
+  </div>
+</div>

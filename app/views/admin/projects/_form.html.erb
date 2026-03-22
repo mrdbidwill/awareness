@@ -1,0 +1,32 @@
+<%= form_with(model: [:admin, project], class: "contents") do |form| %>
+  <% if project.errors.any? %>
+    <div class="bg-red-50 text-red-500 px-3 py-2 font-medium rounded-md mt-3">
+      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+      <ul class="list-disc ml-6">
+        <% project.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name, class: "block font-medium mb-2" %>
+    <%= form.text_field :name, class: "block shadow rounded-md border border-gray-300 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description, class: "block font-medium mb-2" %>
+    <%= form.text_area :description, rows: 4, class: "block shadow rounded-md border border-gray-300 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :comments, class: "block font-medium mb-2" %>
+    <%= form.text_area :comments, rows: 4, class: "block shadow rounded-md border border-gray-300 px-3 py-2 w-full" %>
+  </div>
+
+  <div class="inline-flex gap-2">
+    <%= form.submit class: "rounded-md px-3 py-2 bg-purple-600 text-white font-medium cursor-pointer hover:bg-purple-500" %>
+    <%= link_to "Cancel", admin_projects_path, class: "rounded-md px-3 py-2 bg-gray-200 text-gray-900 font-medium hover:bg-gray-300" %>
+  </div>
+<% end %>

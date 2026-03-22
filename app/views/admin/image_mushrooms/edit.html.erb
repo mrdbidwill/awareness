@@ -1,0 +1,31 @@
+<h1 class="text-xl color-gray-600">Edit Image: <%= @image_mushroom.mushroom&.name || 'Unknown' %></h1>
+
+<% if @image_mushroom.errors.any? %>
+  <div class="errors">
+    <h2><%= pluralize(@image_mushroom.errors.count, "error") %> prohibited the image from being saved:</h2>
+    <ul>
+      <% @image_mushroom.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<div class="md:w-2/3 w-full">
+<%= form_with(model: @image_mushroom, url: admin_image_mushroom_path(@image_mushroom), method: :patch, local: true) do |form| %>
+
+  <!-- Image Name -->
+  <div class="my-5">
+    <%= form.label :image_name, "Image Name"%>
+    <%= form.text_field :image_name, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": @image_mushroom.errors[:image_name].none?, "border-red-400 focus:outline-red-600": @image_mushroom.errors[:image_name].any?}] %>
+  </div>
+
+  <!-- Part Dropdown -->
+  <div class="my-5">
+    <%= form.label :part_id, "Part" %>
+    <%= form.collection_select(:part_id, @parts, :id, :name, { selected: @image_mushroom.part_id, prompt: "Select a Part" }, { class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": @image_mushroom.errors[:part_id].none?, "border-red-400 focus:outline-red-600": @image_mushroom.errors[:part_id].any?}] }) %>
+  </div>
+
+  <%= form.submit "Update Image", class: "btn btn-primary" %>
+<% end %>
+</div>

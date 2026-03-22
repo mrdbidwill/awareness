@@ -1,0 +1,23 @@
+<%= form_with model: subscriber, url: newsletter_path, method: :post, local: true, class: "mt-4 space-y-3" do |f| %>
+  <% if subscriber.errors.any? %>
+    <div class="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+      <p class="font-semibold"><%= pluralize(subscriber.errors.count, "error") %> prevented signup:</p>
+      <ul class="list-disc ml-5">
+        <% subscriber.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :email, "Email address", class: "block text-sm font-medium text-gray-800" %>
+    <%= f.email_field :email, required: true, autocomplete: "email",
+                      class: "mt-1 w-full rounded border border-gray-300 px-3 py-2",
+                      placeholder: "you@example.com" %>
+  </div>
+
+  <div>
+    <%= f.submit "Subscribe", class: "rounded bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800" %>
+  </div>
+<% end %>

@@ -1,0 +1,425 @@
+/* Tailwind CSS directives */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Reusable UI primitives */
+@layer components {
+    /* Force prose styles to work - override Tailwind base reset */
+    .prose ul {
+        list-style-type: disc !important;
+        padding-left: 1.625em !important;
+    }
+
+    .prose ol {
+        list-style-type: decimal !important;
+        padding-left: 1.625em !important;
+    }
+
+    .prose h1 {
+        font-size: 2.25em !important;
+        font-weight: 800 !important;
+        margin-bottom: 0.888889em !important;
+    }
+
+    .prose h2 {
+        font-size: 1.5em !important;
+        font-weight: 700 !important;
+        margin-top: 2em !important;
+        margin-bottom: 1em !important;
+    }
+
+    .prose h3 {
+        font-size: 1.25em !important;
+        font-weight: 600 !important;
+        margin-top: 1.6em !important;
+        margin-bottom: 0.6em !important;
+    }
+
+    .prose h4 {
+        font-weight: 600 !important;
+        margin-top: 1.5em !important;
+        margin-bottom: 0.5em !important;
+    }
+
+    .prose p {
+        margin-top: 1.25em !important;
+        margin-bottom: 1.25em !important;
+    }
+
+    .prose li {
+        margin-top: 0.5em !important;
+        margin-bottom: 0.5em !important;
+    }
+
+    .p-mrdbid {
+        margin-top: 0.75rem;
+        font-size: 1.125rem;
+        line-height: 1.25rem;
+        padding-bottom: 0.25rem;
+        margin-bottom: .75rem;         /* Added for paragraph separation */
+    }
+    .p-mrdbid-orange {
+        margin-top: 0.75rem;
+        font-size: 1.125rem;
+        line-height: 1.25rem;
+        padding-bottom: 0.25rem;
+        margin-bottom: .75rem;         /* Added for paragraph separation */
+        color: #E55300;
+    }
+
+    /* Inline text colors for articles - use with <span> */
+    .text-orange {
+        color: #E55300 !important;
+    }
+    .text-red {
+        color: #dc2626 !important; /* red-600 */
+    }
+    .text-blue {
+        color: #2563eb !important; /* blue-600 */
+    }
+    .text-green {
+        color: #16a34a !important; /* green-600 */
+    }
+    .text-purple {
+        color: #9333ea !important; /* purple-600 */
+    }
+    .p-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+    }
+    .p-title-red {
+        font-weight: 700;
+        font-size: 0.875rem;
+        color: #dc2626; /* red-600 */
+    }
+    .p-mrdbid-description {
+        font-size: 1rem;
+    }
+
+  /* Buttons - Responsive Mobile-First Design */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    transition: all 0.15s;
+    cursor: pointer;
+    /* Mobile: smaller, touch-friendly */
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+  @media (min-width: 640px) {
+    .btn {
+      padding: 0.5rem 1rem;
+      font-size: 0.9375rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .btn {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+    }
+  }
+
+  .btn-primary {
+    background-color: #2563eb; /* blue-600 */
+    color: white !important;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    /* Mobile: smaller, touch-friendly */
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+  .btn-primary:hover {
+    background-color: #3b82f6; /* blue-500 */
+  }
+  @media (min-width: 640px) {
+    .btn-primary {
+      padding: 0.5rem 1rem;
+      font-size: 0.9375rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .btn-primary {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+    }
+  }
+
+  .btn-secondary {
+    background-color: #4b5563; /* gray-600 */
+    color: white !important;
+    border-radius: 0.375rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+  .btn-secondary:hover {
+    background-color: #6b7280; /* gray-500 */
+  }
+  @media (min-width: 640px) {
+    .btn-secondary {
+      padding: 0.5rem 1rem;
+      font-size: 0.9375rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .btn-secondary {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+    }
+  }
+
+  .btn-danger {
+    width: 100%;
+    border-radius: 0.375rem;
+    color: white !important;
+    background-color: #dc2626; /* red-600 */
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    min-height: 44px;
+  }
+  .btn-danger:hover {
+    background-color: #ef4444; /* red-500 */
+  }
+  @media (min-width: 640px) {
+    .btn-danger {
+      width: auto;
+      padding: 0.5rem 1rem;
+      font-size: 0.9375rem;
+    }
+  }
+  @media (min-width: 768px) {
+    .btn-danger {
+      padding: 0.625rem 1.25rem;
+      font-size: 1rem;
+    }
+  }
+
+  /* Navigation Button Variants - For colored menu buttons */
+  .btn-nav {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.15s;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    /* Mobile: compact for menu bars */
+    padding: 0.375rem 0.625rem;
+    font-size: 0.8125rem;
+    min-height: 36px;
+  }
+  @media (min-width: 768px) {
+    .btn-nav {
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      min-height: 40px;
+    }
+  }
+
+  /* Utility: Full width on mobile, auto on desktop */
+  .btn-responsive {
+    width: 100%;
+  }
+  @media (min-width: 640px) {
+    .btn-responsive {
+      width: auto;
+    }
+  }
+
+  /* Page action bar */
+  .page-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  /* Card shell and hover */
+  .card {
+    display: block;
+    border-radius: 0.5rem;
+    border: 3px solid #d1d5db;   /* medium gray gray-300 */
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    transition: all 0.15s;
+    background-color: white;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+  }
+  .card:hover {
+    border-color: #6b7280;     /* gray gray-500 */
+    box-shadow: 0 4px 6px 0 rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+  }
+  .card-body {
+    padding: 0.1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+  }
+
+  /* Group container with header */
+  .group-box {
+    padding-top: 0.1rem;
+    border: 4px solid #dbeafe;   /* very light blue blue-100 */
+    border-radius: 0.2rem;
+    background-color: white;
+  }
+  .group-header {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #374151; /* dark gray */
+    padding: 0.1rem 0.2rem;
+    border-bottom: 1px solid #e5e7eb; /* light gray */
+  }
+
+  /* "Table-look" stacking rows */
+  .stack-list {
+    width: 100%;
+    min-width: 100%;
+  }
+  .stack-list > * + * {
+    border-top: 0px solid green;   /* not needed */
+    margin-top: 0.1rem;
+  }
+  .stack-row {
+    display: block;
+    border-radius: 0.3rem;
+    border: 2px solid #f3f4f6; /* very light gray */
+    padding: 0.2rem;
+    transition: all 0.15s;
+    background-color: white;
+  }
+  .stack-row:hover {
+    border-color: #d1d5db; /* medium gray */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    background-color: #e5e7eb; /* light gray */
+  }
+
+  /* Image grid cell */
+  .image-cell {
+    border: 1px solid #d1d5db; /* medium gray */
+    border-radius: 0.375rem;
+    overflow: hidden;
+    background-color: #f9fafb; /* very light gray */
+    aspect-ratio: 1;
+  }
+
+  /* Image card - for individual images in grids */
+  .image-card {
+    border: 1px solid #d1d5db; /* medium gray */
+    border-radius: 0.25rem;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background-color: white;
+  }
+  .image-card img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Content well for descriptions */
+  .well {
+    border-radius: 0.1rem;
+    background-color: #f9fafb; /* very light gray */
+    padding: 0.1rem;
+  }
+
+  /* Small text helpers */
+  .hint {
+    font-size: 0.875rem;
+    color: #6b7280; /* gray-500 */
+  }
+  .muted {
+    font-size: 0.875rem;
+    color: #4b5563; /* gray-600 */
+  }
+  .title-xl {
+    font-weight: 700;
+    font-size: 1.5rem;
+  }
+
+  /* Forms */
+  .form-field {
+    margin-bottom: 1rem;
+  }
+  .form-label {
+    display: block;
+    color: #374151; /* dark gray */
+    font-weight: 600;
+    margin-bottom: 0.1rem;
+  }
+  .form-input {
+    width: 100%;
+    border-radius: 0.375rem;
+    border-color: #d1d5db; /* medium gray */
+  }
+  .form-input:focus {
+    border-color: #3b82f6; /* blue-500 */
+    ring-color: #3b82f6; /* blue-500 */
+  }
+  .form-help {
+    font-size: 0.75rem;
+    color: #6b7280; /* gray-500 */
+  }
+  .form-error {
+    color: #dc2626; /* red-600 */
+    font-size: 0.75rem;
+  }
+
+  /* Scrollbar styling for better visibility */
+  /* Webkit browsers (Chrome, Safari, Edge) */
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f3f4f6; /* gray-100 */
+    border-radius: 6px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #9ca3af; /* gray-400 */
+    border-radius: 6px;
+    border: 2px solid #f3f4f6; /* gray-100 - adds padding effect */
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6b7280; /* gray-500 */
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background: #4b5563; /* gray-600 */
+  }
+
+  /* Firefox */
+  * {
+    scrollbar-width: auto;
+    scrollbar-color: #9ca3af #f3f4f6; /* thumb gray-400, track gray-100 */
+  }
+}
+
+

@@ -1,0 +1,10 @@
+<% content_for :title, "Editing lens" %>
+
+<div class="md:w-2/3 w-full">
+  <h1 class="font-bold text-2xl">Editing lens</h1>
+
+  <%= render "form", lens: @lens %>
+
+  <%= link_to "Show this lens", admin_lenses_path(@lens), class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  <%= link_to "Back to lenses", admin_lenses_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+</div>

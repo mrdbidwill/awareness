@@ -1,0 +1,89 @@
+# Files in the config/locales directory are used for internationalization and
+# are automatically loaded by Rails. If you want to use locales other than
+# English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t "hello"
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t("hello") %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more about the API, please read the Rails Internationalization guide
+# at https://guides.rubyonrails.org/i18n.html.
+#
+# Be aware that YAML interprets the following case-insensitive strings as
+# booleans: `true`, `false`, `on`, `off`, `yes`, `no`. Therefore, these strings
+# must be quoted to be interpreted as strings. For example:
+#
+#     en:
+#       "yes": yup
+#       enabled: "ON"
+
+en: # Language identifier
+  activerecord: # Rails' built-in key for model-specific validation messages
+    errors:
+      models:
+        mushroom:
+          attributes:
+            name:  
+              blank: "Name cannot be blank."
+              unique: "Name already exists for your account."
+            description:
+              too_long: "Mushroom Description must not exceed %{count} characters."
+            comments:
+              too_long: "Mushroom Comments must not exceed %{count} characters."
+
+    attributes: # Human-readable names for attributes
+      mushroom:
+        name: "Mushroom Name"
+        description: "Mushroom Description"
+        comments: "Mushroom Comment"
+
+  errors: # General errors/messages
+    messages: # Root for reusable error messages
+      too_long: "%{attribute} must not exceed %{count} characters."
+      blank: "%{attribute} cannot be blank."
+      not_unique: "%{attribute} must be unique."
+      unauthorized: "You are not authorized to perform this action."
+      name_unique: "Name must be unique."
+
+  views: # UI text for views (e.g., page titles, buttons, etc.)
+    mushrooms: # Mushrooms-specific views
+      index:
+        title: "List of Mushrooms"
+        button_add: "Add Mushroom"
+        no_mushrooms: "No mushrooms available."
+      new:
+        title: "Create a New Mushroom"
+        instructions: "Fill out the form to add a new mushroom."
+        submit_button: "Create Mushroom"
+      edit:
+        title: "Edit %{name}"
+        instructions: "Update the details for %{name}."
+        submit_button: "Update Mushroom"
+      show:
+        title: "Details for %{name}"
+        delete_button: "Delete Mushroom"
+
+    admin:
+      mr_characters:
+        new:
+          title: "New Mushroom Character"
+          description: "I know. Maybe it should be \"New Fungus Character\" or \"New Stinkhorn Character\" or \"New Lichen Character\", but you get the message?"
+          back_link: "Back to Mushroom Characters"
+
+  generic: # Common reusable UI strings
+    buttons:
+      save: "Save"
+      cancel: "Cancel"
+      delete: "Delete"
+    confirmations:
+      delete: "Are you sure you want to delete %{item}?"

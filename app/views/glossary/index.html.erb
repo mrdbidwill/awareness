@@ -1,0 +1,46 @@
+<% content_for :title, "Mycology Glossary" %>
+
+<div class="max-w-4xl mx-auto">
+  <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+    <h1 class="text-3xl font-bold text-gray-900 mb-2">Mycology Glossary</h1>
+    <p class="text-gray-600 mb-4">
+      Browse mycology terms with definitions from Wikipedia's Glossary of Mycology.
+      These terms are automatically highlighted throughout the site - hover for a quick definition or click for more details.
+    </p>
+    <p class="text-sm text-gray-500">
+      Source: <a href="https://en.wikipedia.org/wiki/Glossary_of_mycology" target="_blank" rel="noopener" class="text-blue-600 hover:underline">Wikipedia Glossary of Mycology</a> (CC BY-SA 4.0)
+    </p>
+  </div>
+
+  <div class="bg-white rounded-lg shadow-md p-6">
+    <% if @terms.any? %>
+      <div class="space-y-4">
+        <% @terms.each do |term, definition| %>
+          <div class="border-b border-gray-200 pb-4 last:border-b-0">
+            <h3 class="text-lg font-semibold text-gray-900 mb-2">
+              <%= raw mark_glossary_terms(term, first_only: false) %>
+            </h3>
+            <p class="text-gray-700 leading-relaxed">
+              <%= definition %>
+            </p>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="text-center py-8">
+        <p class="text-gray-500 text-lg">Loading glossary terms...</p>
+        <p class="text-sm text-gray-400 mt-2">If this persists, the Wikipedia API may be temporarily unavailable.</p>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+    <h3 class="font-semibold text-blue-900 mb-2">How to use the glossary:</h3>
+    <ul class="list-disc list-inside text-blue-800 space-y-1 text-sm">
+      <li>Throughout the site, mycology terms are marked with a <span class="glossary-term">dotted underline</span></li>
+      <li>Hover over any marked term to see a quick definition in a tooltip</li>
+      <li>Click on a marked term to see the full definition in a modal window</li>
+      <li>Definitions are cached for 24 hours to ensure fast loading</li>
+    </ul>
+  </div>
+</div>

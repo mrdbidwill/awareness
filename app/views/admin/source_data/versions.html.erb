@@ -1,0 +1,64 @@
+<% content_for :title, "Change History" %>
+
+<div class="w-full">
+  <div class="flex justify-between items-center mb-4">
+    <h1 class="font-bold text-2xl">Change History: <%= @source_data.title %></h1>
+    <%= link_to "Back", admin_source_datum_path(@source_data), class: "btn" %>
+  </div>
+
+  <div class="group-box">
+    <div class="group-header">Version History</div>
+
+    <% if @versions.any? %>
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">User</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Event</th>
+            <th class="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Changes</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <% @versions.each do |version| %>
+            <tr>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                <%= version.created_at.strftime('%Y-%m-%d %H:%M') %>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                <% if version.whodunnit && user = User.find_by(id: version.whodunnit) %>
+                  <%= user.email %>
+                <% else %>
+                  <span class="text-gray-500">System/Unknown</span>
+                <% end %>
+              </td>
+              <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-900">
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs font-medium <%= version.event == 'create' ? 'bg-green-50 text-green-700' : version.event == 'update' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-700' %>">
+                  <%= version.event.capitalize %>
+                </span>
+              </td>
+              <td class="px-4 py-3 text-sm text-gray-900">
+                <% if version.changeset.present? %>
+                  <% version.changeset.each do |field, changes| %>
+                    <div class="mb-1">
+                      <span class="font-medium"><%= field.humanize %>:</span>
+                      <span class="text-gray-600"><%= changes[0].presence || '(empty)' %></span>
+                      →
+                      <span class="text-gray-900"><%= changes[1].presence || '(empty)' %></span>
+                    </div>
+                  <% end %>
+                <% else %>
+                  <span class="text-gray-500">(no changes tracked)</span>
+                <% end %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% else %>
+      <div class="px-4 py-8 text-center text-gray-500">
+        No version history available for this source data.
+      </div>
+    <% end %>
+  </div>
+</div>

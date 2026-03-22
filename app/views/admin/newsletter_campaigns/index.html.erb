@@ -1,0 +1,49 @@
+<% content_for :title, "Admin · Newsletter Campaigns" %>
+
+<div class="w-full">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-bold">Newsletter Campaigns</h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded bg-gray-600 px-3 py-2 text-white hover:bg-gray-700" %>
+      <%= link_to "New Campaign", new_admin_newsletter_campaign_path, class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+    </div>
+  </div>
+
+  <p class="text-sm text-gray-600 mb-4">
+    Confirmed subscribers: <strong><%= NewsletterSubscriber.deliverable.count %></strong>
+  </p>
+
+  <div class="space-y-2">
+    <% @campaigns.each do |campaign| %>
+      <div class="rounded border bg-white p-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 class="text-lg font-semibold">
+              <%= link_to campaign.subject, admin_newsletter_campaign_path(campaign), class: "text-blue-700 hover:underline" %>
+            </h2>
+            <p class="text-xs text-gray-500">
+              Status: <%= campaign.status %>
+              <% if campaign.sent_at.present? %>
+                · Sent: <%= campaign.sent_at.to_fs(:db) %>
+              <% end %>
+              · Delivered: <%= campaign.delivered_count %>/<%= campaign.recipients_count %>
+              <% if campaign.failed_count.positive? %>
+                · Failed: <%= campaign.failed_count %>
+              <% end %>
+            </p>
+          </div>
+          <div class="flex gap-2">
+            <%= link_to "View", admin_newsletter_campaign_path(campaign), class: "rounded border border-gray-300 px-3 py-1.5 hover:bg-gray-50" %>
+            <% if policy(campaign).edit? %>
+              <%= link_to "Edit", edit_admin_newsletter_campaign_path(campaign), class: "rounded bg-blue-600 px-3 py-1.5 text-white hover:bg-blue-700" %>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <%= paginate @campaigns %>
+  </div>
+</div>

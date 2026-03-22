@@ -1,0 +1,18 @@
+<%# expects: collection %>
+<% if collection&.any? %>
+  <div class="flex items-center gap-4 justify-center">
+    <%= paginate collection, theme: 'tailwind_bar', params: request.query_parameters, window: 2, outer_window: 1 %>
+
+    <% if collection.total_pages > 1 %>
+      <div class="flex items-center gap-2 whitespace-nowrap">
+        <%= form_with url: request.path, method: :get, local: true, class: "flex items-center gap-2" do |form| %>
+          <%= label_tag :page, "Go to page:", class: "text-sm font-medium text-gray-700" %>
+          <%= number_field_tag :page, params[:page], min: 1, max: collection.total_pages, class: "form-input w-20 px-2 py-1 border border-gray-300 rounded-md" %>
+          <%= hidden_field_tag :q, params[:q] if params[:q].present? %>
+          <%= form.submit "Go", class: "btn-primary px-3 py-1" %>
+        <% end %>
+        <span class="text-sm text-gray-600">of <%= collection.total_pages %></span>
+      </div>
+    <% end %>
+  </div>
+<% end %>

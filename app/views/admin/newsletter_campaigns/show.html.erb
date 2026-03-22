@@ -1,0 +1,61 @@
+<% content_for :title, "Admin · Newsletter Campaign" %>
+
+<div class="w-full">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-2xl font-bold"><%= @campaign.subject %></h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Campaigns", admin_newsletter_campaigns_path, class: "rounded bg-gray-600 px-3 py-2 text-white hover:bg-gray-700" %>
+      <% if policy(@campaign).edit? %>
+        <%= link_to "Edit", edit_admin_newsletter_campaign_path(@campaign), class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+      <% end %>
+      <% if policy(@campaign).destroy? %>
+        <%= button_to "Delete", admin_newsletter_campaign_path(@campaign), method: :delete,
+                      data: { turbo_confirm: "Delete this campaign?" },
+                      class: "rounded bg-red-600 px-3 py-2 text-white hover:bg-red-700" %>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mb-4 rounded border bg-white p-4">
+    <p class="text-sm text-gray-700">
+      Status: <strong><%= @campaign.status %></strong>
+      <% if @campaign.queued_at.present? %> · Queued: <%= @campaign.queued_at.to_fs(:db) %><% end %>
+      <% if @campaign.started_at.present? %> · Started: <%= @campaign.started_at.to_fs(:db) %><% end %>
+      <% if @campaign.sent_at.present? %> · Completed: <%= @campaign.sent_at.to_fs(:db) %><% end %>
+    </p>
+    <p class="text-sm text-gray-700 mt-1">
+      Recipients: <strong><%= @campaign.recipients_count %></strong>
+      · Delivered: <strong><%= @campaign.delivered_count %></strong>
+      · Failed: <strong><%= @campaign.failed_count %></strong>
+    </p>
+    <% if @campaign.last_error.present? %>
+      <p class="mt-2 rounded border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+        Last error: <%= @campaign.last_error %>
+      </p>
+    <% end %>
+  </div>
+
+  <div class="mb-4">
+    <% if policy(@campaign).queue_delivery? %>
+      <%= button_to "Queue Campaign Delivery", queue_delivery_admin_newsletter_campaign_path(@campaign),
+                    method: :post,
+                    data: { turbo_confirm: "Queue this campaign for all confirmed subscribers?" },
+                    class: "rounded bg-emerald-700 px-4 py-2 text-white hover:bg-emerald-800" %>
+    <% else %>
+      <p class="text-sm text-gray-600">Campaign delivery can only be queued while status is draft.</p>
+    <% end %>
+  </div>
+
+  <div class="rounded border bg-white p-4">
+    <h2 class="text-lg font-semibold mb-2">Body Preview</h2>
+    <div class="prose max-w-none">
+      <% if @campaign.body.to_s.strip.starts_with?("<") %>
+        <%= sanitize(@campaign.body,
+            tags: %w[div p span br ul ol li h1 h2 h3 h4 strong em a blockquote code pre img table thead tbody tr th td b u i],
+            attributes: %w[href src alt title class style]) %>
+      <% else %>
+        <%= simple_format(@campaign.body) %>
+      <% end %>
+    </div>
+  </div>
+</div>

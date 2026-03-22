@@ -1,0 +1,51 @@
+<% content_for :title, "Admin · Preview Article" %>
+<p> app/views/admin/articles/preview.html.erb> </p>
+
+<div class="border-l-4 border-blue-400 bg-blue-50 text-blue-800 rounded p-3 mb-4">
+  This is a preview. The article has not been saved yet.
+</div>
+
+<div class="flex items-center justify-between mb-3">
+  <h1 class="font-bold text-2xl"><%= @article.title.presence || "(Untitled)" %></h1>
+  <div class="text-sm text-gray-500">
+    <% if @article.subject.present? %><span class="mr-2">Subject: <%= @article.subject.name %></span><% end %>
+    <% if @article.published_at.present? %><span><%= @article.published_at.to_date %></span><% end %>
+  </div>
+</div>
+
+<div class="prose max-w-none mb-6">
+  <% if @article.body.to_s.strip.starts_with?("<") %>
+    <%= sanitize(@article.body, tags: %w[p br ul ol li h2 h3 h4 strong em a blockquote code pre img], attributes: %w[href src alt title class]) %>
+  <% else %>
+    <%= simple_format(@article.body) %>
+  <% end %>
+</div>
+
+<div class="flex gap-2">
+  <%# Repost the same attributes to create/update by including the original form again %>
+  <% if @article.persisted? %>
+    <%= form_with model: [:admin, @article], method: :patch do |f| %>
+      <%= hidden_field_tag "article[title]", @article.title %>
+      <%= hidden_field_tag "article[slug]", @article.slug %>
+      <%= hidden_field_tag "article[subject_id]", @article.subject_id %>
+      <%= hidden_field_tag "article[summary]", @article.summary %>
+      <%= hidden_field_tag "article[body]", @article.body %>
+      <%= hidden_field_tag "article[published]", @article.published %>
+      <%= hidden_field_tag "article[published_at]", @article.published_at %>
+      <%= f.submit "Save changes", class: "rounded px-3 py-1.5 bg-blue-600 text-white text-sm" %>
+    <% end %>
+    <%= link_to "Back to edit", edit_admin_article_path(@article), class: "rounded px-3 py-1.5 border text-sm" %>
+  <% else %>
+    <%= form_with url: admin_articles_path, method: :post do |f| %>
+      <%= hidden_field_tag "article[title]", @article.title %>
+      <%= hidden_field_tag "article[slug]", @article.slug %>
+      <%= hidden_field_tag "article[subject_id]", @article.subject_id %>
+      <%= hidden_field_tag "article[summary]", @article.summary %>
+      <%= hidden_field_tag "article[body]", @article.body %>
+      <%= hidden_field_tag "article[published]", @article.published %>
+      <%= hidden_field_tag "article[published_at]", @article.published_at %>
+      <%= f.submit "Create article", class: "rounded px-3 py-1.5 bg-blue-600 text-white text-sm" %>
+    <% end %>
+    <%= link_to "Back to new", new_admin_article_path, class: "rounded px-3 py-1.5 border text-sm" %>
+  <% end %>
+</div>

@@ -1,0 +1,2 @@
+module InaturalistDataHelper
+end

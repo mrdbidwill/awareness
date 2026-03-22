@@ -1,0 +1,42 @@
+<%# locals: (all_group_mushroom: AllGroupMushroom, all_groups: ActiveRecord::Relation, mushrooms: ActiveRecord::Relation) %>
+
+<%= form_with(model: all_group_mushroom, class: "contents") do |form| %>
+  <% if all_group_mushroom.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(all_group_mushroom.errors.count, "error") %> prohibited this mushroom group from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% all_group_mushroom.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%# Hidden mushroom id (pre-set from the "Add to Group" entry), with display of mushroom name %>
+  <% preselected_mushroom_id = all_group_mushroom.mushroom_id.presence || mushrooms.first&.id %>
+  <%= form.hidden_field :mushroom_id, value: preselected_mushroom_id %>
+
+  <div class="my-5">
+    <%= form.label :all_group_id, "Choose a Group" %>
+    <% if all_groups.present? %>
+      <div class="mt-2 space-y-1">
+        <% all_groups.each do |g| %>
+          <label class="flex items-center gap-2">
+            <%= form.radio_button :all_group_id, g.id %>
+            <span><%= g.name %></span>
+          </label>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-2 text-sm text-gray-500">No groups available.</div>
+    <% end %>
+    <% if all_group_mushroom.errors[:all_group_id].any? %>
+      <div class="text-red-600 text-sm mt-1"><%= all_group_mushroom.errors[:all_group_id].join(", ") %></div>
+    <% end %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Add to Mushroom to this Group", class: "btn-primary btn-responsive" %>
+  </div>
+<% end %>

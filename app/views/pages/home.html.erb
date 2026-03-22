@@ -1,0 +1,77 @@
+<% content_for :title, "Awareness | Mycology Articles" %>
+
+<section class="rounded-xl border border-emerald-200 bg-gradient-to-r from-emerald-50 to-cyan-50 p-6">
+  <p class="text-sm font-semibold uppercase tracking-wider text-emerald-700">Awareness</p>
+  <h1 class="mt-2 text-4xl font-extrabold text-gray-900">Mycology Writing and Research Notes</h1>
+  <p class="mt-3 text-lg text-gray-700">An article-first hub for field observations, taxonomy context, and practical mushroom identification guidance.</p>
+  <div class="mt-4 flex flex-wrap gap-2">
+    <%= link_to "Browse all articles", articles_path, class: "rounded-md bg-emerald-700 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-800" %>
+    <% unless user_signed_in? %>
+      <%= link_to "Create account", new_user_registration_path, class: "rounded-md border border-emerald-600 px-4 py-2 text-sm font-semibold text-emerald-700 hover:bg-emerald-100" %>
+    <% end %>
+  </div>
+</section>
+
+<% if @subject_counts.any? %>
+  <section class="mt-6">
+    <h2 class="text-xl font-bold text-gray-900">Explore by subject</h2>
+    <div class="mt-3 flex flex-wrap gap-2">
+      <% @subject_counts.each do |subject| %>
+        <%= link_to subject_articles_path(subject_slug: subject.slug), class: "rounded-full border border-cyan-300 bg-white px-3 py-1 text-sm text-cyan-800 hover:bg-cyan-50" do %>
+          <%= subject.name %> (<%= subject.articles_count %>)
+        <% end %>
+      <% end %>
+    </div>
+  </section>
+<% end %>
+
+<section class="mt-8 grid gap-6 lg:grid-cols-3">
+  <div class="lg:col-span-2">
+    <h2 class="text-2xl font-bold text-gray-900">Latest articles</h2>
+    <div class="mt-4 space-y-3">
+      <% if @latest_articles.any? %>
+        <% @latest_articles.each do |article| %>
+          <%= link_to article_path(article), class: "block rounded-lg border border-gray-200 bg-white p-4 no-underline hover:border-emerald-400 hover:shadow-md" do %>
+            <h3 class="text-xl font-semibold text-emerald-700"><%= sanitize(article.title, tags: %w[em i]) %></h3>
+            <p class="mt-1 text-sm text-gray-500">
+              <%= article.subject&.name.presence || "Uncategorized" %>
+              <% if article.published_at.present? %>
+                • <%= article.published_at.to_date.to_fs(:db) %>
+              <% end %>
+            </p>
+            <% if article.summary.present? %>
+              <p class="mt-2 text-gray-700"><%= sanitize(truncate(article.summary, length: 180), tags: %w[em i]) %></p>
+            <% end %>
+          <% end %>
+        <% end %>
+      <% else %>
+        <p class="rounded-md border border-dashed border-gray-300 bg-white p-4 text-gray-600">No published articles yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <aside>
+    <h2 class="text-2xl font-bold text-gray-900">Featured</h2>
+    <% if @featured_article %>
+      <%= link_to article_path(@featured_article), class: "mt-4 block rounded-lg border border-emerald-300 bg-white p-4 no-underline hover:bg-emerald-50" do %>
+        <h3 class="text-xl font-semibold text-emerald-800"><%= sanitize(@featured_article.title, tags: %w[em i]) %></h3>
+        <p class="mt-1 text-sm text-gray-500"><%= @featured_article.subject&.name.presence || "Uncategorized" %></p>
+        <% if @featured_article.summary.present? %>
+          <p class="mt-3 text-gray-700"><%= sanitize(truncate(@featured_article.summary, length: 220), tags: %w[em i]) %></p>
+        <% end %>
+        <p class="mt-3 text-sm font-semibold text-emerald-700">Read article</p>
+      <% end %>
+    <% else %>
+      <p class="mt-4 rounded-md border border-dashed border-gray-300 bg-white p-4 text-gray-600">No featured article is available yet.</p>
+    <% end %>
+
+    <div class="mt-6 rounded-lg border border-emerald-200 bg-white p-4">
+      <h3 class="text-lg font-semibold text-gray-900">Newsletter</h3>
+      <p class="mt-1 text-sm text-gray-600">Get new mycology articles by email (double opt-in).</p>
+      <%= render "shared/newsletter_signup_form", subscriber: @newsletter_subscriber %>
+      <p class="mt-2 text-xs text-gray-500">
+        Prefer full page signup? <%= link_to "Open newsletter page", new_newsletter_path, class: "underline hover:text-emerald-700" %>
+      </p>
+    </div>
+  </aside>
+</section>

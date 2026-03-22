@@ -1,0 +1,114 @@
+================================================================================
+PRODUCTION SERVER FIX - FOLLOW THESE STEPS EXACTLY
+================================================================================
+
+Problem: 500 errors on https://mrdbid.com/mushrooms
+Cause: Solid Queue plugin crashes Puma during startup
+Fix: Disable the plugin in systemd service file
+
+================================================================================
+STEP-BY-STEP INSTRUCTIONS
+================================================================================
+
+1. SSH to production server:
+
+   ssh root@85.31.233.192
+
+
+2. Edit the systemd service file:
+
+   sudo nano /etc/systemd/system/puma-mrdbid.service
+
+
+3. Find this line (around line 13-15):
+
+   Environment="SOLID_QUEUE_IN_PUMA=1"
+
+
+4. Add a # at the beginning to comment it out:
+
+   # Environment="SOLID_QUEUE_IN_PUMA=1"
+
+   Or delete the entire line.
+
+
+5. Save and exit nano:
+
+   Press: Ctrl+O
+   Press: Enter
+   Press: Ctrl+X
+
+
+6. Reload systemd:
+
+   sudo systemctl daemon-reload
+
+
+7. Restart Puma:
+
+   sudo systemctl restart puma-mrdbid.service
+
+
+8. Check status (should say "active (running)"):
+
+   sudo systemctl status puma-mrdbid.service
+
+
+9. Check logs (should NOT have errors):
+
+   tail -50 /opt/mrdbid/shared/log/puma_stderr.log
+
+
+10. Test website:
+
+    Open browser: https://mrdbid.com/mushrooms
+    Should load without 500 error
+
+================================================================================
+VERIFICATION
+================================================================================
+
+If it worked:
+- Puma service shows "Active: active (running)"
+- No "StrictLoadingViolationError" in logs
+- Website loads normally
+
+If it didn't work:
+- Check logs: tail -100 /opt/mrdbid/shared/log/puma_stderr.log
+- Check process: ps aux | grep puma
+- Try restarting nginx: sudo systemctl restart nginx
+
+================================================================================
+WHAT THIS DOES
+================================================================================
+
+BEFORE (broken):
+- Plugin enabled → crashes on Rails 8 bug → Puma fails → 500 errors
+
+AFTER (fixed):
+- Plugin disabled → Puma starts normally → website works
+
+Background jobs won't run, but you're not using them yet anyway.
+
+================================================================================
+MORE INFO
+================================================================================
+
+See: PRODUCTION_500_ERROR_FIX_ACTUAL.md
+Complete documentation with timeline and technical details.
+
+================================================================================
+RELATED SAFEGUARDS (2026-03-01)
+================================================================================
+
+Separate incident: CPU spikes due to legacy puma.service running alongside
+puma-mrdbid.service (socket conflict).
+
+Fix:
+  sudo systemctl stop puma.service
+  sudo systemctl disable puma.service
+  sudo systemctl mask --force puma.service
+
+Keep puma.service masked to prevent recurrence.
+
+================================================================================

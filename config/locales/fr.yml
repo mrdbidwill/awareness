@@ -1,0 +1,64 @@
+# French translations
+# To contribute: Fill in the translations for each key following the English version
+# See config/locales/en.yml for reference
+
+fr:
+  activerecord:
+    errors:
+      models:
+        mushroom:
+          attributes:
+            name:
+              blank: ""
+              unique: ""
+            description:
+              too_long: ""
+            comments:
+              too_long: ""
+
+    attributes:
+      mushroom:
+        name: ""
+        description: ""
+        comments: ""
+
+  errors:
+    messages:
+      too_long: ""
+      blank: ""
+      not_unique: ""
+      unauthorized: ""
+      name_unique: ""
+
+  views:
+    mushrooms:
+      index:
+        title: ""
+        button_add: ""
+        no_mushrooms: ""
+      new:
+        title: ""
+        instructions: ""
+        submit_button: ""
+      edit:
+        title: ""
+        instructions: ""
+        submit_button: ""
+      show:
+        title: ""
+        delete_button: ""
+
+    admin:
+      mr_characters:
+        new:
+          title: ""
+          description: ""
+          back_link: ""
+
+  generic:
+    buttons:
+      save: ""
+      cancel: ""
+      delete: ""
+    confirmations:
+      delete: ""

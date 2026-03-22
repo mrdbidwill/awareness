@@ -1,0 +1,18 @@
+one:
+  title: "Test Article"
+  slug: "test-article"
+  subject: mycology
+  body: "This is a test article body."
+  published: true
+  published_at: <%= 1.day.ago %>
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+two:
+  title: "Another Article"
+  slug: "another-article"
+  subject: tree_identification
+  body: "Another test body."
+  published: false
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>

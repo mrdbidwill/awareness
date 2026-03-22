@@ -1,0 +1,89 @@
+<div id="<%= dom_id mushroom %>" class="w-full my-5">
+
+  <!-- Data + Actions in the same vertical plane -->
+  <div class="w-full">
+    <!-- Data section -->
+    <div class="w-full">
+      <dl class="grid grid-cols-1 gap-2">
+        <!-- First row: 4 inline items -->
+        <div class="border rounded-md p-2">
+          <span class="text-sm text-gray-400">Name:</span> <span class="text-lg text-gray-600"><%= mushroom.name %></span>
+          <% if mushroom.collection_date.present? %>
+            <span class="text-sm text-gray-400">Collection Date:</span> <span class="text-gray-600"><%= mushroom.collection_date.strftime('%m-%d-%Y') %></span>
+          <% end %>
+          <dd class="font-medium">
+            <% location_parts = [
+              mushroom.city,
+              (mushroom.county.present? ? "#{mushroom.county} County" : nil),
+              mushroom.state&.name,
+              mushroom.country&.name
+            ].compact.reject(&:blank?) %>
+            <%= location_parts.join(', ') %>
+            <span class="text-sm text-gray-400">Fungus Type:</span> <%= mushroom.fungus_type&.name %>
+          </dd>
+        </div>
+
+        <div class="border rounded-md p-2">
+          <span class="text-sm text-gray-400">Identification(s):</span>
+          <div class="mt-1">
+            <% identifications = mushroom.ranked_identifications %>
+            <% if identifications.any? %>
+              <ol class="list-decimal list-inside space-y-0.5">
+                <% identifications.each_with_index do |id, index| %>
+                  <li>
+                    <% if id[:fully_primary] %>
+                      <span class="inline-flex items-center gap-1">
+                        <svg class="w-3 h-3 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>
+                        <em class="text-gray-700 font-medium">
+                          <%= (id[:genus]&.name || id[:species]&.genus&.name || '?').capitalize %> <%= id[:species]&.name || '?' %>
+                        </em>
+                      </span>
+                    <% else %>
+                      <em class="text-gray-600">
+                        <%= (id[:genus]&.name || id[:species]&.genus&.name || '?').capitalize %> <%= id[:species]&.name || '?' %>
+                      </em>
+                    <% end %>
+                  </li>
+                <% end %>
+              </ol>
+              <% if user_signed_in? && current_user.id == mushroom.user_id %>
+                <p class="text-xs text-gray-500 mt-2 italic">
+                  <%= link_to "Edit genus species", edit_mushroom_path(mushroom, anchor: 'identification-section', open_panel: 'true'), class: "text-blue-600 hover:underline font-medium" %> to remove invalid identifications.
+                </p>
+              <% end %>
+            <% else %>
+              <span class="text-gray-400">Not identified</span>
+            <% end %>
+          </div>
+        </div>
+
+        <!-- Organization (Clusters, Groups, Projects) -->
+        <%= render "mushrooms/organization_display", mushroom: mushroom %>
+
+        <!-- Full-width rows -->
+        <% if mushroom.description.present? %>
+          <div class="border rounded-md p-2">
+            <dt class="text-sm text-gray-500">Description</dt>
+            <dd class="whitespace-pre-wrap"><%= raw mark_glossary_terms(sanitize(mushroom.description, tags: %w[em i])) %></dd>
+          </div>
+        <% end %>
+
+        <% if mushroom.comments.present? %>
+          <div class="border rounded-md p-2">
+            <dt class="text-sm text-gray-500">Comments</dt>
+            <dd class="whitespace-pre-wrap"><%= raw mark_glossary_terms(sanitize(mushroom.comments, tags: %w[em i])) %></dd>
+          </div>
+        <% end %>
+
+        <% if user_signed_in? && current_user.id == mushroom.user_id && mushroom.personal_notes.present? %>
+          <div class="border rounded-md p-2 bg-yellow-50">
+            <dt class="text-sm text-gray-500">Personal Notes <span class="text-xs italic">(private)</span></dt>
+            <dd class="whitespace-pre-wrap"><%= raw mark_glossary_terms(sanitize(mushroom.personal_notes, tags: %w[em i])) %></dd>
+          </div>
+        <% end %>
+      </dl>
+    </div>
+</div>
+</div>

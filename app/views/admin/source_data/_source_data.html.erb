@@ -1,0 +1,39 @@
+<div id="<%= dom_id source_data %>" class="rounded-md border border-gray-100 bg-white p-3 shadow-sm hover:shadow transition">
+  <div class="flex items-start justify-between gap-3">
+    <h3 class="text-sm font-semibold text-gray-900 leading-5">
+      <%= source_data.title.presence || "(Untitled)" %>
+    </h3>
+    <% if (type_name = source_data.source_data_type&.name).present? %>
+      <span class="shrink-0 inline-flex items-center rounded-full bg-blue-50 px-2 py-0.5 text-xs font-medium text-blue-700 border border-blue-100">
+        <%= type_name %>
+      </span>
+    <% end %>
+  </div>
+
+  <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs text-gray-700">
+    <div class="truncate">
+      <span class="text-gray-500">Author:</span>
+      <span class="font-medium"><%= source_data.author.presence || "—" %></span>
+    </div>
+    <div class="truncate">
+      <span class="text-gray-500">Ref:</span>
+      <span class="font-medium"><%= source_data.ref.presence || "—" %></span>
+    </div>
+    <div class="truncate">
+      <span class="text-gray-500">Item code:</span>
+      <span class="font-medium"><%= source_data.item_code.presence || "—" %></span>
+    </div>
+    <% if source_data.user.present? %>
+      <div class="truncate">
+        <span class="text-gray-500">Added by:</span>
+        <span class="font-medium"><%= source_data.user.email %></span>
+      </div>
+    <% end %>
+</div>
+
+  <% if source_data.comments.present? %>
+    <p class="mt-2 text-xs text-gray-600 line-clamp-2">
+      <%= truncate(source_data.comments, length: 140) %>
+    </p>
+  <% end %>
+</div>

@@ -1,0 +1,14 @@
+# roles.yml
+admin:
+  name: "Admin"
+  description: "Administrator role"
+  comments: "Full access"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+manager:
+  name: "Manager"
+  description: "Limited access"
+  comments: "Can manage certain resources"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

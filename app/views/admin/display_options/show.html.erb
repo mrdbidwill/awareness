@@ -1,0 +1,14 @@
+<% content_for :title, "Showing display option" %>
+
+<div class="md:w-2/3 w-full">
+  <% if notice.present? %>
+    <p class="py-1 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-md inline-block" id="notice"><%= notice %></p>
+  <% end %>
+
+  <h1 class="font-bold text-2xl">Showing display option</h1>
+
+  <%= render @display_option %>
+
+  <%= link_to "Edit this display option", edit_admin_display_option_path(@display_option), class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  <%= link_to "Back to display options", admin_display_options_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+</div>

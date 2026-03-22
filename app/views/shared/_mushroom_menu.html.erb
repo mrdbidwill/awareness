@@ -1,0 +1,43 @@
+<nav class="bg-gray-100 text-gray-800 w-full px-4 md:px-6 py-3">
+  <div class="w-full">
+    <!-- Navigation Links -->
+    <div class="flex flex-wrap items-center gap-2 mb-3">
+      <%= link_to "Your Mushrooms", mushrooms_path,
+          class: "inline-block px-3 py-1.5 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-500 transition" %>
+
+      <% if current_user&.admin? %>
+        <%= link_to "Admin Dashboard", admin_root_path,
+                    class: "inline-block px-3 py-1.5 rounded bg-gray-600 text-yellow-400 font-semibold hover:bg-gray-500 transition" %>
+      <% end %>
+    </div>
+
+    <!-- Action Buttons Grid -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2">
+      <%# Edit - Add Characters %>
+      <% if (!defined?(policy) || policy(mushroom)&.edit?) && !current_page?(edit_mushroom_path(mushroom)) %>
+        <%= link_to "Edit - Add Characters", edit_mushroom_path(mushroom),
+                    class: "px-3 py-2 rounded bg-green-600 text-white font-medium hover:bg-green-500 transition text-center" %>
+      <% end %>
+
+      <%# Upload Image %>
+      <% if !defined?(policy) || policy(mushroom)&.mushroom_image_mushroom? %>
+        <%= link_to "Upload Image", new_mushroom_image_mushroom_path(mushroom),
+            class: "px-3 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-500 transition text-center" %>
+      <% end %>
+
+      <%# Compare Mushrooms %>
+      <%= link_to "Compare", mushroom_mushroom_comparisons_path(mushroom_id: mushroom.id),
+          class: "px-3 py-2 rounded bg-purple-600 text-white font-medium hover:bg-purple-500 transition text-center" %>
+
+      <%# Delete %>
+      <% if user_signed_in? && (defined?(policy) ? policy(mushroom)&.destroy? : (current_user && mushroom.user == current_user)) %>
+        <%= button_to "Delete This Mushroom",
+                      mushroom,
+                      method: :delete,
+                      form: { class: "contents" },
+                      class: "px-3 py-2 rounded bg-red-600 text-white font-medium hover:bg-red-700 transition text-center",
+                      data: { turbo_confirm: "Are you sure you want to delete this mushroom?" } %>
+      <% end %>
+    </div>
+  </div>
+</nav>

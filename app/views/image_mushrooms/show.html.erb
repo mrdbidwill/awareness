@@ -1,0 +1,186 @@
+<% content_for :title, @image_mushroom.image_name.presence || "Mushroom Image" %>
+<% content_for :canonical_url, image_mushroom_url(@image_mushroom) %>
+
+<div class="w-full max-w-5xl mx-auto p-4"
+     data-controller="image-exif"
+     <%= "data-image-exif-prev-url-value=#{image_mushroom_path(@prev_image).to_json}".html_safe if @prev_image %>
+     <%= "data-image-exif-next-url-value=#{image_mushroom_path(@next_image).to_json}".html_safe if @next_image %>>
+  <div class="mb-4">
+    <% if @image_mushroom.image_name.presence %>
+
+      Image Name: <strong class="font-bold text-orange-500"><%= @image_mushroom.image_name %></strong>
+
+    <% end %>
+    <p class="text-gray-700">
+      Mushroom Name:
+      <%= link_to @image_mushroom.mushroom.name, mushroom_path(@image_mushroom.mushroom), class: "text-blue-600 hover:underline" %>
+      <% if @image_mushroom.part %>
+        <span class="ml-2 text-gray-600">(<%= @image_mushroom.part.name %>)</span>
+      <% end %>
+    </p>
+  </div>
+
+  <!-- Full-size Image Display with Side Navigation -->
+  <div class="mb-6 relative flex items-center gap-2">
+    <!-- Previous Image Arrow -->
+    <% if @prev_image %>
+      <%= link_to image_mushroom_path(@prev_image),
+                  class: "flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700 text-white text-2xl shadow-lg transition-colors",
+                  title: "Previous Image (← key)" do %>
+        ‹
+      <% end %>
+    <% else %>
+      <div class="flex-shrink-0 w-12 h-12"></div>
+    <% end %>
+
+    <!-- Image -->
+    <div class="flex-1 bg-gray-100 border rounded-lg overflow-hidden">
+      <%= image_tag url_for(@image_mushroom.image_file),
+                    class: "w-full h-auto max-h-[70vh] object-contain",
+                    alt: @image_mushroom.image_name.presence || @image_mushroom.mushroom.name %>
+    </div>
+
+    <!-- Next Image Arrow -->
+    <% if @next_image %>
+      <%= link_to image_mushroom_path(@next_image),
+                  class: "flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-gray-800 hover:bg-gray-700 text-white text-2xl shadow-lg transition-colors",
+                  title: "Next Image (→ key)" do %>
+        ›
+      <% end %>
+    <% else %>
+      <div class="flex-shrink-0 w-12 h-12"></div>
+    <% end %>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="flex flex-wrap gap-3 mb-6">
+    <%= link_to mushroom_path(@image_mushroom.mushroom),
+                class: "rounded-md px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium inline-flex items-center" do %>
+      ← Back to Mushroom
+    <% end %>
+
+    <button type="button"
+            data-image-exif-target="button"
+            data-action="click->image-exif#toggle"
+            class="rounded-md px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white font-medium">
+      ℹ️ Show EXIF Data
+    </button>
+  </div>
+
+  <!-- Comments Section (if present, always visible) -->
+  <% if @image_mushroom.comments.present? %>
+    <div class="mb-6 border border-blue-200 rounded-lg p-4 bg-blue-50">
+      <h2 class="text-lg font-semibold mb-2 text-gray-800">💬 Comments</h2>
+      <p class="text-gray-700 whitespace-pre-wrap"><%= @image_mushroom.comments %></p>
+    </div>
+  <% end %>
+
+  <!-- EXIF Data Panel (Hidden by default) -->
+  <div data-image-exif-target="panel" class="hidden border border-gray-300 rounded-lg p-6 bg-white shadow-sm">
+    <h2 class="text-xl font-semibold mb-4 text-gray-800">Image Information (EXIF Data)</h2>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Dimensions -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Dimensions</span>
+        <p class="text-base text-gray-900">
+          <%= @image_mushroom.dimensions || "#{@image_mushroom.image_width || 'N/A'} × #{@image_mushroom.image_height || 'N/A'}" %>
+        </p>
+      </div>
+
+      <!-- Part -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Mushroom Part</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.part&.name || 'Not specified' %></p>
+      </div>
+
+      <!-- Camera Make -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Camera Make</span>
+        <p class="text-base text-gray-900">
+          <%= @image_mushroom.camera_make&.name || @image_mushroom.exif_make.presence || 'N/A' %>
+        </p>
+      </div>
+
+      <!-- Camera Model -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Camera Model</span>
+        <p class="text-base text-gray-900">
+          <%= @image_mushroom.camera_model&.name || @image_mushroom.exif_model.presence || 'N/A' %>
+        </p>
+      </div>
+
+      <!-- Lens -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Lens</span>
+        <p class="text-base text-gray-900">
+          <%= @image_mushroom.lens ? "#{@image_mushroom.lens.make} #{@image_mushroom.lens.model}" : @image_mushroom.exif_lens.presence || 'N/A' %>
+        </p>
+      </div>
+
+      <!-- Exposure -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Exposure</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.exposure.presence || 'N/A' %></p>
+      </div>
+
+      <!-- Aperture -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Aperture</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.aperture.presence || 'N/A' %></p>
+      </div>
+
+      <!-- ISO -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">ISO</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.iso.presence || 'N/A' %></p>
+      </div>
+
+      <!-- Date Taken -->
+      <% if @image_mushroom.date_taken.present? %>
+        <div class="border-b pb-2">
+          <span class="text-sm text-gray-600 font-medium">Date Taken</span>
+          <p class="text-base text-gray-900"><%= @image_mushroom.date_taken.strftime("%B %d, %Y at %I:%M %p") %></p>
+        </div>
+      <% end %>
+
+      <!-- Location -->
+      <% if @image_mushroom.latitude.present? && @image_mushroom.longitude.present? %>
+        <div class="border-b pb-2">
+          <span class="text-sm text-gray-600 font-medium">Location</span>
+          <p class="text-base text-gray-900"><%= @image_mushroom.latitude %>, <%= @image_mushroom.longitude %></p>
+        </div>
+      <% end %>
+
+      <!-- File Size -->
+      <% if @image_mushroom.image_file.attached? %>
+        <div class="border-b pb-2">
+          <span class="text-sm text-gray-600 font-medium">File Size</span>
+          <p class="text-base text-gray-900">
+            <%= number_to_human_size(@image_mushroom.image_file.blob.byte_size) %>
+          </p>
+        </div>
+      <% end %>
+
+      <!-- Content Type -->
+      <% if @image_mushroom.image_file.attached? %>
+        <div class="border-b pb-2">
+          <span class="text-sm text-gray-600 font-medium">File Type</span>
+          <p class="text-base text-gray-900"><%= @image_mushroom.image_file.blob.content_type %></p>
+        </div>
+      <% end %>
+
+      <!-- Created At -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Uploaded</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.created_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+      </div>
+
+      <!-- Last Updated -->
+      <div class="border-b pb-2">
+        <span class="text-sm text-gray-600 font-medium">Last Updated</span>
+        <p class="text-base text-gray-900"><%= @image_mushroom.updated_at.strftime("%B %d, %Y at %I:%M %p") %></p>
+      </div>
+    </div>
+  </div>
+</div>

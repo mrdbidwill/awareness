@@ -1,0 +1,35 @@
+<%= form_with model: [:admin, @campaign], class: "space-y-4" do |f| %>
+  <% if @campaign.errors.any? %>
+    <div class="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+      <p class="font-semibold"><%= pluralize(@campaign.errors.count, "error") %> prevented this campaign from being saved:</p>
+      <ul class="list-disc ml-5">
+        <% @campaign.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :subject, class: "block text-sm font-medium" %>
+    <%= f.text_field :subject, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :from_email, class: "block text-sm font-medium" %>
+    <%= f.email_field :from_email, placeholder: ENV.fetch("MAILER_FROM", "contact@awareness.example.com"),
+                       class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+    <p class="mt-1 text-xs text-gray-500">Optional. Leave blank to use default mailer sender.</p>
+  </div>
+
+  <div>
+    <%= f.label :body, class: "block text-sm font-medium" %>
+    <%= f.text_area :body, rows: 14, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2 font-mono" %>
+  </div>
+
+  <div class="flex gap-2">
+    <%= f.submit(@campaign.persisted? ? "Update Campaign" : "Create Campaign", class: "rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700") %>
+    <%= link_to "Cancel", @campaign.persisted? ? admin_newsletter_campaign_path(@campaign) : admin_newsletter_campaigns_path,
+                class: "rounded border border-gray-300 px-4 py-2 hover:bg-gray-50" %>
+  </div>
+<% end %>

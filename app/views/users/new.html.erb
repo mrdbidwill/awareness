@@ -1,0 +1,55 @@
+<% content_for :title, "New User" %>
+
+<div class="mx-auto max-w-2xl px-4 sm:px-6 lg:px-8">
+  <div class="mb-6">
+    <%= link_to "← Back to Users", admin_users_path, class: "text-blue-600 hover:text-blue-900" %>
+  </div>
+
+  <div class="bg-white shadow-md rounded-lg overflow-hidden">
+    <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
+      <h1 class="text-2xl font-bold text-gray-900">New User</h1>
+    </div>
+
+    <div class="px-6 py-4">
+      <%= form_with model: @user, url: admin_users_path, local: true, class: "space-y-4" do |form| %>
+        <% if @user.errors.any? %>
+          <div class="bg-red-50 border border-red-200 rounded-md p-4">
+            <h3 class="text-sm font-medium text-red-800 mb-2">
+              <%= pluralize(@user.errors.count, "error") %> prohibited this user from being saved:
+            </h3>
+            <ul class="list-disc list-inside text-sm text-red-700">
+              <% @user.errors.full_messages.each do |message| %>
+                <li><%= message %></li>
+              <% end %>
+            </ul>
+          </div>
+        <% end %>
+
+        <div>
+          <%= form.label :email, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.email_field :email, class: "mt-1 form-input", required: true %>
+        </div>
+
+        <div>
+          <%= form.label :display_name, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.text_field :display_name, class: "mt-1 form-input" %>
+        </div>
+
+        <div>
+          <%= form.label :password, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password, class: "mt-1 form-input", required: true %>
+        </div>
+
+        <div>
+          <%= form.label :password_confirmation, class: "block text-sm font-medium text-gray-700" %>
+          <%= form.password_field :password_confirmation, class: "mt-1 form-input", required: true %>
+        </div>
+
+        <div class="flex justify-end gap-2">
+          <%= link_to "Cancel", admin_users_path, class: "btn" %>
+          <%= form.submit "Create User", class: "btn-primary" %>
+        </div>
+      <% end %>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,163 @@
+<%= form_with(model: mushroom, class: "contents") do |form| %>
+  <% if mushroom.errors.any? %>
+    <div id="error_explanation" class="error alert bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(mushroom.errors.count, "error") %> prohibited this mushroom from being saved:</h2>
+      <ul class="list-disc ml-6">
+        <% mushroom.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="w-full">
+    <!-- Name (Required) -->
+    <div class="my-5">
+      <%= form.label :name %>
+      <span class="text-red-500">*</span>
+      <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-3 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": mushroom.errors[:name].none?, "border-red-400 focus:outline-red-600": mushroom.errors[:name].any?}] %>
+    </div>
+
+    <!-- Country + State (Required) -->
+    <div class="my-5" data-controller="country-select"
+         data-country-select-url-value="<%= states_path %>">
+      <div class="flex items-center justify-between mb-2">
+        <div>
+          <%= form.label :country_id, "Country where specimen was found" %>
+          <span class="text-red-500">*</span>
+        </div>
+        <% last_mushroom = current_user.mushrooms.order(created_at: :desc).first %>
+        <% if last_mushroom&.country_id.present? %>
+          <%= link_to "📋 Copy from last mushroom",
+                      new_mushroom_path(copy_location_from: last_mushroom.id),
+                      class: "text-xs px-2 py-1 bg-blue-100 hover:bg-blue-200 text-blue-700 rounded border border-blue-300 transition",
+                      title: "Copy location from: #{last_mushroom.name}" %>
+        <% end %>
+      </div>
+      <%= form.collection_select :country_id, Country.all, :id, :name,
+                                 { prompt: "Please select country where found" },
+                                 { class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full",
+                                   style: "width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);",
+                                   data: { action: "change->country-select#change",
+                                          "country-select-target": "countrySelect"} } %>
+
+      <div id="state-select-container" class="mt-2">
+        <%= form.label :state_id, "State/Province where specimen was found" %>
+        <select name="mushroom[state_id]"
+                id="mushroom_state_id"
+                class="block shadow-sm rounded-md border px-3 py-1 w-full"
+                style="width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);"
+                data-country-select-target="stateSelect"
+                <%= mushroom.country_id.present? ? "" : "disabled" %>>
+          <% if mushroom.country_id.present? %>
+            <% Country.find(mushroom.country_id).states.order(:name).each do |state| %>
+              <option value="<%= state.id %>" <%= "selected" if state.id == mushroom.state_id %>><%= state.name %></option>
+            <% end %>
+          <% else %>
+            <option value="">Select a country first</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="mt-2">
+        <%= form.label :city, "City where specimen was found" %>
+        <%= form.text_field :city, class: "block shadow-sm rounded-md border px-3 py-1 mt-1 w-full", style: "width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);" %>
+      </div>
+
+      <div class="mt-2">
+        <%= form.label :county, "County where specimen was found" %>
+        <%= form.text_field :county, class: "block shadow-sm rounded-md border px-3 py-1 mt-1 w-full", style: "width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);" %>
+      </div>
+    </div>
+
+    <!-- Fungus Type (Required) -->
+    <div class="my-5">
+      <%= form.label :fungus_type_id, "Fungus Type" %>
+      <span class="text-red-500">*</span>
+      <%= form.collection_select :fungus_type_id, FungusType.order(:name), :id, :name,
+                                 { prompt: "Select a Fungus Type" },
+                                 { class: "block shadow-sm rounded-md border px-3 py-1 mt-2 w-full",
+                                   style: "width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);" } %>
+    </div>
+
+    <!-- Collection Date -->
+    <div class="my-5">
+      <%= form.label :collection_date, "Collection Date" %>
+      <%= form.date_field :collection_date,
+                          class: "block shadow-sm rounded-md border px-3 py-1 mt-2",
+                          style: "width: 40%; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);",
+                          max: Date.today %>
+      <p class="text-xs text-gray-500 mt-1">When was this specimen collected? (If not today's date, change as needed)</p>
+    </div>
+
+    <!-- Description (Optional) -->
+    <div class="my-5" data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= form.label :description %>
+      <span class="text-sm text-gray-500">(optional)</span>
+      <div class="relative">
+        <%= form.text_area :description, rows: 4,
+            class: ["block shadow-sm rounded-md border px-3 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": mushroom.errors[:description].none?, "border-red-400 focus:outline-red-600": mushroom.errors[:description].any?}],
+            data: {
+              inline_autocomplete_target: "textarea",
+              action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+            } %>
+        <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+            data-inline-autocomplete-target="dropdown"
+            style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+      </div>
+    </div>
+
+    <!-- Comments (Optional) -->
+    <div class="my-5" data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= form.label :comments %>
+      <span class="text-sm text-gray-500">(optional)</span>
+      <div class="relative">
+        <%= form.text_area :comments, rows: 4,
+            class: ["block shadow-sm rounded-md border px-3 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": mushroom.errors[:comments].none?, "border-red-400 focus:outline-red-600": mushroom.errors[:comments].any?}],
+            data: {
+              inline_autocomplete_target: "textarea",
+              action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+            } %>
+        <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+            data-inline-autocomplete-target="dropdown"
+            style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+      </div>
+    </div>
+
+    <!-- Personal Notes (Optional) -->
+    <div class="my-5" data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= form.label :personal_notes, "Personal Notes (private - only visible to you)" %>
+      <span class="text-sm text-gray-500">(optional)</span>
+      <div class="relative">
+        <%= form.text_area :personal_notes, rows: 4,
+            class: ["block shadow-sm rounded-md border px-3 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": mushroom.errors[:personal_notes].none?, "border-red-400 focus:outline-red-600": mushroom.errors[:personal_notes].any?}],
+            data: {
+              inline_autocomplete_target: "textarea",
+              action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+            } %>
+        <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
+            data-inline-autocomplete-target="dropdown"
+            style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
+      </div>
+      <p class="text-xs text-gray-500 mt-1">These notes are private and only visible to you.</p>
+    </div>
+
+    <!-- Single Submit Button -->
+    <div class="my-5">
+      <%= form.submit "Create Mushroom", class: "rounded-md px-4 py-2 bg-green-600 hover:bg-green-500 text-white font-medium text-lg" %>
+    </div>
+
+    <p class="text-xs text-gray-500 mt-2">
+      <span class="text-red-500">*</span> Required fields
+    </p>
+  </div>
+<% end %>

@@ -1,0 +1,47 @@
+<%# locals: (mushroom_project: MushroomProject, mushrooms: ActiveRecord::Relation, projects: ActiveRecord::Relation) %>
+<%= form_with(model: mushroom_project, class: "contents") do |form| %>
+  <% if mushroom_project.errors.any? %>
+    <div id="error_explanation" class="error alert bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(mushroom_project.errors.count, "error") %> prohibited this mushroom_project from being saved:</h2>
+      <ul class="list-disc ml-6">
+        <% mushroom_project.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <% preselected_mushroom = mushroom_project.mushroom || mushrooms.first %>
+
+  <div class="my-3">
+    <span class="text-sm text-gray-600">Mushroom Name:
+      <%= preselected_mushroom ? preselected_mushroom.name : "None selected" %>
+    </span>
+  </div>
+
+
+  <%= form.hidden_field :mushroom_id, value: preselected_mushroom&.id %>
+
+  <div class="my-5">
+    <%= form.label :project_id, "Choose a Project" %>
+    <% if projects.present? %>
+      <div class="mt-2 space-y-1">
+        <% projects.each do |p| %>
+          <label class="flex items-center gap-2">
+            <%= form.radio_button :project_id, p.id %>
+            <span><%= p.name %></span>
+          </label>
+        <% end %>
+      </div>
+    <% else %>
+      <div class="mt-2 text-sm text-gray-500">No projects available.</div>
+    <% end %>
+    <% if mushroom_project.errors[:project_id].any? %>
+      <div class="text-red-600 text-sm mt-1"><%= mushroom_project.errors[:project_id].join(", ") %></div>
+    <% end %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit "Add to Project", class: "btn-primary btn-responsive" %>
+  </div>
+<% end %>

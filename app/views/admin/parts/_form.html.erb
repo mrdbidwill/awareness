@@ -1,0 +1,35 @@
+<%= form_with(model: [:admin, part], class: "contents") do |form| %>
+  <% if part.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(part.errors.count, "error") %> prohibited this part from being saved:</h2>
+
+      <ul class="list-disc ml-6">
+        <% part.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": part.errors[:name].none?, "border-red-400 focus:outline-red-600": part.errors[:name].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.textarea :description, rows: 4, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": part.errors[:description].none?, "border-red-400 focus:outline-red-600": part.errors[:description].any?}] %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :comments %>
+    <%= form.textarea :comments, rows: 4, class: ["block shadow-sm rounded-md border px-2 py-1 mt-2 w-full", {"border-gray-400 focus:outline-blue-600": part.errors[:comments].none?, "border-red-400 focus:outline-red-600": part.errors[:comments].any?}] %>
+  </div>
+
+  <%= render "admin/shared/form_actions",
+             record: part,
+             back_path: admin_parts_path,
+             submit_text: (part.persisted? ? "Update" : "Create"),
+             show_text: "Show this part",
+             back_text: "Back to parts" %>
+<% end %>

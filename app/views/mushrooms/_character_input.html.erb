@@ -1,0 +1,185 @@
+<%# locals: f:, character:, current_value: %>
+<% return if character.display_option_id == 1 || character.display_option&.name&.downcase == "do not display" %>
+
+<% key = display_option_key(character) %>
+<% existing = current_value.to_s.strip.downcase %>
+
+<% boolean_keys = %w[boolean_yes_no boolean_true_false boolean_present_absent checkbox] %>
+
+<% case key %>
+<% when "color", "6" %>
+  <span class="text-xs text-gray-500">Use color picker below</span>
+
+<% when "radio", "9" %>
+  <% lookup_items = LookupItem.where(mr_character_id: character.id).order(:name) %>
+  <% if lookup_items.blank? %>
+    <span class="text-xs text-gray-500">No options</span>
+  <% else %>
+    <% compact_radio = local_assigns.fetch(:compact_radio, true) %>
+    <% show_compact = compact_radio && lookup_items.size > 4 %>
+    <% selected_item = lookup_items.find { |item| item.id.to_s == existing } %>
+
+    <% if show_compact %>
+      <details class="group">
+        <summary class="cursor-pointer text-sm text-blue-700 hover:text-blue-800">
+          Choose option (<%= lookup_items.size %>)
+          <% if selected_item %>
+            <span class="ml-2 text-sm font-medium text-gray-700">Current: <%= selected_item.name %></span>
+          <% end %>
+        </summary>
+        <div class="mt-2 flex flex-col gap-1">
+          <% lookup_items.each do |item| %>
+            <% id = "#{character.id}-#{item.id}" %>
+            <div class="flex flex-col">
+              <label for="<%= id %>" class="inline-flex items-center gap-2">
+                <%= f.radio_button(:character_value, item.id, id: id, checked: existing == item.id.to_s.downcase, data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" }) %>
+                <span class="text-sm"><%= item.name.to_s %></span>
+                <%# INLINE ADMIN EDIT LINK: Pencil icon for editing lookup item (radio option)
+                    Only visible to admin users (permission_id < 5)
+                    Allows quick editing of option text, description, comments
+                    After save, admin returns to this exact page to continue work %>
+                <% if respond_to?(:admin_user?) && admin_user? %>
+                  <%= link_to edit_admin_lookup_item_path(item, return_to: request.fullpath),
+                              class: "ml-1 text-blue-600 hover:text-blue-800 opacity-60 hover:opacity-100 transition",
+                              title: "Edit option (Admin)" do %>
+                    <span class="text-xs">✏️</span>
+                  <% end %>
+                <% end %>
+              </label>
+              <% if item.description.present? %>
+                <div class="text-xs text-gray-600 ml-6 mt-0.5">
+                  <%= item.description %>
+                </div>
+              <% end %>
+              <% if item.comments.present? %>
+                <div class="text-xs text-gray-500 italic ml-6 mt-0.5">
+                  <%= item.comments %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </details>
+    <% else %>
+      <div class="flex flex-col gap-1">
+        <% lookup_items.each do |item| %>
+          <% id = "#{character.id}-#{item.id}" %>
+          <div class="flex flex-col">
+            <label for="<%= id %>" class="inline-flex items-center gap-2">
+              <%= f.radio_button(:character_value, item.id, id: id, checked: existing == item.id.to_s.downcase, data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" }) %>
+              <span class="text-sm"><%= item.name.to_s %></span>
+              <%# INLINE ADMIN EDIT LINK: Pencil icon for editing lookup item (radio option)
+                  Only visible to admin users (permission_id < 5)
+                  Allows quick editing of option text, description, comments
+                  After save, admin returns to this exact page to continue work %>
+              <% if respond_to?(:admin_user?) && admin_user? %>
+                <%= link_to edit_admin_lookup_item_path(item, return_to: request.fullpath),
+                            class: "ml-1 text-blue-600 hover:text-blue-800 opacity-60 hover:opacity-100 transition",
+                            title: "Edit option (Admin)" do %>
+                  <span class="text-xs">✏️</span>
+                <% end %>
+              <% end %>
+            </label>
+            <% if item.description.present? %>
+              <div class="text-xs text-gray-600 ml-6 mt-0.5">
+                <%= item.description %>
+              </div>
+            <% end %>
+            <% if item.comments.present? %>
+              <div class="text-xs text-gray-500 italic ml-6 mt-0.5">
+                <%= item.comments %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  <% end %>
+
+<% when "drop-down", "10" %>
+  <% lookup_items = LookupItem.where(mr_character_id: character.id).order(:name) %>
+  <% if lookup_items.blank? %>
+    <span class="text-xs text-gray-500">No options</span>
+  <% else %>
+    <div class="flex flex-col gap-2">
+      <%= f.select(
+            :character_value,
+            options_for_select(lookup_items.pluck(:name, :id), current_value),
+            { include_blank: "Select..." },
+            class: "border rounded px-2 py-1 text-sm w-full max-w-xs",
+            data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" }
+          ) %>
+      <%# INLINE ADMIN EDIT LINK: Edit link for dropdown selections
+          Only visible to admin users when an option is selected
+          Provides convenient access to edit the currently selected lookup item
+          After save, admin returns to continue mushroom editing %>
+      <% if respond_to?(:admin_user?) && admin_user? && current_value.present? %>
+        <% selected_item = lookup_items.find_by(id: current_value) %>
+        <% if selected_item %>
+          <%= link_to edit_admin_lookup_item_path(selected_item, return_to: request.fullpath),
+                      class: "text-xs text-blue-600 hover:text-blue-800 inline-flex items-center gap-1",
+                      title: "Edit selected option (Admin)" do %>
+            <span>✏️</span>
+            <span>Edit this option</span>
+          <% end %>
+        <% end %>
+      <% end %>
+      <% if current_value.present? %>
+        <% selected_item = lookup_items.find_by(id: current_value) %>
+        <% if selected_item&.description.present? || selected_item&.comments.present? %>
+          <div class="text-xs bg-gray-50 border rounded px-2 py-1.5">
+            <% if selected_item.description.present? %>
+              <div class="text-gray-700"><%= selected_item.description %></div>
+            <% end %>
+            <% if selected_item.comments.present? %>
+              <div class="text-gray-500 italic mt-0.5"><%= selected_item.comments %></div>
+            <% end %>
+          </div>
+        <% end %>
+      <% end %>
+    </div>
+  <% end %>
+
+<% when "text_box_number_mm", "text_box_number_um", "text_box_number", "2", "3", "4" %>
+  <%= f.number_field :character_value, step: "any", class: "border rounded px-2 py-1 text-sm w-full max-w-xs", value: current_value, data: { bulk_character_update_target: "input", action: "input->bulk-character-update#trackChange" } %>
+
+<% when "text_box_string", "5" %>
+  <%= f.text_field :character_value, class: "border rounded px-2 py-1 text-sm w-full max-w-xs", value: current_value, data: { bulk_character_update_target: "input", action: "input->bulk-character-update#trackChange" } %>
+
+<% when "taste", "7", "odor", "8" %>
+  <%= f.text_field :character_value, class: "border rounded px-2 py-1 text-sm w-full max-w-xs", value: current_value, placeholder: key, data: { bulk_character_update_target: "input", action: "input->bulk-character-update#trackChange" } %>
+
+<% when "state", "11", "country", "12" %>
+  <span class="text-xs text-gray-500">Handled in location inputs</span>
+
+<% when *boolean_keys %>
+  <% if key == "checkbox" %>
+    <%= hidden_field_tag :mr_character_id, character.id %>
+    <%= hidden_field_tag :character_value, "false" %>
+    <label class="inline-flex items-center gap-2">
+      <%= check_box_tag :character_value, "true", existing == "true", data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" } %>
+      <span>Yes</span>
+    </label>
+  <% else %>
+    <% yes_label, no_label =
+         case key
+         when "boolean_yes_no" then ["Yes", "No"]
+         when "boolean_true_false" then ["True", "False"]
+         when "boolean_present_absent" then ["Present", "Absent"]
+         else ["Yes", "No"]
+         end %>
+    <div class="flex items-center gap-4">
+      <label class="inline-flex items-center gap-2">
+        <%= radio_button_tag :character_value, "true", existing == "true", data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" } %>
+        <span><%= yes_label %></span>
+      </label>
+      <label class="inline-flex items-center gap-2">
+        <%= radio_button_tag :character_value, "false", existing == "false", data: { bulk_character_update_target: "input", action: "change->bulk-character-update#trackChange" } %>
+        <span><%= no_label %></span>
+      </label>
+    </div>
+  <% end %>
+
+<% else %>
+  <%= f.text_field :character_value, class: "border rounded px-2 py-1 text-sm w-full max-w-xs", value: current_value, data: { bulk_character_update_target: "input", action: "input->bulk-character-update#trackChange" } %>
+<% end %>

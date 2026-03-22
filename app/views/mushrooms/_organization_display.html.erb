@@ -1,0 +1,68 @@
+<%# Display clusters, groups, and projects that this mushroom belongs to %>
+<% clusters = mushroom.clusters.order(:name) %>
+<% groups = mushroom.all_groups.order(:name) %>
+<% projects = mushroom.projects.order(:name) %>
+
+<% if clusters.any? || groups.any? || projects.any? %>
+  <div class="my-4 p-4 bg-gray-50 border-2 border-gray-300 rounded-lg">
+    <h3 class="text-sm font-semibold text-gray-800 mb-3">📁 Organization</h3>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Clusters -->
+      <div>
+        <h4 class="text-xs font-medium text-gray-600 mb-2">Clusters</h4>
+        <% if clusters.any? %>
+          <div class="flex flex-wrap gap-1.5">
+            <% clusters.each do |cluster| %>
+              <%= link_to cluster_path(cluster), class: "inline-flex items-center bg-blue-100 border border-blue-300 rounded-full px-3 py-1 text-xs font-medium text-blue-800 hover:bg-blue-200 transition" do %>
+                <%= cluster.name %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-xs text-gray-400 italic">None</p>
+        <% end %>
+      </div>
+
+      <!-- Groups -->
+      <div>
+        <h4 class="text-xs font-medium text-gray-600 mb-2">Groups</h4>
+        <% if groups.any? %>
+          <div class="flex flex-wrap gap-1.5">
+            <% groups.each do |group| %>
+              <%= link_to all_group_path(group), class: "inline-flex items-center bg-green-100 border border-green-300 rounded-full px-3 py-1 text-xs font-medium text-green-800 hover:bg-green-200 transition" do %>
+                <%= group.name %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-xs text-gray-400 italic">None</p>
+        <% end %>
+      </div>
+
+      <!-- Projects -->
+      <div>
+        <h4 class="text-xs font-medium text-gray-600 mb-2">Projects</h4>
+        <% if projects.any? %>
+          <div class="flex flex-wrap gap-1.5">
+            <% projects.each do |project| %>
+              <%= link_to project_path(project), class: "inline-flex items-center #{project.universal? ? 'bg-purple-100 border-purple-300 text-purple-800 hover:bg-purple-200' : 'bg-gray-100 border-gray-300 text-gray-800 hover:bg-gray-200'} border rounded-full px-3 py-1 text-xs font-medium transition" do %>
+                <%= project.name %><%= " 🌍" if project.universal? %>
+              <% end %>
+            <% end %>
+          </div>
+        <% else %>
+          <p class="text-xs text-gray-400 italic">None</p>
+        <% end %>
+      </div>
+    </div>
+
+    <% if user_signed_in? && current_user.id == mushroom.user_id %>
+      <div class="mt-3 pt-3 border-t border-gray-300">
+        <p class="text-xs text-gray-600">
+          <%= link_to "Edit this mushroom", edit_mushroom_path(mushroom, anchor: 'organization-section'), class: "text-blue-600 hover:text-blue-800 underline font-medium" %> to manage organization.
+        </p>
+      </div>
+    <% end %>
+  </div>
+<% end %>

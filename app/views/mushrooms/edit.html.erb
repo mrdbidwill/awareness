@@ -1,0 +1,586 @@
+<% content_for :title, "Editing mushroom" %>
+<% core_only = params[:core_only].to_s != "false" %>
+
+<div id="top" class="w-full">
+  <h1 class="flex items-baseline gap-2">
+    <span class="text-xl font-medium text-gray-700">Editing your mushroom:</span>
+    <span class="text-3xl font-bold text-gray-900"><%= @mushroom.name %></span>
+  </h1>
+
+  <div class="text-lg font-semibold text-blue-800 mt-2">
+    Mushroom ID: <span class="inline-block px-2 py-0.5 rounded bg-blue-50 border border-blue-200"><%= @mushroom.id %></span> <span class="block text-xs text-gray-500">This is the database table ID.</span>
+  </div>
+
+  <!-- Images Section -->
+  <% images = @mushroom.image_mushrooms.select { |im| im.image_file.attached? } %>
+  <div class="my-5">
+    <div id="images-panel" class="border border-blue-200 rounded p-4 bg-blue-50">
+      <% if images.any? %>
+        <div class="mb-3">
+          <h3 class="text-lg font-semibold text-gray-800 mb-1">Mushroom Images</h3>
+          <p class="text-sm text-gray-700 mb-3">
+            Click any image to view full size, then see EXIF data or delete image.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+          <% images.each do |image_mushroom| %>
+            <div class="border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm hover:shadow-md transition-shadow">
+              <%= link_to image_mushroom_path(image_mushroom), class: "block" do %>
+                <div class="aspect-square bg-gray-100">
+                  <picture>
+                    <%= tag.source(
+                          srcset: url_for(
+                            image_mushroom.image_file.variant(
+                              resize_to_fill: [200, 200],
+                              format: :webp,
+                              saver: { strip: true, quality: 60, effort: 4 }
+                            ).processed
+                          ),
+                          type: "image/webp"
+                        ) %>
+                    <%= image_tag(
+                          image_mushroom.image_file.variant(
+                            resize_to_fill: [200, 200],
+                            saver: { strip: true, quality: 72, optimize_coding: true }
+                          ).processed,
+                          width: 200,
+                          height: 200,
+                          class: "w-full h-full object-cover block hover:opacity-90 transition-opacity",
+                          decoding: "async",
+                          alt: image_mushroom.image_name.presence || @mushroom.name
+                        ) %>
+                  </picture>
+                </div>
+              <% end %>
+              <div class="p-2">
+                <p class="text-xs font-medium text-gray-700 truncate">
+                  <%= image_mushroom.part&.name || "Part not set" %>
+                </p>
+                <% if image_mushroom.image_name.present? %>
+                  <p class="text-xs text-gray-500 truncate" title="<%= image_mushroom.image_name %>">
+                    <%= image_mushroom.image_name %>
+                  </p>
+                <% end %>
+                <%= link_to "Edit Image",
+                            edit_mushroom_image_mushroom_path(@mushroom, image_mushroom),
+                            class: "mt-2 block text-center text-xs px-2 py-1 bg-yellow-100 hover:bg-yellow-200 text-yellow-800 rounded border border-yellow-300" %>
+              </div>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="text-sm text-gray-700">No images have been uploaded for this mushroom yet. Use the "Upload Image" button above to add your first image.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Identification Management Section (Compact) -->
+  <details id="identification-section" class="my-5 border border-purple-200 rounded-lg p-3 bg-purple-50">
+    <summary class="text-sm font-semibold text-purple-900 cursor-pointer">🔍 Manage Identifications</summary>
+    <div class="mt-3">
+      <% identifications = @mushroom.ranked_identifications %>
+      <% if identifications.any? %>
+        <div class="flex flex-wrap gap-2 mb-2">
+          <% identifications.each_with_index do |id, index| %>
+            <span class="inline-flex items-center gap-1 bg-white border border-purple-300 rounded px-2 py-1 text-xs shadow-sm">
+              <span class="font-mono text-purple-600 font-bold"><%= index + 1 %>.</span>
+              <em class="text-gray-800">
+                <%
+                  # Display genus: prefer the paired genus, fallback to species.genus, then '?'
+                  genus_name = id[:genus]&.name || id[:species]&.genus&.name || '?'
+                %>
+                <%= genus_name.capitalize %> <%= id[:species]&.name || '?' %>
+              </em>
+              <% if id[:fully_primary] %>
+                <span class="text-xs text-green-700 font-semibold">PRIMARY</span>
+              <% end %>
+            </span>
+          <% end %>
+        </div>
+        <button type="button"
+                class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-1.5 rounded shadow transition text-sm"
+                onclick="document.getElementById('basic-data-section').open = true; document.getElementById('candidate-panel').classList.remove('hidden'); document.getElementById('candidate-panel').scrollIntoView({behavior: 'smooth', block: 'center'});">
+          Edit Candidate Genera/Species
+        </button>
+        <p class="text-xs text-gray-600 mt-2">
+          Remove incorrect candidates to narrow down to your final identification.
+        </p>
+      <% else %>
+        <p class="text-sm text-gray-600 mb-2">No identifications added yet.</p>
+        <button type="button"
+                class="bg-purple-600 hover:bg-purple-700 text-white font-medium px-3 py-1.5 rounded shadow transition text-sm"
+                onclick="document.getElementById('basic-data-section').open = true; document.getElementById('candidate-panel').classList.remove('hidden'); document.getElementById('candidate-panel').scrollIntoView({behavior: 'smooth', block: 'center'});">
+          Add Genus/Species Candidates
+        </button>
+      <% end %>
+    </div>
+  </details>
+
+  <!-- Clone Characters Panel -->
+  <%= render 'clone_characters_panel', mushroom: @mushroom %>
+
+  <!-- Organization Display (Toggle) -->
+  <details class="my-4 border border-gray-200 rounded-lg p-3 bg-gray-50">
+    <summary class="text-sm font-semibold text-gray-800 cursor-pointer">📁 Organization</summary>
+    <div class="mt-3">
+      <%= render "mushrooms/organization_display", mushroom: @mushroom %>
+    </div>
+  </details>
+
+  <!-- Basic Mushroom Data Section -->
+  <div class="my-5">
+    <details id="basic-data-section" class="border-2 border-blue-500 rounded-lg p-4 bg-blue-100 shadow-md">
+      <summary class="font-bold cursor-pointer text-xl text-blue-900 mb-1 hover:text-blue-700 transition">
+        📝 Edit Basic Mushroom Data
+        <span class="block text-xs font-normal text-blue-800 mt-1">Edit: Name, Description, Comments, Personal Notes.</span>
+      </summary>
+      <%= render 'form', mushroom: @mushroom %>
+    </details>
+  </div>
+
+  <!-- Entered characters -->
+  <% existing_rows = @mushroom.mr_character_mushrooms.includes(mr_character: [:part, :display_option, :source_data]).order('parts.name ASC, mr_characters.name ASC') %>
+  <% color_rows = existing_rows.select { |rc| (rc.mr_character&.display_option&.name&.downcase == "color") || rc.mr_character&.display_option_id == 6 } %>
+  <% non_color_rows = existing_rows - color_rows %>
+  <% existing_grouped = non_color_rows.group_by { |rc| rc.mr_character&.part&.name || "Other" } %>
+
+  <details class="mt-8" open>
+    <summary class="text-2xl font-semibold mb-3 cursor-pointer">
+      Entered characters (<%= existing_rows.size %>)
+    </summary>
+
+    <% entered_character_pairs = existing_rows.map do |rc|
+         c = rc.mr_character
+         next unless c
+
+         name = c.name.to_s.tr("_", " ")
+         display_option_name = c.display_option&.name&.downcase
+         is_color = display_option_name == "color" || c.display_option_id == 6
+
+         if is_color
+           colors = rc.ordered_colors
+           value = colors.map(&:common_name).join(" / ")
+           value = "No colors selected" if value.blank?
+         elsif display_option_name == "radio" || display_option_name == "drop-down"
+           lookup_item = LookupItem.find_by(id: rc.character_value)
+           value = lookup_item&.name || rc.character_value
+         else
+           value = rc.character_value
+         end
+
+         value = value.to_s.strip
+         next if value.blank?
+         "#{name}: #{value}"
+       end.compact %>
+    <% entered_character_text = entered_character_pairs.join(", ") %>
+
+    <details class="bg-white border rounded-md p-3 mb-3">
+      <summary class="font-semibold cursor-pointer">Copy characters</summary>
+      <div class="mt-2" data-copy-characters>
+        <% if entered_character_text.present? %>
+          <p class="text-xs text-gray-600 mb-2">Copy these entries to paste into iNaturalist comments or elsewhere.</p>
+          <textarea class="w-full border border-gray-300 rounded p-2 text-xs text-gray-800 bg-gray-50"
+                    rows="4"
+                    readonly><%= entered_character_text %></textarea>
+          <div class="mt-2 flex items-center gap-2">
+            <button type="button"
+                    onclick="copyEnteredCharacters(this)"
+                    class="rounded px-3 py-1.5 text-xs bg-blue-600 hover:bg-blue-700 text-white font-medium transition">
+              Copy Entered Characters
+            </button>
+          </div>
+        <% else %>
+          <p class="text-sm text-gray-600">No characters entered yet.</p>
+        <% end %>
+      </div>
+    </details>
+
+    <%# Colors at the top with per-card swatch picker and instruction %>
+    <% if color_rows.any? %>
+      <details class="bg-white border rounded-md p-4 mb-3" open>
+        <summary class="font-semibold cursor-pointer">Colors (<%= color_rows.size %>)</summary>
+        <p class="text-xs text-gray-600 mt-2">Click on a color patch to update this character.</p>
+        <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+          <% color_rows.each do |rc| %>
+            <% c = rc.mr_character %>
+            <% colors = rc.ordered_colors %>
+            <div class="flex flex-col border rounded p-2 gap-1 text-sm">
+              <div class="flex items-start justify-between gap-2">
+                <div class="min-w-0 font-medium break-words">
+                  <%= c&.name.to_s.tr("_", " ") %>
+                  <%# INLINE ADMIN EDIT LINK: Gear icon for editing character definition %>
+                  <% if respond_to?(:admin_user?) && admin_user? %>
+                    <%= link_to edit_admin_mr_character_path(c, return_to: request.fullpath),
+                                class: "inline-block ml-1 text-blue-600 hover:text-blue-800 opacity-70 hover:opacity-100 transition",
+                                title: "Edit character definition (Admin)" do %>
+                      <span class="text-xs">⚙️</span>
+                    <% end %>
+                  <% end %>
+                </div>
+                <div class="flex-shrink-0">
+                  <%= link_to "Edit Colors",
+                              edit_characters_mushroom_path(@mushroom, part_id: c.part_id, observation_method_id: c.observation_method_id, core_only: core_only),
+                              class: "inline-flex items-center px-2 py-1 border border-blue-600 text-xs font-medium rounded text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-1 focus:ring-offset-1 focus:ring-blue-500" %>
+                </div>
+              </div>
+              <% if colors.any? %>
+                <div class="flex flex-wrap gap-2 text-xs text-gray-700">
+                  <% colors.each do |color| %>
+                    <div class="inline-flex items-center gap-1">
+                      <% if color.is_simplified? %>
+                        <div class="w-6 h-6 rounded border border-gray-300 flex-shrink-0" style="background-color: <%= color.hex %>"></div>
+                      <% else %>
+                        <%= image_tag "AMS_colors/banner_50x50/banner_#{color.id}.jpg",
+                                      alt: "Color #{color.id}",
+                                      class: "w-6 h-6 rounded border flex-shrink-0" %>
+                      <% end %>
+                      <span class="font-medium"><%= color.common_name %></span>
+                    </div>
+                  <% end %>
+                </div>
+              <% else %>
+                <div class="text-xs text-gray-500">No colors selected</div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      </details>
+    <% end %>
+
+    <% if non_color_rows.any? %>
+      <details class="bg-white border rounded-md p-4 mb-3" open>
+        <summary class="font-semibold cursor-pointer">Entered Characters (<%= non_color_rows.size %>)</summary>
+        <p class="text-xs text-gray-600 mt-2 mb-3">Click "Edit" to modify a character's value inline.</p>
+        <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+          <% non_color_rows.each do |rc| %>
+            <%= render partial: "entered_character_card", locals: { character_mushroom: rc } %>
+          <% end %>
+        </div>
+      </details>
+    <% else %>
+      <% unless color_rows.any? %>
+        <p class="text-gray-500">No characters entered yet.</p>
+      <% end %>
+    <% end %>
+  </details>
+
+  <!-- Not entered (includes colors) -->
+  <%# PERFORMANCE FIX: Only load these if needed - uses cached version %>
+  <%# FUNGUS TYPE FILTERING: Only show characters for this mushroom's fungus type %>
+  <% if params[:show_all_characters] == "true" || params[:show_part].present? || params[:show_character_id].present? %>
+    <% if @mushroom.fungus_type_id.present? %>
+      <% all_chars = MrCharacter.cached_for_fungus_type(@mushroom.fungus_type_id) %>
+    <% else %>
+      <% all_chars = MrCharacter.cached_all_with_associations %>
+    <% end %>
+    <% entered_ids = existing_rows.map(&:mr_character_id).to_set %>
+    <% missing_chars = all_chars.reject { |c|
+          entered_ids.include?(c.id) ||
+          ((c.display_option&.name&.downcase == "do not display") || c.display_option_id == 1)
+        } %>
+
+    <%# Filter by part if show_part parameter is present %>
+    <% if params[:show_part].present? && params[:show_part] != "Other" %>
+      <% missing_chars = missing_chars.select { |c| c.part&.name == params[:show_part] } %>
+    <% elsif params[:show_part] == "Other" %>
+      <%# "Other" includes all parts with fewer characters %>
+      <% other_parts = ["Mycelium", "Veil", "Spores", "Habitat", "Location", "Identification", "Admin", "Rhizomorph", "Color", "Storage"] %>
+      <% missing_chars = missing_chars.select { |c| other_parts.include?(c.part&.name) } %>
+    <% end %>
+
+    <% core_fallback = false %>
+    <% if core_only %>
+      <% core_missing = MrCharacter.select_core_for_display(missing_chars, fungus_type_id: @mushroom.fungus_type_id) %>
+      <% if core_missing.any? %>
+        <% missing_chars = core_missing %>
+      <% else %>
+        <% core_fallback = true %>
+      <% end %>
+    <% end %>
+    <% if core_only && !core_fallback %>
+      <% missing_chars = MrCharacter.sort_for_core_display(missing_chars, keep_part_order: false, fungus_type_id: @mushroom.fungus_type_id) %>
+    <% end %>
+
+    <% if params[:show_character_id].present? %>
+      <% missing_chars = missing_chars.select { |c| c.id.to_s == params[:show_character_id].to_s } %>
+    <% end %>
+
+    <% missing_grouped = missing_chars.group_by { |c| c.part&.name || "Other" } %>
+  <% else %>
+    <% missing_chars = [] %>
+    <% missing_grouped = {} %>
+  <% end %>
+
+  <!-- Character Search -->
+  <div id="character-search" class="mt-8 bg-purple-50 lg:bg-purple-100 border border-purple-400 rounded-md p-4 mb-4">
+    <h3 class="text-lg font-semibold text-black-900 mb-2">🔍 Search for a Character</h3>
+    <p class="text-xs text-gray-700 mb-2">
+      For consistency we use cap in place of pileus, gill in place of lamellae, and stem in place of stipe.
+    </p>
+    <% if @mushroom.fungus_type_id.present? %>
+      <% char_count = MrCharacter.for_fungus_type(@mushroom.fungus_type_id).count %>
+      <p class="text-sm text-gray-600 mb-3">
+        Can't find what you're looking for? Search across <%= char_count %> characters for <%= @mushroom.fungus_type.name %> mushrooms.
+      </p>
+    <% else %>
+      <p class="text-sm text-amber-700 bg-amber-50 border border-amber-300 rounded px-3 py-2 mb-3">
+        ⚠️ <strong>Tip:</strong> Set your mushroom's <strong>Fungus Type</strong> in "Edit Basic Mushroom Data" above to see only relevant characters for your fungus type.
+        Currently showing all <%= MrCharacter.count %> characters.
+      </p>
+    <% end %>
+
+    <div class="flex flex-wrap items-center gap-2 text-xs mb-3">
+      <span class="text-gray-700 font-semibold">Search scope:</span>
+      <div class="inline-flex rounded-md border border-purple-300 overflow-hidden">
+        <%= link_to "Core (Default)",
+                    edit_mushroom_path(@mushroom, core_only: true, show_part: params[:show_part], show_character_id: params[:show_character_id], anchor: "character-search"),
+                    class: "px-2 py-1 font-medium #{ core_only ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-50' }" %>
+        <%= link_to "All",
+                    edit_mushroom_path(@mushroom, core_only: false, show_part: params[:show_part], show_character_id: params[:show_character_id], anchor: "character-search"),
+                    class: "px-2 py-1 font-medium #{ !core_only ? 'bg-purple-600 text-white' : 'bg-white text-gray-700 hover:bg-purple-50' }" %>
+      </div>
+      <span class="text-gray-600">Core reduces clutter and speeds entry.</span>
+    </div>
+
+    <div class="relative" data-controller="character-search"
+         data-character-search-mushroom-id-value="<%= @mushroom.id %>"
+         data-character-search-core-only-value="<%= core_only %>"
+         data-core-entry-url="<%= mushroom_core_character_entry_path(@mushroom, core_only: true, return_to: request.fullpath) %>">
+      <input type="text"
+             placeholder="Type at least 3 characters (e.g., 'cap', 'color', 'taste', 'shape')..."
+             class="w-full border border-purple-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-purple-500"
+             data-character-search-target="input"
+             minlength="3"
+             autocomplete="off">
+
+      <div data-character-search-target="loader" class="hidden absolute right-3 top-1/2 transform -translate-y-1/2">
+        <svg class="animate-spin h-5 w-5 text-purple-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </div>
+
+      <ul class="hidden border border-purple-300 rounded-lg mt-2 bg-white max-h-96 overflow-auto shadow-xl"
+          data-character-search-target="dropdown"
+          style="position: absolute; z-index: 50; width: 100%;"></ul>
+    </div>
+
+    <p class="text-xs text-gray-500 mt-2">
+      💡 Tip: Search results will load the relevant part section and show the character.
+    </p>
+    <p class="text-xs text-gray-500 mt-1">
+      🎨 Tip: For color characters, start your search with <strong>color</strong>. Color results open the family samples first, followed by the AMS chart.
+    </p>
+  </div>
+
+  <% if missing_chars.any? %>
+    <details class="bg-white border border-purple-200 rounded-lg p-4 mb-6" open>
+      <summary class="font-bold text-lg text-purple-800 cursor-pointer mb-3">
+        ➕ Add Characters (<%= missing_chars.size %>)
+      </summary>
+      <p class="text-xs text-gray-600 mb-3">
+        Showing <strong><%= core_only ? "Core" : "All" %></strong> characters for your search and part selection.
+      </p>
+      <% if core_only && core_fallback %>
+        <p class="text-xs text-amber-700 mb-3">
+          No core characters defined for this part. Showing all instead.
+        </p>
+      <% end %>
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-3">
+        <% missing_chars.each do |character| %>
+          <% is_color = (character.display_option&.name&.downcase == "color") || character.display_option_id == 6 %>
+          <div class="border-2 border-purple-300 rounded-lg p-3 bg-purple-50 hover:shadow-lg hover:border-purple-400 transition"
+               data-character-id="<%= character.id %>">
+            <div class="min-w-0 mb-2">
+              <div class="text-sm font-semibold text-gray-800 break-words">
+                <%= character.name.to_s.tr("_", " ") %>
+                <% if respond_to?(:admin_user?) && admin_user? %>
+                  <%= link_to edit_admin_mr_character_path(character, return_to: request.fullpath),
+                              class: "inline-block ml-1 text-blue-600 hover:text-blue-800 opacity-70 hover:opacity-100 transition",
+                              title: "Edit character definition (Admin)" do %>
+                    <span class="text-xs">⚙️</span>
+                  <% end %>
+                <% end %>
+              </div>
+              <% if character.description.present? %>
+                <div class="text-xs text-gray-500 mt-1">
+                  <%= truncate(character.description, length: 80) %>
+                </div>
+              <% end %>
+            </div>
+
+            <% if is_color %>
+              <div>
+                <%= render "shared/color_picker_modal",
+                           character: character,
+                           mushroom_id: @mushroom.id,
+                           current_color_id: nil,
+                           redirect_path: request.fullpath %>
+              </div>
+            <% else %>
+              <%= form_with url: mr_character_mushrooms_path, method: :post, data: { turbo: true } do |f| %>
+                <%= hidden_field_tag :mushroom_id, @mushroom.id %>
+                <%= hidden_field_tag :mr_character_id, character.id %>
+                <%= hidden_field_tag :redirect_to, request.fullpath %>
+                <div class="flex items-center gap-2">
+                  <%= render partial: "mushrooms/character_input", locals: { f: f, character: character, current_value: nil } %>
+                  <%= f.submit "Add", class: "rounded px-3 py-1.5 text-sm bg-purple-600 hover:bg-purple-700 text-white font-medium transition" %>
+                </div>
+              <% end %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+      <div class="mt-4">
+        <%= link_to "Clear results",
+                    edit_mushroom_path(@mushroom, core_only: core_only),
+                    class: "text-sm text-blue-700 hover:underline" %>
+      </div>
+    </details>
+  <% elsif params[:show_character_id].present? %>
+    <div class="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
+      <p class="text-sm text-yellow-800">
+        No addable character found. It may already be entered or filtered out by Core.
+        <%= link_to "Show all characters", edit_mushroom_path(@mushroom, core_only: false, show_part: params[:show_part], show_character_id: params[:show_character_id]),
+                    class: "text-blue-700 hover:underline font-medium" %>
+      </p>
+    </div>
+  <% end %>
+
+  <!-- NEW CHARACTER NAVIGATION GRID -->
+  <%= render 'character_navigation_grid', mushroom: @mushroom %>
+
+  <!-- Back to top link -->
+  <div class="mt-8 pt-4 border-t border-gray-300 text-center">
+    <a href="#top" class="inline-block px-4 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white font-medium transition">
+      ↑ Back to Top
+    </a>
+  </div>
+
+  <!-- Toggle character edit form -->
+  <script>
+    function toggleCharacterEdit(button) {
+      // Find the parent card
+      const card = button.closest('[data-character-id]');
+      if (!card) return;
+
+      // Find the compact view and edit form
+      const compactView = card.querySelector('.compact-view');
+      const editForm = card.querySelector('.edit-form');
+
+      if (!compactView || !editForm) return;
+
+      // Toggle visibility
+      if (editForm.classList.contains('hidden')) {
+        // Show edit form, hide compact view
+        compactView.classList.add('hidden');
+        editForm.classList.remove('hidden');
+      } else {
+        // Hide edit form, show compact view
+        editForm.classList.add('hidden');
+        compactView.classList.remove('hidden');
+      }
+    }
+  </script>
+
+  <!-- Copy entered characters -->
+  <script>
+    function copyEnteredCharacters(button) {
+      const container = button.closest('[data-copy-characters]');
+      if (!container) return;
+
+      const textarea = container.querySelector('textarea');
+      if (!textarea) return;
+
+      const text = textarea.value || '';
+      if (!text.trim()) return;
+
+      const originalText = button.textContent;
+      const setCopied = () => {
+        button.textContent = 'Copied';
+        setTimeout(() => {
+          button.textContent = originalText;
+        }, 1500);
+      };
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(setCopied).catch(() => {
+          textarea.select();
+          textarea.setSelectionRange(0, text.length);
+          document.execCommand('copy');
+          setCopied();
+        });
+      } else {
+        textarea.select();
+        textarea.setSelectionRange(0, text.length);
+        document.execCommand('copy');
+        setCopied();
+      }
+    }
+  </script>
+
+  <!-- Scroll to character from search -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const characterId = sessionStorage.getItem('scrollToCharacter');
+      if (characterId) {
+        // Find the character row by data attribute
+        const characterRow = document.querySelector(`[data-character-id="${characterId}"]`);
+
+        if (characterRow) {
+          // Wait a brief moment for the details section to fully render
+          setTimeout(() => {
+            // Scroll to the character with smooth animation
+            characterRow.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center'
+            });
+
+            // Add highlight if requested
+            if (sessionStorage.getItem('highlightCharacter')) {
+              // Add yellow ring and background
+              characterRow.classList.add('ring-4', 'ring-yellow-400', 'bg-yellow-50');
+
+              // Remove highlight after 3 seconds
+              setTimeout(() => {
+                characterRow.classList.remove('ring-4', 'ring-yellow-400', 'bg-yellow-50');
+              }, 3000);
+            }
+          }, 300); // Small delay to ensure details is open
+        }
+
+        // Clear sessionStorage after use
+        sessionStorage.removeItem('scrollToCharacter');
+        sessionStorage.removeItem('highlightCharacter');
+      }
+    });
+  </script>
+
+  <!-- Toggle panel function -->
+  <script>
+    function togglePanel(panelId) {
+      const panel = document.getElementById(panelId);
+      if (panel) {
+        panel.classList.toggle('hidden');
+      } else {
+        console.error('Panel not found:', panelId);
+      }
+    }
+
+    // Auto-open candidate panel if URL parameter is present
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('open_panel') === 'true') {
+        // Open the details section
+        document.getElementById('basic-data-section').open = true;
+        // Show the candidate panel
+        document.getElementById('candidate-panel').classList.remove('hidden');
+        // Scroll to the candidate panel
+        setTimeout(() => {
+          document.getElementById('candidate-panel').scrollIntoView({behavior: 'smooth', block: 'center'});
+        }, 100);
+      }
+    });
+  </script>
+</div>

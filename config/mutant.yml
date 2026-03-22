@@ -1,0 +1,33 @@
+# Mutant configuration for mutation testing
+# Mutant tests the quality of your tests by introducing mutations (bugs)
+# into your code and verifying that your tests catch them
+
+# Integration with Minitest
+integration: minitest
+
+# Matcher configuration - which classes to mutate
+matcher:
+  # Test all models
+  subjects:
+    - 'Mushroom*'
+    - 'User*'
+    - 'Project*'
+    - 'MrCharacter*'
+    - 'Genus*'
+    - 'Species*'
+    - 'Article*'
+    - 'Cluster*'
+    - 'AllGroup*'
+
+# Coverage expectations
+coverage_criteria:
+  process:
+    # Require at least 80% mutation coverage
+    coverage: 80
+  timeout: 0.1
+
+# Jobs for parallel execution
+jobs: 4
+
+# Reporter
+reporter: cli

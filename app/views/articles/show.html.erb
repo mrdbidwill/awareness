@@ -1,0 +1,33 @@
+<% content_for :title, @article.title %>
+
+<div class="flex gap-2 m-6">
+  <%= link_to "Back to articles", articles_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+</div>
+
+<div class="prose prose-p:text-gray-900 prose-lg max-w-none mx-auto px-6">
+  <h1><%= sanitize(@article.title, tags: %w[em i]) %></h1>
+  <div class="text-sm text-gray-500 mb-4">
+    <% if @article.subject.present? %>
+      <span class="mr-2">
+        Subject:
+        <%= link_to @article.subject.name, subject_articles_path(subject_slug: @article.subject.slug), class: "underline hover:text-indigo-700" %>
+      </span>
+    <% end %>
+    <% if @article.published_at.present? %>
+      <span><%= @article.published_at.to_date.to_fs(:db) %></span>
+    <% end %>
+  </div>
+
+  <%# Body can be HTML; otherwise use simple_format for plain text %>
+  <% if @article.body.to_s.strip.starts_with?("<") %>
+    <%= raw mark_glossary_terms(sanitize(@article.body,
+        tags: %w[div p span br ul ol li h1 h2 h3 h4 strong em a blockquote code pre img table thead tbody tr th td b u i],
+        attributes: %w[href src alt title class style])) %>
+  <% else %>
+    <%= raw mark_glossary_terms(simple_format(@article.body)) %>
+  <% end %>
+
+  <div class="flex gap-2 m-6">
+    <%= link_to "Back to articles", articles_path, class: "rounded-md px-2 py-1 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  </div>
+</div>

@@ -1,0 +1,72 @@
+<h1 class="text-3xl font-bold text-center text-gray-900 mb-6">Contact Us</h1>
+<p class="text-center text-gray-600 mb-8">
+  If you have questions or feedback, use the form below.
+</p>
+
+<%= form_with url: '/contact', method: :post, local: true,
+              class: "max-w-lg mx-auto bg-white p-8 rounded-lg shadow-md" do %>
+  <% recipients = ENV.fetch("CONTACT_RECIPIENTS", "contact@awareness.example.com,webmaster@awareness.example.com")
+                   .split(",")
+                   .map(&:strip)
+                   .reject(&:blank?) %>
+  <% recipient_options = recipients.map { |email| [email, email] } %>
+  <% default_recipient = recipients.first || "contact@awareness.example.com" %>
+
+  <!-- Recipient Field -->
+  <div class="mb-4">
+    <label for="recipient" class="block text-sm font-medium text-gray-700 mb-1">Send To</label>
+    <%= select_tag :recipient,
+          options_for_select(recipient_options, default_recipient),
+          class: "w-full border border-gray-300 rounded-lg px-4 py-1 text-gray-800 focus:ring focus:ring-indigo-500 focus:outline-none" %>
+  </div>
+
+  <!-- Name Field -->
+  <div class="mb-4">
+    <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+    <%= text_field_tag :name, nil,
+          required: true,
+          class: "w-full border border-gray-300 rounded-lg px-4 py-1 text-gray-800 focus:ring focus:ring-indigo-500 focus:outline-none",
+          placeholder: "Enter your name" %>
+  </div>
+
+  <!-- Email Field -->
+  <div class="mb-4">
+    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+    <%= email_field_tag :email, nil,
+          required: true,
+          class: "w-full border border-gray-300 rounded-lg px-4 py-1 text-gray-800 focus:ring focus:ring-indigo-500 focus:outline-none",
+          placeholder: "Enter your email" %>
+  </div>
+
+  <!-- Subject Field -->
+  <div class="mb-4">
+    <label for="subject" class="block text-sm font-medium text-gray-700 mb-1">Subject</label>
+    <%= text_field_tag :subject, nil,
+          required: true,
+          class: "w-full border border-gray-300 rounded-lg px-4 py-1 text-gray-800 focus:ring focus:ring-indigo-500 focus:outline-none",
+          placeholder: "Enter subject" %>
+  </div>
+
+  <!-- Message Field -->
+  <div class="mb-4">
+    <label for="message" class="block text-sm font-medium text-gray-700 mb-1">Message</label>
+    <%= text_area_tag :message, nil,
+          required: true,
+          class: "w-full border border-gray-300 rounded-lg px-4 py-1 text-gray-800 focus:ring focus:ring-indigo-500 focus:outline-none",
+          placeholder: "Enter your message", rows: 5 %>
+  </div>
+
+  <!-- Honeypot Field (hidden from humans, visible to bots) -->
+  <div class="hidden-field" style="position: absolute; left: -9999px;">
+    <label for="website_url">Website</label>
+    <%= text_field_tag :website_url, nil,
+          tabindex: -1,
+          autocomplete: "off" %>
+  </div>
+
+  <!-- Submit Button -->
+  <div class="text-center">
+    <%= submit_tag "Submit",
+          class: "w-full bg-indigo-600 text-white font-medium py-1 px-4 rounded-lg hover:bg-indigo-700 active:bg-indigo-800 shadow hover:shadow-lg focus:outline-none focus:ring focus:ring-indigo-500" %>
+  </div>
+<% end %>

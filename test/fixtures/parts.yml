@@ -1,0 +1,18 @@
+one:
+  name: "Cap"
+  description: "Cap of mushroom"
+  comments: "Cap comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+two:
+  name: "Stem"
+  description: "Stem of mushroom"
+  comments: "Stem comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+three:
+  name: "Pore Surface"
+  description: "Pore surface of mushroom"
+  comments: "Pore surface comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

@@ -1,0 +1,18 @@
+one:
+  name: "Morphological"
+  description: "Morphological characteristics"
+  comments: "Morphological comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+two:
+  name: "Chemical"
+  description: "Chemical characteristics"
+  comments: "Chemical comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+three:
+  name: "Ecological"
+  description: "Ecological characteristics"
+  comments: "Ecological comments"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

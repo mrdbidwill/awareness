@@ -1,0 +1,94 @@
+<% content_for :title, "Article Archive" %>
+
+<div class="w-full">
+  <h1 class="font-bold text-2xl">Article Archive</h1>
+
+  <div class="mt-2 text-sm text-gray-600">
+    <% if @selected_subject.present? || @year.present? %>
+      <span>Filtered by:</span>
+      <% if @selected_subject.present? %>
+        <span class="ml-2 rounded bg-indigo-100 px-2 py-1 text-indigo-900">Subject: <%= @selected_subject.name %></span>
+      <% end %>
+      <% if @year.present? %>
+        <span class="ml-2 rounded bg-emerald-100 px-2 py-1 text-emerald-900">
+          Period: <%= @month.present? ? Date::MONTHNAMES[@month] : "Year" %> <%= @year %>
+        </span>
+      <% end %>
+      <%= link_to "Clear filters", archive_articles_path, class: "ml-2 underline hover:text-indigo-700" %>
+    <% else %>
+      <span>Browse all published articles by subject or date.</span>
+    <% end %>
+  </div>
+
+  <div class="mt-4 grid gap-4 lg:grid-cols-3">
+    <div class="rounded border bg-white p-4">
+      <h2 class="text-lg font-semibold">By Subject</h2>
+      <div class="mt-2 flex flex-wrap gap-2 text-sm">
+        <% @subjects.each do |subject| %>
+          <%= link_to subject_articles_path(subject_slug: subject.slug),
+                      class: "rounded border px-2 py-1 #{@selected_subject == subject ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white hover:bg-gray-50'}" do %>
+            <%= subject.name %> (<%= subject.articles_count %>)
+          <% end %>
+        <% end %>
+      </div>
+    </div>
+
+    <div class="rounded border bg-white p-4 lg:col-span-2">
+      <h2 class="text-lg font-semibold">By Year / Month</h2>
+      <% if @archive_year_counts.any? %>
+        <div class="mt-2 space-y-3 text-sm">
+          <% @archive_year_counts.each do |year, count| %>
+            <div>
+              <%= link_to archive_year_articles_path(year: year),
+                          class: "font-semibold underline hover:text-indigo-700 #{year == @year ? 'text-indigo-700' : 'text-gray-900'}" do %>
+                <%= year %> (<%= count %>)
+              <% end %>
+              <% if year == @year && @archive_month_counts.any? %>
+                <div class="mt-1 flex flex-wrap gap-2">
+                  <% @archive_month_counts.each do |month, month_count| %>
+                    <% month_number = month.to_i %>
+                    <%= link_to archive_month_articles_path(year: year, month: month),
+                                class: "rounded border px-2 py-1 #{@month == month_number ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white hover:bg-gray-50'}" do %>
+                      <%= Date::MONTHNAMES[month_number] %> (<%= month_count %>)
+                    <% end %>
+                  <% end %>
+                </div>
+              <% end %>
+            </div>
+          <% end %>
+        </div>
+      <% else %>
+        <p class="mt-2 text-sm text-gray-600">No archive data yet.</p>
+      <% end %>
+    </div>
+  </div>
+
+  <div class="mt-6 space-y-1">
+    <% if @articles.any? %>
+      <% @articles.each do |article| %>
+        <%= link_to article_path(article), class: "block border rounded-md p-4 bg-white hover:shadow-lg hover:border-blue-400 transition no-underline" do %>
+          <div class="flex flex-wrap items-center justify-between gap-2">
+            <h2 class="text-xl font-semibold text-blue-600"><%= sanitize(article.title, tags: %w[em i]) %></h2>
+            <div class="text-xs text-gray-500">
+              <% if article.subject.present? %>
+                <span class="mr-2">Subject: <%= article.subject.name %></span>
+              <% end %>
+              <% if article.published_at.present? %>
+                <span><%= article.published_at.to_date.to_fs(:db) %></span>
+              <% end %>
+            </div>
+          </div>
+          <% if article.summary.present? %>
+            <p class="mt-2 text-gray-700"><%= sanitize(truncate(article.summary, length: 220), tags: %w[em i]) %></p>
+          <% end %>
+        <% end %>
+      <% end %>
+    <% else %>
+      <p class="rounded border border-dashed bg-white p-4 text-gray-600">No articles match the current archive filters.</p>
+    <% end %>
+  </div>
+
+  <div class="mt-6">
+    <%= paginate @articles %>
+  </div>
+</div>

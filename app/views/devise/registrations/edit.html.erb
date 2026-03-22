@@ -1,0 +1,169 @@
+<!-- Show backup codes at the very top if they exist -->
+<% if flash[:backup_codes].present? %>
+  <div class="w-full auto-margins max-w-md mb-8 p-6 bg-yellow-50 border-4 border-yellow-400 rounded-lg shadow-lg">
+    <h2 class="text-2xl font-bold text-yellow-900 mb-4">🔐 Save Your Backup Codes!</h2>
+    <p class="font-semibold text-yellow-800 mb-3">Your two-factor authentication is now enabled. Save these backup codes in a secure location:</p>
+    <div class="bg-white p-4 rounded border-2 border-yellow-300 font-mono text-lg space-y-2">
+      <% flash[:backup_codes].each do |code| %>
+        <div class="py-1"><%= code %></div>
+      <% end %>
+    </div>
+    <p class="text-sm text-yellow-800 mt-4 font-medium">⚠️ You can use these codes to log in if you lose access to your authenticator app. Store them somewhere safe!</p>
+  </div>
+<% end %>
+
+<%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
+  <div class="w-full auto-margins max-w-md">
+    <h1 class="font-bold text-2xl mb-4">Edit <%= resource_name.to_s.humanize %></h1>
+
+    <%= render "devise/shared/error_messages", resource: resource %>
+
+    <div class="my-4">
+      <%= f.label :email, class: "block font-medium" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <% if devise_mapping.confirmable? && resource.pending_reconfirmation? %>
+      <div class="text-sm text-gray-700 mb-4">Currently waiting confirmation for: <%= resource.unconfirmed_email %></div>
+    <% end %>
+
+    <div class="my-4">
+      <%= f.label :display_name, class: "block font-medium" %>
+      <%= f.text_field :display_name, autofocus: true, autocomplete: "display_name", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <div class="my-4">
+      <%= f.label :password, "New Password",  class: "block font-medium" %> <i class="text-gray-600">(leave blank if you don't want to change it)</i>
+      <%= f.password_field :password, autocomplete: "new-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+      <% if @minimum_password_length %>
+        <em class="text-sm text-gray-600"><%= @minimum_password_length %> characters minimum</em>
+      <% end %>
+    </div>
+
+    <div class="my-4">
+      <%= f.label :password_confirmation,"New Password Confirmation", class: "block font-medium" %>
+      <%= f.password_field :password_confirmation, autocomplete: "new-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <div class="my-4">
+      <%= f.label :current_password, class: "block font-medium" %> <i class="text-gray-600">(we need your current password to confirm your changes)</i>
+      <%= f.password_field :current_password, autocomplete: "current-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <!-- Default Location Preferences -->
+    <div class="my-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" data-controller="country-select" data-country-select-url-value="<%= states_path %>">
+      <h3 class="font-semibold text-lg mb-3 text-blue-900">Default Location Preferences</h3>
+      <p class="text-sm text-blue-700 mb-4">Set default location values to pre-fill when creating new mushrooms. Leave blank if you prefer to enter location manually each time.</p>
+
+      <div class="my-4">
+        <%= f.label :default_country_id, "Default Country", class: "block font-medium" %>
+        <%= f.collection_select :default_country_id, Country.all, :id, :name,
+                               { prompt: "None - select manually each time", include_blank: true },
+                               { class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full",
+                                 data: { action: "change->country-select#change",
+                                        "country-select-target": "countrySelect"} } %>
+      </div>
+
+      <div id="state-select-container" class="my-4">
+        <%= f.label :default_state_id, "Default State/Province", class: "block font-medium" %>
+        <select name="user[default_state_id]"
+                id="user_default_state_id"
+                class="block shadow-sm rounded-md border px-2 py-1 mt-1 w-full"
+                data-country-select-target="stateSelect"
+                <%= resource.default_country_id.present? ? "" : "disabled" %>>
+          <% if resource.default_country_id.present? %>
+            <option value="">None - select manually each time</option>
+            <% Country.find(resource.default_country_id).states.order(:name).each do |state| %>
+              <option value="<%= state.id %>" <%= "selected" if state.id == resource.default_state_id %>><%= state.name %></option>
+            <% end %>
+          <% else %>
+            <option value="">Select a country first</option>
+          <% end %>
+        </select>
+      </div>
+
+      <div class="my-4">
+        <%= f.label :default_city, "Default City", class: "block font-medium" %>
+        <%= f.text_field :default_city, class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full", placeholder: "Optional" %>
+      </div>
+
+      <div class="my-4">
+        <%= f.label :default_county, "Default County", class: "block font-medium" %>
+        <%= f.text_field :default_county, class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full", placeholder: "Optional" %>
+      </div>
+    </div>
+
+    <div class="mt-6">
+      <%= f.submit "Update", class: "btn-primary btn-responsive" %>
+    </div>
+  </div>
+<% end %>
+
+<div class="w-full auto-margins max-w-md mt-6">
+  <h3 class="font-bold text-xl mb-2">Cancel my account</h3>
+  <p class="text-sm text-gray-600 mb-3">Unhappy? You can permanently delete your account.</p>
+  <%= button_to "Delete my account", registration_path(resource_name), data: { turbo_confirm: "Are you sure you want to delete your account? This cannot be undone." }, method: :delete, class: "btn-danger" %>
+</div>
+
+<%= link_to "Back", :back, class: "mt-2 inline-block btn-secondary" %>
+
+<!-- Two-Factor Authentication Section -->
+<div class="w-full auto-margins max-w-md mt-8 p-6 bg-white rounded-lg shadow-md">
+  <h3 class="text-xl font-bold mb-4">Two-Factor Authentication (2FA)</h3>
+
+  <% if current_user.otp_required_for_login? %>
+    <!-- 2FA is currently enabled -->
+    <div class="mb-4">
+      <p class="text-green-700 font-medium mb-2">✓ 2FA is currently <strong>enabled</strong> for your account.</p>
+      <p class="text-sm text-gray-600 mb-4">Your account is protected with two-factor authentication.</p>
+    </div>
+
+    <%= form_with url: disable_users_two_factor_settings_path, method: :delete, local: true do |f| %>
+      <div class="my-4">
+        <%= f.label :current_password, "Enter your password to disable 2FA:", class: "block font-medium mb-2" %>
+        <%= f.password_field :current_password, required: true, autocomplete: "current-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+      </div>
+      <div class="mt-4">
+        <%= f.submit "Disable 2FA", data: { turbo_confirm: "Are you sure you want to disable two-factor authentication?" }, class: "btn-danger" %>
+      </div>
+    <% end %>
+
+  <% elsif session[:enabling_otp] %>
+    <!-- 2FA setup in progress - show QR code and verification -->
+    <div class="mb-4">
+      <p class="text-blue-700 font-medium mb-2">Setting up 2FA...</p>
+      <p class="text-sm text-gray-600 mb-4">Scan this QR code with your authenticator app (like Google Authenticator, Authy, or 1Password), then enter the verification code below.</p>
+    </div>
+
+    <div class="mb-6 flex justify-center bg-white p-4 rounded border">
+      <%= raw RQRCode::QRCode.new(current_user.otp_provisioning_uri).as_svg(module_size: 6) %>
+    </div>
+
+    <%= form_with url: verify_users_two_factor_settings_path, method: :post, local: true do |f| %>
+      <div class="my-4">
+        <%= f.label :otp_attempt, "Enter 6-digit code from your authenticator app:", class: "block font-medium mb-2" %>
+        <%= f.text_field :otp_attempt, required: true, maxlength: 6, placeholder: "000000", autocomplete: "off", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full font-mono text-center text-2xl tracking-widest" %>
+      </div>
+      <div class="mt-4">
+        <%= f.submit "Verify and Enable 2FA", class: "btn-primary btn-responsive" %>
+      </div>
+    <% end %>
+
+    <%= form_with url: disable_users_two_factor_settings_path, method: :delete, local: true, class: "mt-2" do |f| %>
+      <%= f.submit "Cancel", class: "btn-secondary btn-responsive" %>
+    <% end %>
+
+  <% else %>
+    <!-- 2FA is disabled - show enable button -->
+    <div class="mb-4">
+      <p class="text-gray-700 font-medium mb-2">2FA is currently <strong>disabled</strong>.</p>
+      <p class="text-sm text-gray-600 mb-4">Add an extra layer of security to your account by requiring a code from your phone in addition to your password.</p>
+    </div>
+
+    <%= form_with url: enable_users_two_factor_settings_path, method: :post, local: true do |f| %>
+      <div class="mt-4">
+        <%= f.submit "Enable 2FA", class: "btn-primary" %>
+      </div>
+    <% end %>
+  <% end %>
+</div>

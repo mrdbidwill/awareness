@@ -1,0 +1,17 @@
+<%# Usage:
+    <%= render "shared/card", href: mushroom_path(m) do %>
+
+<%# Optional: href to wrap as link card; otherwise a plain div card %>
+<% if local_assigns[:href].present? %>
+  <%= link_to href, class: "card" do %>
+    <div class="card-body">
+      <%= yield %>
+    </div>
+  <% end %>
+<% else %>
+  <div class="card">
+    <div class="card-body">
+      <%= yield %>
+    </div>
+  </div>
+<% end %>

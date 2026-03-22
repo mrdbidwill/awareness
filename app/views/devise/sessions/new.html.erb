@@ -1,0 +1,33 @@
+
+<h2>Log in</h2>
+
+<%= form_for(resource, as: resource_name, url: session_path(resource_name), html: { data: { turbo: false } }) do |f| %>
+  <div class="w-full auto-margins max-w-md">
+    <h1 class="font-bold text-2xl mb-4">Log in</h1>
+
+    <div class="my-4">
+      <%= f.label :email, class: "block font-medium" %>
+      <%= f.email_field :email, autofocus: true, autocomplete: "email", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <div class="my-4">
+      <%= f.label :password, class: "block font-medium" %>
+      <%= f.password_field :password, autocomplete: "current-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+    </div>
+
+    <% if devise_mapping.rememberable? %>
+      <div class="my-4 flex items-center">
+        <%= f.check_box :remember_me, class: "mr-2" %>
+        <%= f.label :remember_me, class: "text-sm text-gray-700" %>
+      </div>
+    <% end %>
+
+    <div class="mt-6">
+      <%= f.submit "Log in", class: "btn-primary btn-responsive" %>
+    </div>
+
+    <div class="mt-4">
+      <%= render "devise/shared/links" %>
+    </div>
+  </div>
+<% end %>

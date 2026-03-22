@@ -1,0 +1,25 @@
+<!-- Call-to-Action Banner (Guests Only) -->
+<div class="group-box mb-3" style="border: 2px solid #16a34a;">
+  <div class="group-header" style="background-color: #dcfce7;">
+    <h2 class="text-lg font-bold text-gray-900">Explore Sample Mushroom Collections</h2>
+  </div>
+  <div class="px-4 py-4">
+    <p class="mb-3">Below are examples of mushrooms stored in our system. <strong>Sign up to view full details, add your own mushrooms, and unlock all features!</strong></p>
+    <div class="flex gap-3 mb-4">
+      <%= link_to "Sign Up Now", new_user_registration_path, class: "btn-primary" %>
+      <%= link_to "Login", new_user_session_path, class: "btn" %>
+    </div>
+
+    <!-- How MRDBID Works -->
+    <div class="border-t pt-4 mt-4">
+      <h3 class="text-md font-bold text-gray-900 mb-2">How MRDBID Works</h3>
+      <ol class="space-y-2 text-sm">
+        <li><strong>1. Register</strong> to store your fungi data. If you have mycology experience and want to participate in editing and adding characters, email us after registration.</li>
+        <li><strong>2. Login</strong> to enter and access your data.</li>
+        <li><strong>3. Add, View, and Manage</strong> your mushroom collection.</li>
+        <li><strong>4. Optional:</strong> Participate in editing and adding characters to describe fungi data if you have the experience.</li>
+      </ol>
+      <p class="mt-3 text-sm"><span class="text-red-500">Notice:</span> <strong>There are <u>a lot</u> of characters to consider!</strong> Formatting them for the real world is one of the main goals and challenges for this website. This is a work in progress, and we are always looking for help to improve the accuracy and completeness of the data.</p>
+    </div>
+  </div>
+</div>

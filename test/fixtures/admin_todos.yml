@@ -1,0 +1,23 @@
+one:
+  title: "Update documentation"
+  description: "Need to update the user guide with new features"
+  done: false
+  user: one
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>
+
+two:
+  title: "Review database schema"
+  description: "Check for optimization opportunities"
+  done: true
+  user: one
+  created_at: <%= 5.days.ago %>
+  updated_at: <%= 1.day.ago %>
+
+three:
+  title: "Fix broken links"
+  description: null
+  done: false
+  user: two
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>

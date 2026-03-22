@@ -1,0 +1,39 @@
+<%= form_with(model: object, class: "contents") do |form| %>
+  <% if object.errors.any? %>
+    <div id="error_explanation" class="bg-red-50 text-red-500 px-2 py-1 font-medium rounded-md mt-3">
+      <h2><%= pluralize(object.errors.count, "error") %> prohibited this <%= object.class.name.downcase %> from being saved:</h2>
+      <ul class="list-disc ml-6">
+        <% object.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="my-5"><p>app/views/mushrooms/_lookup_form.html.erb> </p>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name %>
+    <%= form.text_field :name, class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description %>
+    <%= form.text_area :description, rows: 4, class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :comments %>
+    <%= form.text_area :comments, rows: 4, class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :source_data %>
+    <%= form.collection_select :source_data, SourceData.all, :id, :title, prompt: "Choose a source_data", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit class: "btn-primary btn-responsive" %>
+  </div>
+<% end %>

@@ -1,0 +1,24 @@
+<h1 class="text-xl font-semibold mb-4">Add Mushroom to Group</h1>
+
+<% if @mushroom %>
+  <div class="mb-3 p-2 bg-gray-50">
+    This mushroom: <span class="font-semibold"><%= @mushroom.name %></span>
+  </div>
+<% end %>
+
+<%= render "form",
+           all_group_mushroom: @all_group_mushroom,
+           all_groups: (@all_groups || []),
+           mushrooms: (@mushrooms || []) %>
+<div class="mt-4 flex flex-wrap gap-2">
+  <% if @mushroom %>
+    <%= link_to edit_mushroom_path(@mushroom),
+        class: "inline-flex items-center gap-2 px-4 py-2 rounded-md bg-indigo-600 hover:bg-indigo-700 text-white font-medium transition" do %>
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+      </svg>
+      <span>Back to Character Grid</span>
+    <% end %>
+  <% end %>
+  <%= link_to "Back to mushrooms", mushrooms_path, class: "btn-primary" %>
+</div>

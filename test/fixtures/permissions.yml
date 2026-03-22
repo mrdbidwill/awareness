@@ -1,0 +1,23 @@
+admin:
+  id: 1
+  name: "Admin"
+  description: "Admin role"
+  comments:
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+super_admin:
+  id: 2
+  name: "Super Admin"
+  description: "Super admin role for test admin users"
+  comments:
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+member:
+  id: 9
+  name: "Member"
+  description: "Standard member"
+  comments:
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

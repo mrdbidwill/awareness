@@ -1,0 +1,29 @@
+# ============================================================================
+# SYSTEMD SERVICE TEMPLATE - FAILURE NOTIFICATION
+# ============================================================================
+# This unit runs whenever a service with OnFailure=notify-on-failure@%n.service
+# transitions to a failed state.
+#
+# INSTALLATION:
+# sudo cp /opt/awareness/current/config/notify-on-failure@.service /etc/systemd/system/
+# sudo systemctl daemon-reload
+#
+# CONFIGURATION:
+# Create /etc/systemd/system/notify-on-failure.env with:
+#   EMAIL_TO=you@example.com
+#   EMAIL_FROM=server@example.com
+#
+# REQUIREMENTS:
+# - /usr/local/bin/systemd_notify_failure.sh (see script/ in this repo)
+# - A local mailer (mailx/mailutils) or sendmail available on the host
+# ============================================================================
+
+[Unit]
+Description=Notify on failure for %i
+After=network.target
+
+[Service]
+Type=oneshot
+EnvironmentFile=-/etc/systemd/system/notify-on-failure.env
+ExecStart=/usr/local/bin/systemd_notify_failure.sh %i
+

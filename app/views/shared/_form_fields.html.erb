@@ -1,0 +1,9 @@
+<!-- app/views/shared/_form_fields.html.erb -->
+
+<div class="form-field">
+  <%= form.label field, class: "form-label" %>
+  <%= form.text_field field, class: "form-input" %>
+  <% if form.object.errors[field].any? %>
+    <p class="form-error"><%= form.object.errors[field].join(", ") %></p>
+  <% end %>
+</div>

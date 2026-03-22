@@ -1,0 +1,11 @@
+mycology:
+  name: Mycology
+  slug: mycology
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>
+
+tree_identification:
+  name: Tree - Identification
+  slug: tree-identification
+  created_at: <%= 2.days.ago %>
+  updated_at: <%= 2.days.ago %>

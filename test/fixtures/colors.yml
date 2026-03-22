@@ -1,0 +1,37 @@
+one:
+  id: 1
+  latin_name: "Latin Name One"
+  common_name: "Common Name One"
+  color_group: one
+  hex: "#000000"
+  sequence: 1
+  r_val: 0
+  g_val: 0
+  b_val: 0
+  closest_websafe_color: "#000000"
+  cwc_r: 0
+  cwc_g: 0
+  cwc_b: 0
+  image_file_address: "image_file_address"
+  metadata: "metadata"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+two:
+  id: 2
+  latin_name: "Latin Name Two"
+  common_name: "Common Name Two"
+  color_group: one
+  hex: "#000001"
+  sequence: 2
+  r_val: 0
+  g_val: 0
+  b_val: 1
+  closest_websafe_color: "#000001"
+  cwc_r: 0
+  cwc_g: 0
+  cwc_b: 1
+  image_file_address: "image_file_address"
+  metadata: "metadata"
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

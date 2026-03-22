@@ -1,0 +1,12 @@
+# user_roles.yml
+admin_user_role:
+  user: admin # Refers to "admin" in users.yml
+  role: admin # Refers to "admin" in roles.yml
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+user_one_role:
+  user: one # Refers to "one" in users.yml
+  role: manager # Refers to "manager" in roles.yml
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

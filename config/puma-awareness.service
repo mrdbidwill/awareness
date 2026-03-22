@@ -1,0 +1,120 @@
+# ============================================================================
+# SYSTEMD SERVICE FILE FOR PUMA WEB SERVER
+# ============================================================================
+# This file defines the systemd service that manages Puma in production.
+#
+# INSTALLATION:
+# sudo cp /opt/awareness/current/config/puma.service /etc/systemd/system/puma-awareness.service
+# sudo systemctl daemon-reload
+# sudo systemctl enable puma-awareness.service
+#
+# MANAGEMENT COMMANDS:
+# - Start:   sudo systemctl start puma-awareness.service
+# - Stop:    sudo systemctl stop puma-awareness.service
+# - Restart: sudo systemctl restart puma-awareness.service
+# - Status:  sudo systemctl status puma-awareness.service
+# - Logs:    sudo journalctl -xeu puma-awareness.service
+#
+# AUTOMATIC DEPLOYMENT:
+# Capistrano automatically restarts Puma after deployment via:
+# config/deploy.rb line 56: after "deploy:published", "systemd_puma:restart"
+#
+# ⚠️  CRITICAL: Changes to this file require:
+# 1. Copy to /etc/systemd/system/puma-awareness.service
+# 2. sudo systemctl daemon-reload
+# 3. sudo systemctl restart puma-awareness.service
+# ============================================================================
+
+[Unit]
+Description=Puma HTTP Server for awareness (production)
+After=network.target
+StartLimitIntervalSec=300
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=root
+MemoryMax=700M
+CPUQuota=100%
+WorkingDirectory=/opt/awareness/current
+
+# ============================================================================
+# ENVIRONMENT VARIABLES - CRITICAL FOR RAILS OPERATION
+# ============================================================================
+# RAILS_ENV: MUST be "production" - determines which config files are loaded
+# RBENV_ROOT: Required for rbenv to find Ruby installation
+# PATH: Ensures rbenv shims are used (Ruby 3.4.3 as configured)
+#
+# ⚠️  MISSING ENVIRONMENT VARIABLES:
+# The following are loaded from /opt/awareness/shared/.env via Capistrano:
+# - MYSQL_DATABASE, MYSQL_USER, MYSQL_PASSWORD: Database credentials
+# - APP_HOST: Used for mailer URLs (awareness.com)
+# - RAILS_MASTER_KEY: Decrypts credentials.yml.enc
+# - SOLID_QUEUE_IN_PUMA: Optional - enables Solid Queue in Puma process
+#
+# TO ADD ENVIRONMENT VARIABLES:
+# 1. Edit: /opt/awareness/shared/.env (NOT this file)
+# 2. Format: KEY=value (one per line, no export statement)
+# 3. Restart: sudo systemctl restart puma-awareness.service
+#
+# NOTE: .env is loaded by Rails, not systemd. See config/deploy.rb line 38.
+# ============================================================================
+Environment=RAILS_ENV=production
+Environment=RBENV_ROOT=/root/.rbenv
+Environment=PATH=/root/.rbenv/shims:/root/.rbenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+# ============================================================================
+# PROCESS MANAGEMENT
+# ============================================================================
+# ExecStartPre: Cleans up stale socket/pid files before starting
+# ExecStart: Starts Puma using bundler to ensure correct gem versions
+# ExecReload: Graceful restart (USR1 signal) - workers finish current requests
+# ExecStop: Graceful shutdown (SIGTERM) - allows cleanup before exit
+#
+# ⚠️  IMPORTANT: Puma configuration is in /opt/awareness/current/config/puma.rb
+# Do NOT add puma CLI flags here - all config should be in puma.rb
+# ============================================================================
+ExecStartPre=/bin/rm -f /opt/awareness/shared/tmp/sockets/puma.sock
+ExecStartPre=/bin/rm -f /opt/awareness/shared/tmp/pids/puma.pid
+ExecStartPre=/bin/rm -f /opt/awareness/shared/tmp/pids/puma.state
+ExecStart=/root/.rbenv/shims/bundle exec puma -C /opt/awareness/current/config/puma.rb
+ExecReload=/bin/kill -USR1 $MAINPID
+ExecStop=/bin/kill -SIGTERM $MAINPID
+
+# ============================================================================
+# RESTART POLICY - ENSURES HIGH AVAILABILITY
+# ============================================================================
+# Restart=always: Automatically restart if Puma crashes
+# RestartSec=10: Wait 10 seconds before restarting (prevents rapid restart loops)
+# KillMode=mixed: Send SIGTERM to main process, SIGKILL to remaining after timeout
+# TimeoutStopSec=30: Wait 30 seconds for graceful shutdown before force kill
+# StartLimitBurst=5: Allow 5 restart attempts within StartLimitIntervalSec
+# StartLimitIntervalSec=300: Reset restart counter after 5 minutes
+#
+# This configuration prevents 500 errors from persisting after crashes
+# ============================================================================
+Restart=always
+RestartSec=10
+KillMode=mixed
+KillSignal=SIGTERM
+TimeoutStopSec=30
+
+# ============================================================================
+# LOGGING
+# ============================================================================
+# StandardOutput: Puma stdout (info messages, requests if configured)
+# StandardError: Puma stderr (errors, exceptions, backtraces)
+# SyslogIdentifier: Tag for journalctl filtering
+#
+# VIEW LOGS:
+# - Systemd: sudo journalctl -xeu puma-awareness.service
+# - Stdout:  tail -f /opt/awareness/shared/log/puma_stdout.log
+# - Stderr:  tail -f /opt/awareness/shared/log/puma_stderr.log
+# - Rails:   tail -f /opt/awareness/shared/log/production.log (NOT managed here)
+# ============================================================================
+StandardOutput=append:/opt/awareness/shared/log/puma_stdout.log
+StandardError=append:/opt/awareness/shared/log/puma_stderr.log
+SyslogIdentifier=puma-awareness
+
+[Install]
+WantedBy=multi-user.target

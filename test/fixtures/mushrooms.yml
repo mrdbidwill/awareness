@@ -1,0 +1,53 @@
+demo:
+  name: "Demo Oyster"
+  description: "Public demo mushroom"
+  comments: "Visible to guests"
+  user_id: 1
+  country: one
+  state: one
+  fungus_type: one
+  collection_date: <%= 7.days.ago.to_date %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+one:
+  id:  "980190962"
+  user_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  name: "Button Mushroom"
+  description: "Common mushroom"
+  comments: "Good for pizza"
+  user: one # Refers to the "one" user in users.yml
+  country: one
+  state: one
+  fungus_type: one
+  collection_date: <%= 14.days.ago.to_date %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+two:
+  id:  "298486374"
+  user_id: <%= ActiveRecord::FixtureSet.identify(:two) %>
+  name: "Shiitake"
+  description: "Has a rich taste"
+  comments: "Great for soups"
+  user: two # Belongs to user two for authorization tests
+  country: two
+  state: two
+  fungus_type: two
+  collection_date: <%= 14.days.ago.to_date %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+three:
+  id:  "398765432"
+  user_id: <%= ActiveRecord::FixtureSet.identify(:one) %>
+  name: "Portobello"
+  description: "Large brown mushroom"
+  comments: "Great for grilling"
+  user: one
+  country: one
+  state: one
+  fungus_type: one
+  collection_date: <%= Date.today %>
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

@@ -1,0 +1,13 @@
+one:
+  name: "Test Lookup Item"
+  mr_character: one
+  source_data: one
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+two:
+  name: "Another Lookup Item"
+  mr_character: two
+  source_data: two
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>

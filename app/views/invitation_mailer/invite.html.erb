@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+    <style>
+      body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+      .container { max-width: 600px; margin: 0 auto; padding: 20px; }
+      .button { display: inline-block; padding: 12px 24px; background-color: #007bff; color: white; text-decoration: none; border-radius: 4px; margin: 20px 0; }
+      .info-box { background-color: #f8f9fa; border-left: 4px solid #007bff; padding: 15px; margin: 20px 0; }
+      .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 20px 0; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>You're Invited to Awareness</h2>
+
+      <p>Hello,</p>
+
+      <p>You've been invited to join Awareness with <strong>full admin access for 24 hours</strong>. We value your expertise and would love your help advancing our mushroom character identification system.</p>
+
+      <div class="info-box">
+        <strong>Getting Started:</strong><br>
+        Simply click the button below to instantly access the site with full admin privileges. No signup, no password, no hassle.
+      </div>
+
+      <center>
+        <a href="<%= @magic_link %>" class="button">Access Awareness Now</a>
+      </center>
+
+      <div class="warning">
+        <strong>Important Information:</strong><br>
+        • Your admin access expires <%= distance_of_time_in_words_to_now(@expires_at) %> from now<br>
+        • After expiration, you'll be automatically downgraded to read-only access<br>
+        • To continue as a permanent admin, simply create a regular account on the site and email <strong><%= ENV.fetch("SUPPORT_EMAIL", "support@awareness.example.com") %></strong> to request permanent admin privileges
+      </div>
+
+      <p>We're excited to have your contributions!</p>
+
+      <p>
+        Best regards,<br>
+        The Awareness Team
+      </p>
+
+      <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+      <p style="font-size: 12px; color: #666;">
+        If the button doesn't work, copy and paste this link into your browser:<br>
+        <%= @magic_link %>
+      </p>
+    </div>
+  </body>
+</html>

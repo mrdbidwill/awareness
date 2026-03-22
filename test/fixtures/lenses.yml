@@ -1,0 +1,11 @@
+one:
+  make: "Canon"
+  model: "50mm f/1.8"
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>
+
+two:
+  make: "Nikon"
+  model: "85mm f/1.4"
+  created_at: <%= 1.day.ago %>
+  updated_at: <%= 1.day.ago %>

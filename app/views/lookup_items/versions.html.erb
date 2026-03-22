@@ -1,0 +1,36 @@
+<!-- app/views/lookup_items/versions.html.erb -->
+<h2>Change History for <%= @lookup_item.name %></h2>
+<table>
+  <thead>
+  <tr>
+    <th>Date</th>
+    <th>User</th>
+    <th>Event</th>
+    <th>Changes</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @versions.each do |version| %>
+    <tr>
+      <td><%= version.created_at.strftime('%Y-%m-%d %H:%M') %></td>
+      <td>
+        <% if version.whodunnit && user = User.find_by(id: version.whodunnit) %>
+          <%= user.email %>
+        <% else %>
+          System/Unknown
+        <% end %>
+      </td>
+      <td><%= version.event.capitalize %></td>
+      <td>
+        <% if version.changeset.present? %>
+          <% version.changeset.each do |field, changes| %>
+            <div><b><%= field %>:</b> <%= changes[0] %> → <%= changes[1] %></div>
+          <% end %>
+        <% else %>
+          (no changes tracked)
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

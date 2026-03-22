@@ -1,0 +1,2 @@
+module AllGroupsHelper
+end

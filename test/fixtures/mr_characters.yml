@@ -1,0 +1,18 @@
+one:
+  name: "Cap Color"
+  part: one
+  observation_method: one
+  display_option: one
+  source_data: one
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>
+
+
+two:
+  name: "Bruise Reaction"
+  part: two
+  observation_method: two
+  display_option: two
+  source_data: two
+  created_at: <%= Time.current %>
+  updated_at: <%= Time.current %>

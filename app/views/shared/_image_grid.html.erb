@@ -1,0 +1,40 @@
+<%# expects: images (collection of ActiveStorage attachments or wrapper objects), image_size: [w,h], alt_fallback: string %>
+<% if images.present? %>
+  <div class="w-full">
+    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-1">
+      <% images.each do |image_mushroom| %>
+        <div class="image-cell">
+          <picture>
+            <%= tag.source(
+                    srcset: rails_representation_url(
+                      image_mushroom.image_file.variant(
+                        resize_to_fill: image_size || [120, 120],
+                        format: :webp,
+                        saver: { strip: true, quality: 60, effort: 4 }
+                      ).processed, only_path: true
+                    ),
+                    type: "image/webp"
+                  ) %>
+              <%= image_tag(
+                    rails_representation_url(
+                      image_mushroom.image_file.variant(
+                        resize_to_fill: image_size || [120, 120],
+                        saver: { strip: true, quality: 72, optimize_coding: true }
+                      ).processed, only_path: true
+                    ),
+                  width: (image_size || [120,120])[0],
+                  height: (image_size || [120,120])[1],
+                  class: "w-full h-full object-cover block",
+                  loading: "eager",
+                  decoding: "async",
+                  fetchpriority: "high",
+                  alt: image_mushroom.image_name.presence || alt_fallback
+                ) %>
+          </picture>
+        </div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
+  <p class="hint">No images available.</p>
+<% end %>
