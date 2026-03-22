@@ -58,6 +58,9 @@ node_modules/
 # Ignore JetBrains IDE files
 .idea/
 
+# Ignore macOS Finder metadata
+.DS_Store
+
 # Ignore test coverage reports
 /coverage/
 /test/vcr_cassettes/
