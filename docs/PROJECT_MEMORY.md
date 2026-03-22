@@ -1,6 +1,6 @@
 # Project Memory
 
-This document is the living memory for MRDBID. It captures the rules, decisions, and practices that must not regress.
+This document is the living memory for Awareness. It captures the rules, decisions, and practices that must not regress.
 
 ## How to Use This Document
 
@@ -38,7 +38,7 @@ This document is the living memory for MRDBID. It captures the rules, decisions,
 
 ## Authorization & Ownership Rules (Non-Negotiable)
 
-This section is the single source of truth for **who can read or change what** in MRDBID.
+This section is the single source of truth for **who can read or change what** in Awareness.
 All code changes must comply with these rules. When in doubt, follow this document.
 
 ### Purpose

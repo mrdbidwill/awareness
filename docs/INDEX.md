@@ -4,9 +4,7 @@ This index is the canonical entry point for project documentation.
 
 **Project Memory**
 - `PROJECT_MEMORY.md`
-- `PROJECT_MEMORY_mrdbid.com.md`
 - `decision-log.md`
-- `HANDOFF_MRDBID_RUBYMINE_CODEX.md`
 
 **Standards & Patterns**
 - `CODING_STANDARDS.md`
@@ -19,9 +17,7 @@ This index is the canonical entry point for project documentation.
 **Deployment & Operations**
 - `DEPLOYMENT.md`
 - `DEPLOYMENT_CHECKLIST.md`
-- `DEPLOYMENT_NOTES.md`
 - `DEPLOYMENT_TROUBLESHOOTING.md`
-- `SERVER_BACKUP_INSTRUCTIONS_10_13_2025.md`
 - `BACKUP_STRATEGY.md`
 - `GOOGLE_SEARCH_CONSOLE_SETUP.md`
 
@@ -55,10 +51,6 @@ This index is the canonical entry point for project documentation.
 **UI & Color System**
 - `COLOR_SYSTEM.md`
 - `COLOR_SWATCH_SIZES.md`
-
-**Incidents & Fixes**
-- `PRODUCTION_500_ERROR_FIX.md`
-- `PRODUCTION_500_ERROR_FIX_ACTUAL.md`
 
 **Internationalization**
 - `I18N.md`

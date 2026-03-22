@@ -56,7 +56,7 @@ When adding a new Rails engine:
 curl http://localhost:3000/engine-path/endpoint
 
 # Production test
-curl https://mrdbid.com/engine-path/endpoint
+curl https://awareness.example.com/engine-path/endpoint
 ```
 
 Should return 200, not 401.

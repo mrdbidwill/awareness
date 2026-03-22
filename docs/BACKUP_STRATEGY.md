@@ -1,4 +1,4 @@
-# MRDBID Backup Strategy
+# Awareness Backup Strategy
 
 ## Overview
 
@@ -47,7 +47,7 @@ This application has a three-tier backup strategy for user data, particularly us
 **Recommended implementation**:
 ```bash
 # Daily cron job (3 AM)
-0 3 * * * cd /opt/mrdbid/current && RAILS_ENV=production bundle exec rake storage:backup
+0 3 * * * cd /opt/awareness/current && RAILS_ENV=production bundle exec rake storage:backup
 ```
 
 See `lib/tasks/storage_backup.rake` (to be created) for backup task.
@@ -100,10 +100,10 @@ See `lib/tasks/storage_backup.rake` (to be created) for backup task.
 Check backup health:
 ```bash
 # Storage directory size
-du -sh /opt/mrdbid/shared/storage/
+du -sh /opt/awareness/shared/storage/
 
 # Recent exports
-ls -lh /opt/mrdbid/shared/public/tmp/exports/
+ls -lh /opt/awareness/shared/public/tmp/exports/
 
 # Background job status
 rails runner "puts SolidQueue::Job.where(queue_name: 'default').count"

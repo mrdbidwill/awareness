@@ -28,7 +28,7 @@ This automatically:
 
 ## Pre-Deploy Env Check (R2 + AdSense)
 
-Verify `/opt/mrdbid/shared/.env` includes:
+Verify `/opt/awareness/shared/.env` includes:
 - `ACTIVE_STORAGE_SERVICE=r2`
 - `R2_BUCKET`, `R2_ENDPOINT`, `R2_REGION`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_PUBLIC_BASE_URL`
 - `ADSENSE_ENABLED` and `ADSENSE_CLIENT_ID` (public-only ads)
@@ -42,10 +42,10 @@ If you need to manually restart services:
 ssh root@85.31.233.192
 
 # Restart Puma
-sudo systemctl restart puma-mrdbid.service
+sudo systemctl restart puma-awareness.service
 
 # Restart Solid Queue (CRITICAL for background jobs!)
-sudo systemctl restart solid-queue-mrdbid.service
+sudo systemctl restart solid-queue-awareness.service
 ```
 
 ## Legacy Puma Units (Must Stay Masked)
@@ -67,14 +67,14 @@ After deploy, to verify Solid Queue is running with new code:
 
 ```bash
 ssh root@85.31.233.192
-systemctl status solid-queue-mrdbid
+systemctl status solid-queue-awareness
 # Should show recent restart timestamp
 ```
 
 ## Common Issues
 
 ### Issue: "Background jobs still failing after deploy"
-**Solution:** Restart Solid Queue: `sudo systemctl restart solid-queue-mrdbid`
+**Solution:** Restart Solid Queue: `sudo systemctl restart solid-queue-awareness`
 
 ### Issue: "Permission denied during cleanup"
 **Status:** Known issue, safe to ignore. Cleanup fails but deploy succeeds.
@@ -93,7 +93,7 @@ To test if Solid Queue is processing jobs correctly:
 ## Files Modified for Deployment Safeguards
 
 - `config/deploy.rb` - Adds deploy guards against legacy Puma units
-- `config/puma.service` - Adds OnFailure hook for mrdbid Puma
+- `config/puma.service` - Adds OnFailure hook for awareness Puma
 - `config/puma-auto-glossary.service` - Adds OnFailure hook for auto-glossary Puma
 - `config/puma-mycowriter.service` - Adds OnFailure hook for MycoWriter Puma
 - `config/notify-on-failure@.service` - Failure notification unit template
@@ -106,7 +106,7 @@ To test if Solid Queue is processing jobs correctly:
 ✅ **Documented** - This checklist explains the issue
 ✅ **Commented** - Critical code sections have warnings not to remove
 
-**If Solid Queue errors persist after deploy, restart `solid-queue-mrdbid.service` manually.**
+**If Solid Queue errors persist after deploy, restart `solid-queue-awareness.service` manually.**
 
 ## Failure Notifications (Recommended)
 
@@ -119,4 +119,4 @@ Ensure these exist on the server:
 ## Monitoring (Recommended)
 
 Use the lightweight health endpoint for uptime checks:
-- `https://mrdbid.com/health`
+- `https://awareness.example.com/health`

@@ -12,7 +12,7 @@ Replace the server's master.key with the correct production key from your secure
 
 ```bash
 # The correct production key (retrieve from your secure vault)
-echo "<PRODUCTION_MASTER_KEY>" | ssh root@85.31.233.192 "cat > /opt/mrdbid/shared/config/master.key && chmod 600 /opt/mrdbid/shared/config/master.key"
+echo "<PRODUCTION_MASTER_KEY>" | ssh root@85.31.233.192 "cat > /opt/awareness/shared/config/master.key && chmod 600 /opt/awareness/shared/config/master.key"
 
 # Then deploy
 cap production deploy
@@ -26,7 +26,7 @@ Before attempting fixes, verify the issue:
 
 ```bash
 # 1. Check what master.key is on the server
-ssh root@85.31.233.192 "cat /opt/mrdbid/shared/config/master.key"
+ssh root@85.31.233.192 "cat /opt/awareness/shared/config/master.key"
 
 # 2. Should output your production key
 # 3. If different, replace it using the command above
@@ -40,7 +40,7 @@ ssh root@85.31.233.192 "cat /opt/mrdbid/shared/config/master.key"
 
 ### Key Facts
 1. The production credentials file (`config/credentials/production.yml.enc`) contains SMTP settings and `secret_key_base` - NOT database credentials
-2. Database credentials come from `/opt/mrdbid/shared/.env` file on the server
+2. Database credentials come from `/opt/awareness/shared/.env` file on the server
 3. The error happens during `rake assets:precompile` when Rails initializes and tries to decrypt credentials
 4. The master.key must match the encryption key used to create credentials.yml.enc
 
@@ -60,24 +60,24 @@ ssh root@85.31.233.192 "cat /opt/mrdbid/shared/config/master.key"
 1. SSH to server and test credentials manually:
    ```bash
    ssh root@85.31.233.192
-   cd /opt/mrdbid/current
+   cd /opt/awareness/current
    RAILS_ENV=production bin/rails runner "puts Rails.application.credentials.dig(:smtp, :address)"
    # Should output: smtp.hostinger.com
    ```
 
 2. If that fails, check file permissions:
    ```bash
-   ls -la /opt/mrdbid/shared/config/master.key
+   ls -la /opt/awareness/shared/config/master.key
    # Should be: -rw------- (600)
 
-   ls -la /opt/mrdbid/shared/config/credentials.yml.enc
+   ls -la /opt/awareness/shared/config/credentials.yml.enc
    # Should be: -rw-r--r-- (644)
    ```
 
 3. Verify symlinks:
    ```bash
-   ls -la /opt/mrdbid/current/config/master.key
-   # Should point to: /opt/mrdbid/shared/config/master.key
+   ls -la /opt/awareness/current/config/master.key
+   # Should point to: /opt/awareness/shared/config/master.key
    ```
 
 ## Summary
@@ -106,11 +106,11 @@ If you want deploys to handle this automatically, allow passwordless sudo for th
 
 **Symptoms**
 - CPU pinned at or near 100%
-- `There is already a server bound to /opt/mrdbid/shared/tmp/sockets/puma.sock`
+- `There is already a server bound to /opt/awareness/shared/tmp/sockets/puma.sock`
 - `puma.service` restarting rapidly
 
 **Root Cause**
-Legacy `puma.service` running alongside `puma-mrdbid.service` and competing for the same Unix socket.
+Legacy `puma.service` running alongside `puma-awareness.service` and competing for the same Unix socket.
 
 **Fix**
 Mask the legacy unit:

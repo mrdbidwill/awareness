@@ -372,7 +372,7 @@ When deploying to production:
 
 1. **Backup database first**:
    ```bash
-   mysqldump -u user -p mrdbid_production > backup_before_properties.sql
+   mysqldump -u user -p awareness_production > backup_before_properties.sql
    ```
 
 2. **Run migration**:
@@ -384,13 +384,13 @@ When deploying to production:
 3. **Verify**:
    ```bash
    # SSH to production
-   cd /opt/mrdbid/current
+   cd /opt/awareness/current
    RAILS_ENV=production bin/rails runner "puts MrCharacter.column_names.include?('properties')"
    # Should output: true
    ```
 
 4. **Monitor**:
-   - Check logs: `/opt/mrdbid/shared/log/production.log`
+   - Check logs: `/opt/awareness/shared/log/production.log`
    - Verify character pages load correctly
    - Test character editing
 

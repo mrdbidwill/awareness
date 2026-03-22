@@ -115,7 +115,7 @@ CACHE_EXPIRY = 24.hours  # Change as needed
 Update in service if deploying:
 
 ```ruby
-request['User-Agent'] = "MRDBIDApp/1.0 (your-domain.com; Educational/Research)"
+request['User-Agent'] = "AwarenessApp/1.0 (your-domain.com; Educational/Research)"
 ```
 
 ## API Compliance

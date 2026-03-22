@@ -41,9 +41,9 @@ This application deploys to a Hostinger VPS using Capistrano. The deployment is 
 
    # Create database and user
    mysql -u root -p
-   CREATE DATABASE mrdbid_production;
-   CREATE USER 'mrdbid'@'localhost' IDENTIFIED BY 'your_secure_password';
-   GRANT ALL PRIVILEGES ON mrdbid_production.* TO 'mrdbid'@'localhost';
+   CREATE DATABASE awareness_production;
+   CREATE USER 'awareness'@'localhost' IDENTIFIED BY 'your_secure_password';
+   GRANT ALL PRIVILEGES ON awareness_production.* TO 'awareness'@'localhost';
    FLUSH PRIVILEGES;
    ```
 
@@ -51,13 +51,13 @@ This application deploys to a Hostinger VPS using Capistrano. The deployment is 
    ```bash
    apt-get install -y nginx
 
-   # Configuration will be in /etc/nginx/sites-available/mrdbid
+   # Configuration will be in /etc/nginx/sites-available/awareness
    ```
 
 5. **Create deployment directory**
    ```bash
-   mkdir -p /opt/mrdbid
-   chown root:root /opt/mrdbid
+   mkdir -p /opt/awareness
+   chown root:root /opt/awareness
    ```
 
 ## Local Setup
@@ -73,13 +73,13 @@ Capistrano deploys run as the `deploy` user (see `config/deploy/production.rb`).
 
 ### Credentials
 
-1. **Master Key**: Must exist in `/opt/mrdbid/shared/config/master.key` on server
-2. **Credentials**: Must exist in `/opt/mrdbid/shared/config/credentials.yml.enc` on server
+1. **Master Key**: Must exist in `/opt/awareness/shared/config/master.key` on server
+2. **Credentials**: Must exist in `/opt/awareness/shared/config/credentials.yml.enc` on server
 
 Copy these files manually on first deployment:
 ```bash
-scp config/master.key root@85.31.233.192:/opt/mrdbid/shared/config/
-scp config/credentials.yml.enc root@85.31.233.192:/opt/mrdbid/shared/config/
+scp config/master.key root@85.31.233.192:/opt/awareness/shared/config/
+scp config/credentials.yml.enc root@85.31.233.192:/opt/awareness/shared/config/
 ```
 
 ## Deployment
@@ -104,12 +104,12 @@ cap production deploy
 ```
 
 This automatically restarts:
-1. `puma-mrdbid.service`
-2. `solid-queue-mrdbid.service` (if installed)
+1. `puma-awareness.service`
+2. `solid-queue-awareness.service` (if installed)
 
 ## Production Env Flags (R2 + AdSense)
 
-Ensure these are set in `/opt/mrdbid/shared/.env` before deploying:
+Ensure these are set in `/opt/awareness/shared/.env` before deploying:
 
 ```bash
 ACTIVE_STORAGE_SERVICE=r2
@@ -118,7 +118,7 @@ R2_ENDPOINT=https://<accountid>.r2.cloudflarestorage.com
 R2_REGION=auto
 R2_ACCESS_KEY_ID=your_access_key
 R2_SECRET_ACCESS_KEY=your_secret_key
-R2_PUBLIC_BASE_URL=https://images.mrdbid.com
+R2_PUBLIC_BASE_URL=https://images.awareness.example.com
 
 ADSENSE_ENABLED=false
 ADSENSE_CLIENT_ID=ca-pub-...
@@ -155,16 +155,16 @@ After deployment, you may need to run the backfill scripts manually:
 
 ```bash
 ssh root@85.31.233.192
-cd /opt/mrdbid/current
+cd /opt/awareness/current
 
 # Load mb_lists data
-mysql -u mrdbid -p mrdbid_production < db/scripts/mblist/import_mb_lists.sql
+mysql -u awareness -p awareness_production < db/scripts/mblist/import_mb_lists.sql
 
 # Backfill genera
-mysql -u mrdbid -p mrdbid_production < db/scripts/mblist/backfill_genera_table_from_mblist.sql
+mysql -u awareness -p awareness_production < db/scripts/mblist/backfill_genera_table_from_mblist.sql
 
 # Backfill species
-mysql -u mrdbid -p mrdbid_production < db/scripts/mblist/backfill_species_table_from_mblist.sql
+mysql -u awareness -p awareness_production < db/scripts/mblist/backfill_species_table_from_mblist.sql
 ```
 
 ## Capistrano Tasks
@@ -192,21 +192,21 @@ Puma units call `notify-on-failure@%n.service` on failure. Ensure these exist on
 
 Test:
 ```bash
-sudo systemctl start notify-on-failure@puma-mrdbid.service
+sudo systemctl start notify-on-failure@puma-awareness.service
 ```
 
 ## Monitoring (Recommended)
 
 Use a lightweight endpoint for uptime monitoring:
-- `https://mrdbid.com/health`
+- `https://awareness.example.com/health`
 
 This maps to Rails' health controller and should return HTTP 200 when the app is healthy.
 
 ## Directory Structure on Server
 
 ```
-/opt/mrdbid/
-├── current -> /opt/mrdbid/releases/20251011120000
+/opt/awareness/
+├── current -> /opt/awareness/releases/20251011120000
 ├── releases/
 │   ├── 20251011120000/
 │   ├── 20251011110000/
@@ -229,11 +229,11 @@ This maps to Rails' health controller and should return HTTP 200 when the app is
 
 ## Nginx Configuration
 
-Create `/etc/nginx/sites-available/mrdbid`:
+Create `/etc/nginx/sites-available/awareness`:
 
 ```nginx
 upstream puma {
-  server unix:///opt/mrdbid/shared/tmp/sockets/puma.sock;
+  server unix:///opt/awareness/shared/tmp/sockets/puma.sock;
 }
 
 server {
@@ -249,9 +249,9 @@ server {
   listen 80;  # Change to 443 when SSL is set up
   server_name yourdomain.com www.yourdomain.com;
 
-  root /opt/mrdbid/current/public;
-  access_log /opt/mrdbid/shared/log/nginx_access.log;
-  error_log /opt/mrdbid/shared/log/nginx_error.log info;
+  root /opt/awareness/current/public;
+  access_log /opt/awareness/shared/log/nginx_access.log;
+  error_log /opt/awareness/shared/log/nginx_error.log info;
 
   # SSL Configuration (uncomment when ready)
   # ssl_certificate /etc/letsencrypt/live/yourdomain.com/fullchain.pem;
@@ -280,7 +280,7 @@ server {
 
 Enable the site:
 ```bash
-ln -s /etc/nginx/sites-available/mrdbid /etc/nginx/sites-enabled/
+ln -s /etc/nginx/sites-available/awareness /etc/nginx/sites-enabled/
 nginx -t
 systemctl reload nginx
 ```
@@ -331,8 +331,8 @@ The backfill scripts in `db/scripts/mblist/` use `INSERT IGNORE` to prevent dupl
 ```bash
 # Check logs
 ssh root@85.31.233.192
-cd /opt/mrdbid/current
-tail -f /opt/mrdbid/shared/log/puma_error.log
+cd /opt/awareness/current
+tail -f /opt/awareness/shared/log/puma_error.log
 
 # Restart manually
 cap production puma:restart
@@ -343,7 +343,7 @@ cap production puma:restart
 ```bash
 # Verify database credentials in Rails credentials
 ssh root@85.31.233.192
-cd /opt/mrdbid/current
+cd /opt/awareness/current
 RAILS_ENV=production bin/rails runner "puts ActiveRecord::Base.connection.execute('SELECT 1').to_a"
 ```
 
@@ -352,7 +352,7 @@ RAILS_ENV=production bin/rails runner "puts ActiveRecord::Base.connection.execut
 ```bash
 # Recompile assets
 ssh root@85.31.233.192
-cd /opt/mrdbid/current
+cd /opt/awareness/current
 RAILS_ENV=production bin/rails assets:precompile
 cap production deploy:restart
 ```

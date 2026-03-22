@@ -12,7 +12,7 @@
 ## Equipment Needed
 - Computer with screen recording software
 - Microphone (or use text captions instead)
-- Your MRDBID site running locally or on staging server
+- Your Awareness site running locally or on staging server
 - Script (below)
 - Test article with good examples
 
@@ -48,7 +48,7 @@
 ## VIDEO SCRIPT
 
 ### OPENING (0:00-0:20) - 20 seconds
-**Visual:** Landing page of MRDBID or generic article with technical terms
+**Visual:** Landing page of Awareness or generic article with technical terms
 
 **Script/Caption:**
 > "Have you ever read scientific content and felt lost because of technical jargon?
@@ -259,7 +259,7 @@ Once video is ready, upload to:
 
 2. **Your website**
    - Embed on auto-glossary.com
-   - Embed on MRDBID project showcase
+   - Embed on Awareness project showcase
 
 3. **Social Media**
    - Twitter (1-2 minute cut)

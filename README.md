@@ -78,7 +78,7 @@ sudo apt-get install mysql-server libmysqlclient-dev imagemagick libvips-tools l
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/awarenesswill/awareness.git
+   git clone https://github.com/mrdbidwill/awareness.git
    cd awareness
    ```
 
@@ -218,7 +218,6 @@ bundle exec cap production deploy
 
 Additional references:
 - `docs/DEPLOYMENT_TROUBLESHOOTING.md`
-- `docs/SERVER_BACKUP_INSTRUCTIONS_10_13_2025.md`
 - `docs/SOLID_QUEUE_SETUP.md`
 
 ## Technology Stack

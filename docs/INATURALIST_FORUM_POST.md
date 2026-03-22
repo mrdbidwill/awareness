@@ -21,14 +21,14 @@ Many of us work with observation fields for mushrooms, fungi, and other taxa. Ho
 ### Download Options
 
 **Option 1: Direct Downloads**
-- [CSV Format](https://github.com/mrdbidwill/mrdbid/raw/main/data/inaturalist/observation_fields.csv) (4.6 MB) - Works with Excel, Google Sheets, LibreOffice
-- [JSON Format](https://github.com/mrdbidwill/mrdbid/raw/main/data/inaturalist/observation_fields.json) (8.8 MB) - For developers
+- [CSV Format](https://github.com/mrdbidwill/awareness/raw/main/data/inaturalist/observation_fields.csv) (4.6 MB) - Works with Excel, Google Sheets, LibreOffice
+- [JSON Format](https://github.com/mrdbidwill/awareness/raw/main/data/inaturalist/observation_fields.json) (8.8 MB) - For developers
 
 **Option 2: Interactive Web View**
-- [Browse and search online](https://mrdbid.com/inaturalist/observation_fields) - View first 100 fields with search functionality
+- [Browse and search online](https://awareness.example.com/inaturalist/observation_fields) - View first 100 fields with search functionality
 
 **Option 3: GitHub Repository**
-- [Full repository with documentation](https://github.com/mrdbidwill/mrdbid/tree/main/data/inaturalist)
+- [Full repository with documentation](https://github.com/mrdbidwill/awareness/tree/main/data/inaturalist)
 
 ### What's Included
 
@@ -70,7 +70,7 @@ Special thanks to jwidness Forum Moderator in the original thread July 2022 for 
 ---
 
 **Questions? Issues?**
-Please report any problems or suggestions on the [GitHub repository](https://github.com/mrdbidwill/mrdbid/issues).
+Please report any problems or suggestions on the [GitHub repository](https://github.com/mrdbidwill/awareness/issues).
 
 Hope this helps the community! 🍄
 

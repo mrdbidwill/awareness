@@ -1,4 +1,4 @@
-# Solid Queue Setup for MRDBID Production
+# Solid Queue Setup for Awareness Production
 
 ## Purpose
 Solid Queue handles background jobs for async email delivery, preventing login/registration delays caused by synchronous SMTP operations.
@@ -12,7 +12,7 @@ Solid Queue handles background jobs for async email delivery, preventing login/r
 **Status**: Disabled due to Rails 8 strict_loading bug (see Known Issues)
 
 **Setup**:
-1. Edit `/etc/systemd/system/puma-mrdbid.service`
+1. Edit `/etc/systemd/system/puma-awareness.service`
 2. Add this line under `[Service]`:
    ```ini
    Environment="SOLID_QUEUE_IN_PUMA=1"
@@ -20,7 +20,7 @@ Solid Queue handles background jobs for async email delivery, preventing login/r
 3. Reload and restart:
    ```bash
    sudo systemctl daemon-reload
-   sudo systemctl restart puma-mrdbid.service
+   sudo systemctl restart puma-awareness.service
    ```
 
 ### Option B: Separate Solid Queue Service (Recommended)
@@ -29,19 +29,19 @@ Solid Queue handles background jobs for async email delivery, preventing login/r
 **Disadvantage**: Additional service to manage
 
 **Setup**:
-1. Create `/etc/systemd/system/solid-queue-mrdbid.service`:
+1. Create `/etc/systemd/system/solid-queue-awareness.service`:
    ```ini
    [Unit]
-   Description=Solid Queue Worker for MRDBID
+   Description=Solid Queue Worker for Awareness
    After=network.target
 
    [Service]
    Type=simple
    User=wrj
-   WorkingDirectory=/opt/mrdbid/current
+   WorkingDirectory=/opt/awareness/current
    Environment="RAILS_ENV=production"
    Environment="RAILS_LOG_TO_STDOUT=1"
-   ExecStart=/opt/mrdbid/current/bin/jobs
+   ExecStart=/opt/awareness/current/bin/jobs
    Restart=always
    RestartSec=5
 
@@ -51,8 +51,8 @@ Solid Queue handles background jobs for async email delivery, preventing login/r
 
 2. Enable and start:
    ```bash
-   sudo systemctl enable solid-queue-mrdbid.service
-   sudo systemctl start solid-queue-mrdbid.service
+   sudo systemctl enable solid-queue-awareness.service
+   sudo systemctl start solid-queue-awareness.service
    ```
 
 ## Verification
@@ -63,12 +63,12 @@ Check if workers are running:
 ps aux | grep solid_queue
 
 # Option B (separate service):
-sudo systemctl status solid-queue-mrdbid.service
+sudo systemctl status solid-queue-awareness.service
 ```
 
 Check queue tables (should have records being processed):
 ```bash
-cd /opt/mrdbid/current
+cd /opt/awareness/current
 bin/rails runner "puts SolidQueue::Job.count" -e production
 ```
 
@@ -76,7 +76,7 @@ bin/rails runner "puts SolidQueue::Job.count" -e production
 
 ### Jobs not processing
 - Verify worker process is running (see Verification above)
-- Check logs: `/opt/mrdbid/shared/log/production.log`
+- Check logs: `/opt/awareness/shared/log/production.log`
 - For Option A: Check puma logs for solid_queue errors
 
 ### Emails not sending
@@ -119,8 +119,8 @@ The SolidQueue::Process association named `:supervisees` cannot be lazily loaded
 
 **Workarounds**:
 1. **Disable plugin** (recommended until bug fixed):
-   - Remove `Environment="SOLID_QUEUE_IN_PUMA=1"` from `/etc/systemd/system/puma-mrdbid.service`
-   - Restart Puma: `sudo systemctl daemon-reload && sudo systemctl restart puma-mrdbid.service`
+   - Remove `Environment="SOLID_QUEUE_IN_PUMA=1"` from `/etc/systemd/system/puma-awareness.service`
+   - Restart Puma: `sudo systemctl daemon-reload && sudo systemctl restart puma-awareness.service`
 
 2. **Use separate Solid Queue service** (Option B above) - doesn't trigger bug
 

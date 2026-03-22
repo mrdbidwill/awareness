@@ -1,7 +1,7 @@
 # Complete Test Suite Refactoring Summary
 
 ## Overview
-This document summarizes the comprehensive test suite refactoring completed for the mrdbid Rails application. The goal was to achieve production-ready test coverage with best practices implementation.
+This document summarizes the comprehensive test suite refactoring completed for the Awareness Rails application. The goal was to achieve production-ready test coverage with best practices implementation.
 
 ## Current Status (2026-03-14)
 - Full suite passes locally: 2136 runs, 0 failures, 0 errors.
@@ -438,7 +438,7 @@ Historical snapshot from the refactor period. For current results, see **Current
 
 ## Conclusion
 
-This comprehensive test suite refactoring transforms the mrdbid Rails application from having minimal test coverage (7.59%) to having a production-ready, best-practice test suite targeting 80%+ coverage.
+This comprehensive test suite refactoring transforms the Awareness Rails application from having minimal test coverage (7.59%) to having a production-ready, best-practice test suite targeting 80%+ coverage.
 
 The improvements include:
 - **97 new test files** with **1,400+ tests**

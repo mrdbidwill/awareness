@@ -21,7 +21,7 @@
 2. **Add Your Property**
    - Click "Add Property"
    - Choose "URL prefix" method
-   - Enter: `https://mrdbid.com`
+   - Enter: `https://awareness.example.com`
    - Click "Continue"
 
 3. **Verify Ownership** (choose one method):
@@ -66,7 +66,7 @@ To speed up indexing of your iNaturalist observation fields page:
 
 2. **Enter the full URL:**
    ```
-   https://mrdbid.com/inaturalist/observation_fields
+   https://awareness.example.com/inaturalist/observation_fields
    ```
 
 3. **Click "Request Indexing"**
@@ -74,9 +74,9 @@ To speed up indexing of your iNaturalist observation fields page:
    - Can take 1-2 days instead of weeks
 
 4. **Repeat for other important pages** (optional):
-   - Home page: `https://mrdbid.com`
-   - Glossary: `https://mrdbid.com/glossary`
-   - Articles: `https://mrdbid.com/articles`
+   - Home page: `https://awareness.example.com`
+   - Glossary: `https://awareness.example.com/glossary`
+   - Articles: `https://awareness.example.com/articles`
 
 ---
 
@@ -134,7 +134,7 @@ end
 
 **Cron job** (run weekly):
 ```bash
-0 2 * * 0 cd /path/to/mrdbid && RAILS_ENV=production bundle exec rake sitemap:refresh
+0 2 * * 0 cd /path/to/awareness && RAILS_ENV=production bundle exec rake sitemap:refresh
 ```
 
 ---
@@ -168,8 +168,8 @@ end
 
 **Solutions:**
 - Check Google Search Console → Coverage → Excluded pages
-- Verify robots.txt allows crawling: `curl https://mrdbid.com/robots.txt`
-- Verify sitemap is accessible: `curl https://mrdbid.com/sitemap.xml.gz`
+- Verify robots.txt allows crawling: `curl https://awareness.example.com/robots.txt`
+- Verify sitemap is accessible: `curl https://awareness.example.com/sitemap.xml.gz`
 - Request indexing again in URL Inspection tool
 - Check for "noindex" meta tags (shouldn't have any)
 

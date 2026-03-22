@@ -1,4 +1,4 @@
-# Performance Optimization Plan for MRDBID
+# Performance Optimization Plan for Awareness
 
 ## Current Situation
 - 658 MrCharacters in database
