@@ -39,7 +39,7 @@ namespace :db do
 
     # Create filename with timestamp
     timestamp = Time.current.strftime('%Y%m%d_%H%M%S')
-    filename = "mrdbid_export_#{timestamp}.sql"
+    filename = "awareness_export_#{timestamp}.sql"
     output_path = Rails.root.join('tmp', filename)
 
     # Build mysqldump command

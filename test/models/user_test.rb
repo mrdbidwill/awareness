@@ -159,7 +159,7 @@ class UserTest < ActiveSupport::TestCase
     assert_not_nil uri
     assert_includes uri, "otpauth://totp/"
     assert_includes uri, user.email
-    assert_includes uri, "MRDBID"
+    assert_includes uri, "Awareness"
     assert_includes uri, user.otp_secret
   end
 

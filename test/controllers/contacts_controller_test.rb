@@ -13,7 +13,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
         email: "test@example.com",
         subject: "Test Subject",
         message: "Test message content",
-        recipient: "contact@mrdbid.com"
+        recipient: "contact@awareness.example.com"
       }
     end
 
@@ -65,7 +65,7 @@ class ContactsControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should allow all valid recipients" do
-    valid_recipients = ['contact@mrdbid.com', 'webmaster@mrdbid.com', 'will@mrdbid.com']
+    valid_recipients = ['contact@awareness.example.com', 'webmaster@awareness.example.com']
 
     valid_recipients.each do |recipient|
       assert_emails 1 do

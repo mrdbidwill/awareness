@@ -1,6 +1,6 @@
 {
-  "name": "MRDBID - Mushroom Research Database",
-  "short_name": "MRDBID",
+  "name": "Awareness - Mushroom Research Database",
+  "short_name": "Awareness",
   "description": "Field research tool for documenting and identifying mushroom specimens",
   "start_url": "/",
   "display": "standalone",

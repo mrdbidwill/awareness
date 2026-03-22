@@ -18,9 +18,9 @@ class ProductionBootTest < ActionDispatch::IntegrationTest
 
   test "application boots successfully in production mode" do
     db_host = ENV.fetch("DB_HOST", "127.0.0.1")
-    db_user = ENV.fetch("MYSQL_USER", "mrdbid_user")
+    db_user = ENV.fetch("MYSQL_USER", "awareness_user")
     db_password = ENV.fetch("MYSQL_PASSWORD", "devpassword")
-    db_name = ENV.fetch("PRODUCTION_BOOT_DB", "mrdbid_test")
+    db_name = ENV.fetch("PRODUCTION_BOOT_DB", "awareness_test")
 
     database_url = ENV.fetch(
       "PRODUCTION_BOOT_DATABASE_URL",

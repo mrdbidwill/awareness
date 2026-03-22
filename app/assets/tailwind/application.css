@@ -51,14 +51,14 @@
         margin-bottom: 0.5em !important;
     }
 
-    .p-mrdbid {
+    .p-awareness {
         margin-top: 0.75rem;
         font-size: 1.125rem;
         line-height: 1.25rem;
         padding-bottom: 0.25rem;
         margin-bottom: .75rem;         /* Added for paragraph separation */
     }
-    .p-mrdbid-orange {
+    .p-awareness-orange {
         margin-top: 0.75rem;
         font-size: 1.125rem;
         line-height: 1.25rem;
@@ -92,7 +92,7 @@
         font-size: 0.875rem;
         color: #dc2626; /* red-600 */
     }
-    .p-mrdbid-description {
+    .p-awareness-description {
         font-size: 1rem;
     }
 

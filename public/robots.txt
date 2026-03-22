@@ -11,4 +11,4 @@ Disallow: /users/
 Disallow: /image_mushrooms/new
 Disallow: /image_mushrooms/*/edit
 
-Sitemap: https://mrdbid.com/sitemap.xml.gz
+Sitemap: https://awareness.example.com/sitemap.xml.gz

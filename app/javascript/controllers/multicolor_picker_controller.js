@@ -40,7 +40,7 @@ export default class extends Controller {
         const modal = document.getElementById(`colorPickerModal${characterId}`)
         if (modal) {
             if (this.hasPendingBulkChanges()) {
-                const ok = confirm(`You have ${window.mrdbidBulkPendingChanges} unsaved change(s). If you continue and save colors, those changes will be lost. Click Cancel to go back and use "Save All Changes".`)
+                const ok = confirm(`You have ${window.awarenessBulkPendingChanges} unsaved change(s). If you continue and save colors, those changes will be lost. Click Cancel to go back and use "Save All Changes".`)
                 if (!ok) return
             }
             modal.classList.remove('hidden')
@@ -139,7 +139,7 @@ export default class extends Controller {
     submitColors(event) {
         event.preventDefault()
         if (this.hasPendingBulkChanges()) {
-            const ok = confirm(`You have ${window.mrdbidBulkPendingChanges} unsaved change(s). Saving colors now will discard them. Continue?`)
+            const ok = confirm(`You have ${window.awarenessBulkPendingChanges} unsaved change(s). Saving colors now will discard them. Continue?`)
             if (!ok) return
         }
 
@@ -166,7 +166,7 @@ export default class extends Controller {
     }
 
     hasPendingBulkChanges() {
-        return Number(window.mrdbidBulkPendingChanges || 0) > 0
+        return Number(window.awarenessBulkPendingChanges || 0) > 0
     }
 
     // Render selected color chips/badges

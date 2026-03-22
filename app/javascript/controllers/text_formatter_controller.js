@@ -17,10 +17,12 @@ export default class extends Controller {
 
     if (selectedText) {
       // Wrap selected text in <p> tags with class
-      const newValue = value.substring(0, start) + '<p class="p-mrdbid">' + selectedText + '</p>' + value.substring(end)
+      const paragraphPrefix = '<p class="p-awareness">'
+      const paragraphSuffix = '</p>'
+      const newValue = value.substring(0, start) + paragraphPrefix + selectedText + paragraphSuffix + value.substring(end)
       textarea.value = newValue
       // Position cursor after the closing tag
-      const newPos = start + selectedText.length + 27 // length of '<p class="p-mrdbid">' + '</p>'
+      const newPos = start + paragraphPrefix.length + selectedText.length + paragraphSuffix.length
       textarea.setSelectionRange(newPos, newPos)
     } else {
       // Insert paragraph break (double newline)

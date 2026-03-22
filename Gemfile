@@ -33,8 +33,8 @@ gem "capistrano-puma"
 
 gem 'csv'
 gem 'sitemap_generator' # Generate XML sitemap for search engines
-gem 'auto_glossary', '>= 0.1.1' # Auto-glossary for mycological terms - created by mrdbid
-gem 'mycowriter', '~> 0.1.8'    # Adds genus species suggestions - created by mrdbid
+gem 'auto_glossary', '>= 0.1.1' # Auto-glossary for mycological terms - created for Awareness
+gem 'mycowriter', '~> 0.1.8'    # Adds genus species suggestions - created for Awareness
 
 gem 'i18n', '~> 1.14'
 gem 'carmen-rails', '~> 1.0'

@@ -1,4 +1,4 @@
-# Awareness - Mushroom Database Identification
+# Awareness - Mycology Knowledge Base
 
 A Rails 8 application for mushroom identification, cataloging, and research. Awareness focuses on character-based data, taxonomy, images, and comparisons. It also integrates the AutoGlossary and MycoWriter engines for glossary terms and genus/species suggestions.
 

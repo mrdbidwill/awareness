@@ -105,22 +105,22 @@ class Admin::DatabaseExportsControllerTest < ActionDispatch::IntegrationTest
 
   test "should generate correct filename for lookup_tables" do
     timestamp = Time.current.strftime('%Y%m%d_%H%M%S')
-    filename = "mrdbid_lookup_tables_#{timestamp}.sql"
+    filename = "awareness_lookup_tables_#{timestamp}.sql"
 
-    assert_match /^mrdbid_lookup_tables_\d{8}_\d{6}\.sql$/, filename
+    assert_match /^awareness_lookup_tables_\d{8}_\d{6}\.sql$/, filename
   end
 
   test "should generate correct filename for lookup_no_mblist" do
     timestamp = Time.current.strftime('%Y%m%d_%H%M%S')
-    filename = "mrdbid_lookup_no_mblist_#{timestamp}.sql"
+    filename = "awareness_lookup_no_mblist_#{timestamp}.sql"
 
-    assert_match /^mrdbid_lookup_no_mblist_\d{8}_\d{6}\.sql$/, filename
+    assert_match /^awareness_lookup_no_mblist_\d{8}_\d{6}\.sql$/, filename
   end
 
   test "should generate correct filename for mblist_only" do
     timestamp = Time.current.strftime('%Y%m%d_%H%M%S')
-    filename = "mrdbid_mblist_only_#{timestamp}.sql"
+    filename = "awareness_mblist_only_#{timestamp}.sql"
 
-    assert_match /^mrdbid_mblist_only_\d{8}_\d{6}\.sql$/, filename
+    assert_match /^awareness_mblist_only_\d{8}_\d{6}\.sql$/, filename
   end
 end

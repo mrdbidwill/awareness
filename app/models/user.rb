@@ -26,7 +26,7 @@ class User < ApplicationRecord
     self.otp_secret ||= User.generate_otp_secret
   end
 
-  def otp_provisioning_uri(account = email, issuer: 'MRDBID')
+  def otp_provisioning_uri(account = email, issuer: 'Awareness')
     otp_secret.present? ? "otpauth://totp/#{issuer}:#{account}?secret=#{otp_secret}&issuer=#{issuer}" : nil
   end
 
