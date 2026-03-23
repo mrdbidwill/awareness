@@ -83,6 +83,24 @@ Rails.application.configure do
   config.active_job.queue_adapter = :solid_queue  # CRITICAL: Must be :solid_queue (not :async)
   config.solid_queue.connects_to = { database: { writing: :queue } }
 
+  # Required for encrypted attributes (e.g., devise-two-factor otp_secret).
+  config.active_record.encryption.primary_key =
+    ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :primary_key)
+  config.active_record.encryption.deterministic_key =
+    ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :deterministic_key)
+  config.active_record.encryption.key_derivation_salt =
+    ENV["ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt)
+
+  # Keep 2FA encryption key aligned even when ENV is not explicitly set.
+  if ENV["OTP_SECRET_ENCRYPTION_KEY"].blank?
+    ENV["OTP_SECRET_ENCRYPTION_KEY"] =
+      Rails.application.credentials.dig(:otp_secret_encryption_key).presence ||
+      Rails.application.credentials.dig(:active_record_encryption, :primary_key).to_s
+  end
+
   default_host = ENV.fetch("APP_HOST", "awareness.mrdbid.com")
   config.action_mailer.default_url_options = { host: default_host, protocol: "https" }
 
