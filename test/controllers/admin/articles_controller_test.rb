@@ -61,6 +61,30 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_equal @admin_user.id, Article.last.user_id
   end
 
+  test "creates subject from subject assist when subject is blank" do
+    sign_in @admin_user
+
+    assert_difference("Subject.count", 1) do
+      assert_difference("Article.count", 1) do
+        post admin_articles_url, params: {
+          article: {
+            title: "Subject Assist Article",
+            slug: "subject-assist-article",
+            subject_id: "",
+            subject_assist: "Ganoderma",
+            body: "Body content",
+            published: false
+          }
+        }
+      end
+    end
+
+    assert_redirected_to admin_article_url(Article.last)
+    created_article = Article.last
+    assert_not_nil created_article.subject_id
+    assert_equal "Ganoderma", Subject.find(created_article.subject_id).name
+  end
+
   test "should show preview when preview param is present" do
     sign_in @admin_user
     post admin_articles_url, params: {
@@ -68,12 +92,35 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
       article: {
         title: "Preview Article",
         slug: "preview-article",
+        subject_id: subjects(:mycology).id,
         body: "Preview content"
       }
     }
 
     assert_response :success
     assert_template :preview
+    assert_includes response.body, "Subject: Mycology"
+  end
+
+  test "subject assist appears in preview without creating subject" do
+    sign_in @admin_user
+
+    assert_no_difference("Subject.count") do
+      post admin_articles_url, params: {
+        preview: "1",
+        article: {
+          title: "Preview Subject Assist Article",
+          slug: "preview-subject-assist-article",
+          subject_id: "",
+          subject_assist: "Ganoderma",
+          body: "Preview content"
+        }
+      }
+    end
+
+    assert_response :success
+    assert_template :preview
+    assert_includes response.body, "Subject: Ganoderma"
   end
 
   test "should show article as admin" do

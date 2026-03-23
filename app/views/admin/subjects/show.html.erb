@@ -1,0 +1,21 @@
+<% content_for :title, "Admin · #{@subject.name}" %>
+
+<div class="w-full max-w-4xl">
+  <div class="mb-4 flex flex-wrap items-center justify-between gap-2">
+    <h1 class="text-2xl font-bold"><%= @subject.name %></h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Subjects", admin_subjects_path, class: "rounded border border-gray-300 px-3 py-2 hover:bg-gray-50" %>
+      <%= link_to "Edit", edit_admin_subject_path(@subject), class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+      <%= button_to "Delete", admin_subject_path(@subject), method: :delete, class: "rounded bg-red-600 px-3 py-2 text-white hover:bg-red-700", data: { turbo_confirm: "Delete this subject? Articles will become Uncategorized." } %>
+    </div>
+  </div>
+
+  <div class="rounded border bg-white p-4">
+    <p class="text-sm text-gray-600">
+      <strong>Slug:</strong> <%= @subject.slug %>
+    </p>
+    <p class="mt-1 text-sm text-gray-600">
+      <strong>Articles using this subject:</strong> <%= @subject.articles.count %>
+    </p>
+  </div>
+</div>

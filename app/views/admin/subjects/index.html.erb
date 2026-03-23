@@ -1,0 +1,39 @@
+<% content_for :title, "Admin · Subjects" %>
+
+<div class="w-full">
+  <div class="mb-4 flex items-center justify-between gap-2">
+    <h1 class="text-2xl font-bold">Subjects</h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded bg-gray-600 px-3 py-2 text-white hover:bg-gray-700" %>
+      <%= link_to "New Subject", new_admin_subject_path, class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+    </div>
+  </div>
+
+  <% if @subjects.any? %>
+    <div class="space-y-2">
+      <% @subjects.each do |subject| %>
+        <div class="rounded border bg-white p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold">
+                <%= link_to subject.name, admin_subject_path(subject), class: "text-blue-700 hover:underline" %>
+              </h2>
+              <p class="text-sm text-gray-600">
+                Slug: <%= subject.slug %> · Articles: <%= subject.articles_count %>
+              </p>
+            </div>
+            <%= render "admin/shared/resource_actions", record: subject, delete: true, confirm: "Delete this subject? Articles will become Uncategorized." %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded border bg-white p-6 text-sm text-gray-600">
+      No subjects yet. Add one to organize your articles.
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <%= paginate @subjects %>
+  </div>
+</div>

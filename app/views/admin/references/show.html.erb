@@ -15,7 +15,7 @@
       <strong>Author:</strong> <%= @reference.author.presence || "Unknown" %>
     </p>
     <p class="mt-1 text-sm text-gray-600">
-      <strong>Publish Date:</strong> <%= @reference.publish_date&.to_s || "Not set" %>
+      <strong>Publish Year:</strong> <%= @reference.publish_date&.year || "Not set" %>
     </p>
     <div class="mt-4 whitespace-pre-wrap text-gray-800">
       <%= @reference.description.presence || "No description provided." %>

@@ -17,6 +17,7 @@ class AdminDashboardTest < ApplicationSystemTestCase
     assert_link "Users"
     assert_link "Articles"
     assert_link "Newsletter Campaigns"
+    assert_link "Subjects"
     assert_link "References"
   end
 

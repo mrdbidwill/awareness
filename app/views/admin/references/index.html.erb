@@ -21,7 +21,7 @@
               <p class="text-sm text-gray-600">
                 <%= reference.author.presence || "Unknown author" %>
                 <% if reference.publish_date.present? %>
-                  · <%= reference.publish_date %>
+                  · <%= reference.publish_date.year %>
                 <% end %>
               </p>
               <% if reference.description.present? %>

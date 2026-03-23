@@ -1,0 +1,29 @@
+<%= form_with(model: [:admin, @subject], class: "space-y-4") do |f| %>
+  <% if @subject.errors.any? %>
+    <div class="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+      <p class="font-semibold"><%= pluralize(@subject.errors.count, "error") %> prevented saving:</p>
+      <ul class="mt-2 list-disc pl-5">
+        <% @subject.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.text_field :name, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :slug, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.text_field :slug, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2", placeholder: "auto-generated-from-name" %>
+    <p class="mt-1 text-xs text-gray-500">Leave blank to auto-generate from the subject name.</p>
+  </div>
+
+  <%= render "admin/shared/form_actions",
+             record: @subject,
+             back_path: admin_subjects_path,
+             submit_text: (@subject.persisted? ? "Update Subject" : "Create Subject"),
+             back_text: "Back to Subjects" %>
+<% end %>

@@ -23,12 +23,13 @@ class Admin::ReferencesControllerTest < ActionDispatch::IntegrationTest
           name: "New Reference",
           author: "Editor",
           description: "Useful background text.",
-          publish_date: "2026-01-01"
+          publish_year: "2026"
         }
       }
     end
 
     assert_redirected_to admin_reference_url(Reference.last)
+    assert_equal Date.new(2026, 1, 1), Reference.last.publish_date
   end
 
   test "admin can update reference" do

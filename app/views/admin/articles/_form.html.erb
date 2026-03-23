@@ -10,7 +10,22 @@
 
   <div>
     <%= f.label :title, class: "block text-sm font-medium" %>
-    <%= f.text_field :title, class: "border rounded px-2 py-1 w-full" %>
+    <div class="relative mt-1"
+         data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= f.text_field :title,
+          class: "border rounded px-2 py-1 w-full",
+          data: {
+            inline_autocomplete_target: "textarea",
+            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+          } %>
+      <ul class="absolute z-50 border-2 border-emerald-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 320px; max-height: 280px; top: 100%; left: 0; margin-top: 4px;"></ul>
+    </div>
+    <p class="mt-1 text-xs text-gray-500">Mycowriter suggestions appear while typing genus/species terms.</p>
   </div>
 
   <div>
@@ -27,6 +42,31 @@
                    { include_blank: "(none)" },
                    class: "border rounded px-2 py-1 w-full" %>
       <p class="text-xs text-gray-500 mt-1">Subjects are normalized and reusable across archive filters.</p>
+
+      <div class="mt-2"
+           data-controller="mycowriter-inline"
+           data-mycowriter-inline-url-value="<%= genera_autocomplete_path %>"
+           data-mycowriter-inline-min-value="4"
+           data-mycowriter-inline-mode-value="subject"
+           data-mycowriter-inline-select-id-value="article_subject_id">
+        <label class="block text-xs font-medium text-gray-600">Mycowriter Subject Assist</label>
+        <div class="relative mt-1">
+          <%= text_field_tag "article[subject_assist]",
+              params.dig(:article, :subject_assist),
+              class: "border rounded px-2 py-1 w-full text-sm",
+              placeholder: "Type a genus term and pick a suggestion...",
+              autocomplete: "off",
+              data: {
+                mycowriter_inline_target: "input",
+                action: "input->mycowriter-inline#onInput blur->mycowriter-inline#onBlur"
+              } %>
+          <div class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-auto rounded border border-gray-200 bg-white shadow"
+               data-mycowriter-inline-target="dropdown"></div>
+        </div>
+        <p class="mt-1 text-xs text-gray-500" data-mycowriter-inline-target="status">
+          Selecting a suggestion auto-chooses a subject only when an exact subject name match exists.
+        </p>
+      </div>
     </div>
     <div>
       <%= f.label :published_at, class: "block text-sm font-medium" %>
@@ -36,10 +76,29 @@
 
   <div>
     <%= f.label :summary, class: "block text-sm font-medium" %>
-    <%= f.text_area :summary, rows: 3, class: "border rounded px-2 py-1 w-full" %>
+    <div class="relative mt-1"
+         data-controller="inline-autocomplete"
+         data-inline-autocomplete-genus-url-value="<%= genera_autocomplete_path %>"
+         data-inline-autocomplete-species-url-value="<%= species_autocomplete_path %>"
+         data-inline-autocomplete-min-value="4">
+      <%= f.text_area :summary,
+          rows: 3,
+          class: "border rounded px-2 py-1 w-full",
+          data: {
+            inline_autocomplete_target: "textarea",
+            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+          } %>
+      <ul class="absolute z-50 border-2 border-emerald-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 320px; max-height: 280px; top: 100%; left: 0; margin-top: 4px;"></ul>
+    </div>
   </div>
 
-  <div data-controller="text-formatter" data-text-formatter-max-length-value="16777215">
+  <div data-controller="text-formatter inline-autocomplete"
+       data-text-formatter-max-length-value="16777215"
+       data-inline-autocomplete-genus-url-value="<%= genera_autocomplete_path %>"
+       data-inline-autocomplete-species-url-value="<%= species_autocomplete_path %>"
+       data-inline-autocomplete-min-value="4">
     <div class="flex justify-between items-center mb-2">
       <%= f.label :body, class: "block text-sm font-medium" %>
       <span data-text-formatter-target="charCount" class="text-xs text-gray-500"></span>
@@ -91,8 +150,12 @@
           class: "border rounded px-2 py-1 w-full font-mono",
           data: {
             text_formatter_target: "textarea",
-            action: "input->text-formatter#updateCharCount"
+            inline_autocomplete_target: "textarea",
+            action: "input->text-formatter#updateCharCount input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
           } %>
+      <ul class="absolute z-50 border-2 border-emerald-500 rounded bg-white overflow-auto shadow-lg hidden"
+          data-inline-autocomplete-target="dropdown"
+          style="width: 320px; max-height: 280px; top: 100%; left: 0; margin-top: 4px;"></ul>
     </div>
     <details class="text-xs text-gray-700 mt-2 bg-gray-50 p-3 rounded border">
       <summary class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600">💡 Click for HTML styling guide</summary>

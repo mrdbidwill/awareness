@@ -34,10 +34,13 @@ Rails.application.routes.draw do
   # Stand-alone engines shared across projects
   mount AutoGlossary::Engine => "/glossary"
   mount Mycowriter::Engine => "/mycowriter"
+  get "autocomplete/genera", to: "autocomplete#genera", as: :genera_autocomplete, defaults: { format: :json }
+  get "autocomplete/species", to: "autocomplete#species", as: :species_autocomplete, defaults: { format: :json }
 
   namespace :admin do
     root to: "dashboard#index"
     resources :articles
+    resources :subjects
     resources :references
     resources :newsletter_campaigns do
       post :queue_delivery, on: :member

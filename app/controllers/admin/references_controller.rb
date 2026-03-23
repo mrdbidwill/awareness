@@ -56,7 +56,7 @@ module Admin
     end
 
     def reference_params
-      params.require(:reference).permit(:name, :author, :description, :publish_date)
+      params.require(:reference).permit(:name, :author, :description, :publish_year)
     end
   end
 end

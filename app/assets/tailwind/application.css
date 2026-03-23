@@ -3,10 +3,10 @@
 @plugin "@tailwindcss/typography";
 
 :root {
-    --brand-burgundy: #6e1f2b;
-    --brand-burgundy-dark: #541620;
-    --brand-crimson: #902737;
-    --brand-crimson-dark: #741f2b;
+    --brand-burgundy: #8c3a48;
+    --brand-burgundy-dark: #772f3c;
+    --brand-crimson: #a64a59;
+    --brand-crimson-dark: #8f3e4c;
     --brand-gold: #c7a449;
     --brand-gold-dark: #9f7f2a;
     --brand-gold-soft: #f6eed7;
@@ -556,4 +556,3 @@
 .hover\:text-emerald-800:hover {
     color: var(--brand-crimson-dark) !important;
 }
-

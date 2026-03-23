@@ -29,10 +29,13 @@ module Admin
     def create
       @article = Article.new(article_params)
       @article.user = current_user
+      @subject_assist_name = subject_assist_param
+      apply_subject_assist_to_article!(persist: params[:preview].blank?)
       authorize @article
 
       if params[:preview].present?
         @article.valid?
+        prepare_preview
         render :preview, status: :ok
       else
         if @article.save
@@ -52,9 +55,12 @@ module Admin
     def update
       authorize @article
       @article.assign_attributes(article_params)
+      @subject_assist_name = subject_assist_param
+      apply_subject_assist_to_article!(persist: params[:preview].blank?)
 
       if params[:preview].present?
         @article.valid?
+        prepare_preview
         render :preview, status: :ok
       else
         if @article.save
@@ -91,6 +97,31 @@ module Admin
         :published,
         :published_at
       )
+    end
+
+    def prepare_preview
+      @preview_subject = Subject.find_by(id: @article.subject_id)
+      @preview_subject ||= Subject.new(name: @subject_assist_name) if @subject_assist_name.present?
+    end
+
+    def apply_subject_assist_to_article!(persist:)
+      return if @article.subject_id.present?
+      return if @subject_assist_name.blank?
+
+      subject = Subject.where("LOWER(name) = ?", @subject_assist_name.downcase).first
+      if subject.nil? && persist
+        subject = Subject.new(name: @subject_assist_name)
+        unless subject.save
+          @article.errors.add(:subject, subject.errors.full_messages.to_sentence)
+          return
+        end
+      end
+
+      @article.subject_id = subject.id if subject.present?
+    end
+
+    def subject_assist_param
+      params.dig(:article, :subject_assist).to_s.strip
     end
   end
 end

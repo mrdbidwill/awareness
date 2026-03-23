@@ -49,9 +49,8 @@
 
     <% if user_signed_in? %>
       <% if current_user&.admin? %>
-        <% if controller_path == "admin/dashboard" %>
-          <%= link_to "References", admin_references_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-        <% end %>
+        <%= link_to "Subjects", admin_subjects_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+        <%= link_to "References", admin_references_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
         <%= link_to "Admin Dashboard", admin_root_path, class: "block px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition" %>
       <% end %>
       <%= link_to "Account", edit_user_registration_path, class: "block px-3 py-2 rounded bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium transition" %>

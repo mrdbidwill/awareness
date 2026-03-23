@@ -21,8 +21,8 @@
   </div>
 
   <div>
-    <%= f.label :publish_date, class: "block text-sm font-semibold text-gray-700" %>
-    <%= f.date_field :publish_date, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+    <%= f.label :publish_year, "Publish Year", class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.number_field :publish_year, min: 1000, max: 9999, step: 1, placeholder: "YYYY", class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
   </div>
 
   <div>
