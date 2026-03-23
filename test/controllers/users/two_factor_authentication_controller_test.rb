@@ -117,7 +117,7 @@ class Users::TwoFactorAuthenticationControllerTest < ActionDispatch::Integration
   #     trust_device: "1"
   #   }
   #
-  #   assert_redirected_to mushrooms_path
+  #   assert_redirected_to authenticated_root_path
   # end
 
   test "should clear otp_user_id on successful verification" do

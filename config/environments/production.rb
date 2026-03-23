@@ -101,7 +101,7 @@ Rails.application.configure do
       Rails.application.credentials.dig(:active_record_encryption, :primary_key).to_s
   end
 
-  default_host = ENV.fetch("APP_HOST", "awareness.mrdbid.com")
+  default_host = ENV.fetch("APP_HOST", "awareness.example.com")
   config.action_mailer.default_url_options = { host: default_host, protocol: "https" }
 
   config.action_mailer.delivery_method = :smtp
@@ -119,7 +119,7 @@ Rails.application.configure do
       enable_starttls_auto: Rails.application.credentials.dig(:smtp, :enable_starttls_auto) != false
     }
     config.action_mailer.default_options = {
-      from: Rails.application.credentials.dig(:smtp, :from) || "no-reply@awareness.mrdbid.com"
+      from: Rails.application.credentials.dig(:smtp, :from) || "no-reply@awareness.example.com"
     }
   end
   config.action_mailer.default_url_options = { host: ENV["APP_HOST"] || default_host, protocol: "https" }

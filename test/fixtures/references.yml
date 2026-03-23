@@ -1,0 +1,11 @@
+one:
+  name: "The Art of Awareness"
+  author: "A. Author"
+  description: "Foundational reading."
+  publish_date: 2024-03-01
+
+two:
+  name: "Practice Journal"
+  author: "B. Writer"
+  description: "Field notes and reflection prompts."
+  publish_date: 2025-07-15

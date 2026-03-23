@@ -12,7 +12,7 @@ class DirectUploadsController < ApplicationController
     }
 
     blob_params = params.require(:blob).permit(:filename, :byte_size, :checksum, :content_type, metadata: {})
-    context = params[:context].presence || blob_params.dig(:metadata, :context).presence || "mushroom"
+    context = params[:context].presence || blob_params.dig(:metadata, :context).presence || "article"
 
     validation = DirectUploads::Validator.call(
       filename: blob_params[:filename],
@@ -64,7 +64,7 @@ class DirectUploadsController < ApplicationController
   def build_storage_key(filename, context)
     safe_name = filename.to_s.strip
     extension = File.extname(safe_name).downcase
-    safe_context = context.to_s.parameterize.presence || "mushroom"
+    safe_context = context.to_s.parameterize.presence || "article"
     date_prefix = Time.current.utc.strftime("%Y/%m/%d")
 
     "uploads/#{safe_context}/#{date_prefix}/#{SecureRandom.uuid}#{extension}"

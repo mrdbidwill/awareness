@@ -64,8 +64,8 @@ class ActiveSupport::TestCase
 end
 
 class ActiveSupport::TestCase
-  # Ensure Users are loaded before all others
-  self.fixtures :users, :all_groups, :clusters, :cluster_mushrooms, :mushrooms, :mushroom_species, :source_data
+  # Ensure core fixtures are loaded first
+  self.fixtures :users, :permissions, :subjects, :articles, :newsletter_subscribers, :newsletter_campaigns, :references
 end
 
 

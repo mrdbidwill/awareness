@@ -5,9 +5,9 @@ class Admin::DashboardController < Admin::ApplicationController
   skip_after_action :verify_authorized, raise: false
 
   def index
-    @mr_character_count = MrCharacter.count
-    @lookup_item_count = LookupItem.count
-    @source_data_count = SourceData.count
-    @last_updated = MrCharacter.order(updated_at: :desc).first
+    @users_count = User.count
+    @published_articles_count = Article.published.count
+    @newsletter_subscribers_count = NewsletterSubscriber.subscribed.count
+    @references_count = Reference.count
   end
 end

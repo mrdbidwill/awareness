@@ -41,7 +41,7 @@ class DirectUploadsRequestTest < ActionDispatch::IntegrationTest
            blob: {
              filename: "large.jpg",
              content_type: "image/jpeg",
-             byte_size: ImageMushroom::MAX_IMAGE_BYTES + 1,
+             byte_size: DirectUploads::Validator::MAX_UPLOAD_BYTES + 1,
              checksum: @checksum
            }
          }

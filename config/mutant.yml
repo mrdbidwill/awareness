@@ -7,17 +7,13 @@ integration: minitest
 
 # Matcher configuration - which classes to mutate
 matcher:
-  # Test all models
+  # Test active domain models
   subjects:
-    - 'Mushroom*'
     - 'User*'
-    - 'Project*'
-    - 'MrCharacter*'
-    - 'Genus*'
-    - 'Species*'
     - 'Article*'
-    - 'Cluster*'
-    - 'AllGroup*'
+    - 'Newsletter*'
+    - 'Reference*'
+    - 'Subject*'
 
 # Coverage expectations
 coverage_criteria:

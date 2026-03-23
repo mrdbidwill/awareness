@@ -291,7 +291,7 @@ class UserLoginTest < ApplicationSystemTestCase
     visit root_path
 
     # Navigate to another page
-    visit mushrooms_path rescue visit root_path
+    visit articles_path
 
     # User should still be logged in
     # Check for user-specific content or links
@@ -302,7 +302,7 @@ class UserLoginTest < ApplicationSystemTestCase
 
   test "redirect to requested page after login" do
     # Try to access protected page
-    visit mushrooms_path
+    visit admin_root_path
 
     # Should be redirected to login
     assert_current_path new_user_session_path
@@ -312,7 +312,7 @@ class UserLoginTest < ApplicationSystemTestCase
     fill_in "Password", with: "password"
     click_button /log in|sign in/i
 
-    # Should be redirected back to mushrooms path
-    assert_current_path mushrooms_path
+    # Should be redirected back to admin path for this request
+    assert_current_path admin_root_path
   end
 end

@@ -1,0 +1,38 @@
+<%= form_with(model: [:admin, @reference], class: "space-y-4") do |f| %>
+  <% if @reference.errors.any? %>
+    <div class="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
+      <p class="font-semibold"><%= pluralize(@reference.errors.count, "error") %> prevented saving:</p>
+      <ul class="mt-2 list-disc pl-5">
+        <% @reference.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= f.label :name, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.text_field :name, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :author, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.text_field :author, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :publish_date, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.date_field :publish_date, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <div>
+    <%= f.label :description, class: "block text-sm font-semibold text-gray-700" %>
+    <%= f.text_area :description, rows: 6, class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+  </div>
+
+  <%= render "admin/shared/form_actions",
+             record: @reference,
+             back_path: admin_references_path,
+             submit_text: (@reference.persisted? ? "Update Reference" : "Create Reference"),
+             back_text: "Back to References" %>
+<% end %>

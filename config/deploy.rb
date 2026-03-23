@@ -49,6 +49,10 @@ append :linked_dirs, "log", "tmp/pids", "tmp/cache", "tmp/sockets", "public/syst
 # Default value for keep_releases is 5
 set :keep_releases, 5
 
+# Squashed migration history: use db:prepare so empty databases load structure.sql
+# and existing databases still run pending migrations.
+set :migration_command, "db:prepare"
+
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
@@ -72,8 +76,7 @@ namespace :systemd_puma do
     on roles(:app) do
       info "Checking for legacy Puma units (must be masked or not-found)..."
       checks = {
-        "puma.service" => "masked",
-        "puma_auto_glossary.service" => "masked"
+        "puma.service" => "masked"
       }
 
       checks.each do |unit, required|
@@ -91,7 +94,7 @@ namespace :systemd_puma do
   task :guard_duplicate_units do
     on roles(:app) do
       info "Ensuring legacy Puma units are masked to avoid duplicate instances..."
-      legacy_units = %w[puma.service puma_auto_glossary.service]
+      legacy_units = %w[puma.service]
 
       legacy_units.each do |unit|
         status = capture(:systemctl, "is-enabled", unit, raise_on_non_zero_exit: false).strip

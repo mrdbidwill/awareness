@@ -145,18 +145,31 @@ AdSense is gated to public/anonymous sessions only; authenticated sessions never
 
 ## Database Setup
 
+### Squashed Migration History
+
+Legacy migration history has been squashed and archived in `db/migrate_archive/`.
+The active schema source of truth is `db/structure.sql`.
+
+Use:
+```bash
+bin/rails db:prepare
+```
+
+Do not rely on `bin/rails db:migrate` for first-time database bootstrap on a blank database.
+
 ### Seed Data
 
-Seed data creates permissions and reference data (countries/states):
+Seed data creates core permissions:
 ```bash
 bundle exec rails db:seed
 ```
 
-### Reference Data Imports (Optional)
+### Structure Refresh
 
-If you have an admin export from Awareness (lookup tables and/or MBList), you can import it with:
+If you change schema locally and need to refresh SQL structure:
 ```bash
-mysql -u your_mysql_username -p awareness_development < /path/to/awareness_lookup_tables_YYYYMMDD_HHMMSS.sql
+bin/rails db:migrate
+bin/rails db:structure:dump
 ```
 
 ## Running the Application

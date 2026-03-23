@@ -17,7 +17,7 @@ class NewsletterMailer < ApplicationMailer
 
     mail(
       to: @subscriber.email,
-      from: @campaign.from_email.presence || ENV.fetch("MAILER_FROM", "contact@awareness.mrdbid.com"),
+      from: @campaign.from_email.presence || ENV.fetch("MAILER_FROM", "contact@awareness.example.com"),
       subject: @campaign.subject
     )
   end

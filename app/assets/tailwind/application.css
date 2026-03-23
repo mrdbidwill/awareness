@@ -2,6 +2,17 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+:root {
+    --brand-burgundy: #6e1f2b;
+    --brand-burgundy-dark: #541620;
+    --brand-crimson: #902737;
+    --brand-crimson-dark: #741f2b;
+    --brand-gold: #c7a449;
+    --brand-gold-dark: #9f7f2a;
+    --brand-gold-soft: #f6eed7;
+    --brand-gold-soft-strong: #ecddb1;
+}
+
 /* Reusable UI primitives */
 @layer components {
     /* Force prose styles to work - override Tailwind base reset */
@@ -75,10 +86,10 @@
         color: #dc2626 !important; /* red-600 */
     }
     .text-blue {
-        color: #2563eb !important; /* blue-600 */
+        color: var(--brand-burgundy) !important;
     }
     .text-green {
-        color: #16a34a !important; /* green-600 */
+        color: var(--brand-crimson) !important;
     }
     .text-purple {
         color: #9333ea !important; /* purple-600 */
@@ -124,7 +135,7 @@
   }
 
   .btn-primary {
-    background-color: #2563eb; /* blue-600 */
+    background-color: var(--brand-burgundy);
     color: white !important;
     border-radius: 0.375rem;
     font-weight: 500;
@@ -138,7 +149,7 @@
     min-height: 44px;
   }
   .btn-primary:hover {
-    background-color: #3b82f6; /* blue-500 */
+    background-color: var(--brand-crimson);
   }
   @media (min-width: 640px) {
     .btn-primary {
@@ -422,4 +433,127 @@
   }
 }
 
+/* Brand palette overrides: move blue/green UI to burgundy/crimson/gold */
+.bg-blue-50,
+.bg-green-50,
+.bg-emerald-50,
+.bg-cyan-50,
+.bg-indigo-50 {
+    background-color: var(--brand-gold-soft) !important;
+}
+
+.bg-blue-100,
+.bg-green-100,
+.bg-emerald-100,
+.bg-indigo-100 {
+    background-color: var(--brand-gold-soft-strong) !important;
+}
+
+.bg-blue-600,
+.bg-indigo-600,
+.bg-green-600,
+.bg-emerald-600 {
+    background-color: var(--brand-burgundy) !important;
+}
+
+.bg-blue-700,
+.bg-indigo-700,
+.bg-green-700,
+.bg-emerald-700 {
+    background-color: var(--brand-crimson) !important;
+}
+
+.bg-blue-800,
+.bg-indigo-800,
+.bg-green-800,
+.bg-emerald-800 {
+    background-color: var(--brand-crimson-dark) !important;
+}
+
+.text-blue-600,
+.text-blue-700,
+.text-blue-800,
+.text-indigo-600,
+.text-indigo-700,
+.text-indigo-800,
+.text-indigo-900,
+.text-green-600,
+.text-green-700,
+.text-green-800,
+.text-green-900,
+.text-emerald-600,
+.text-emerald-700,
+.text-emerald-800,
+.text-emerald-900 {
+    color: var(--brand-burgundy) !important;
+}
+
+.border-blue-100,
+.border-blue-200,
+.border-blue-300,
+.border-blue-400,
+.border-blue-500,
+.border-indigo-100,
+.border-indigo-200,
+.border-indigo-300,
+.border-indigo-400,
+.border-green-100,
+.border-green-200,
+.border-green-300,
+.border-green-400,
+.border-green-500,
+.border-emerald-100,
+.border-emerald-200,
+.border-emerald-300,
+.border-emerald-400,
+.border-emerald-500,
+.ring-blue-300,
+.ring-blue-400,
+.ring-blue-500,
+.ring-indigo-300,
+.ring-indigo-400,
+.ring-indigo-500,
+.ring-green-300,
+.ring-green-400,
+.ring-green-500,
+.ring-emerald-300,
+.ring-emerald-400,
+.ring-emerald-500 {
+    border-color: var(--brand-gold) !important;
+    --tw-ring-color: var(--brand-gold) !important;
+}
+
+.hover\:bg-blue-500:hover,
+.hover\:bg-blue-600:hover,
+.hover\:bg-blue-700:hover,
+.hover\:bg-indigo-500:hover,
+.hover\:bg-indigo-600:hover,
+.hover\:bg-indigo-700:hover,
+.hover\:bg-green-500:hover,
+.hover\:bg-green-600:hover,
+.hover\:bg-green-700:hover,
+.hover\:bg-emerald-500:hover,
+.hover\:bg-emerald-600:hover,
+.hover\:bg-emerald-700:hover {
+    background-color: var(--brand-crimson) !important;
+}
+
+.hover\:bg-blue-800:hover,
+.hover\:bg-indigo-800:hover,
+.hover\:bg-green-800:hover,
+.hover\:bg-emerald-800:hover {
+    background-color: var(--brand-crimson-dark) !important;
+}
+
+.hover\:text-blue-700:hover,
+.hover\:text-blue-800:hover,
+.hover\:text-indigo-700:hover,
+.hover\:text-indigo-800:hover,
+.hover\:text-indigo-900:hover,
+.hover\:text-green-700:hover,
+.hover\:text-green-800:hover,
+.hover\:text-emerald-700:hover,
+.hover\:text-emerald-800:hover {
+    color: var(--brand-crimson-dark) !important;
+}
 

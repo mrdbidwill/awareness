@@ -50,49 +50,6 @@
       <%= f.password_field :current_password, autocomplete: "current-password", class: "block shadow-sm rounded-md border px-2 py-1 mt-2 w-full" %>
     </div>
 
-    <!-- Default Location Preferences -->
-    <div class="my-6 p-4 bg-blue-50 border border-blue-200 rounded-lg" data-controller="country-select" data-country-select-url-value="<%= states_path %>">
-      <h3 class="font-semibold text-lg mb-3 text-blue-900">Default Location Preferences</h3>
-      <p class="text-sm text-blue-700 mb-4">Set default location values to pre-fill when creating new mushrooms. Leave blank if you prefer to enter location manually each time.</p>
-
-      <div class="my-4">
-        <%= f.label :default_country_id, "Default Country", class: "block font-medium" %>
-        <%= f.collection_select :default_country_id, Country.all, :id, :name,
-                               { prompt: "None - select manually each time", include_blank: true },
-                               { class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full",
-                                 data: { action: "change->country-select#change",
-                                        "country-select-target": "countrySelect"} } %>
-      </div>
-
-      <div id="state-select-container" class="my-4">
-        <%= f.label :default_state_id, "Default State/Province", class: "block font-medium" %>
-        <select name="user[default_state_id]"
-                id="user_default_state_id"
-                class="block shadow-sm rounded-md border px-2 py-1 mt-1 w-full"
-                data-country-select-target="stateSelect"
-                <%= resource.default_country_id.present? ? "" : "disabled" %>>
-          <% if resource.default_country_id.present? %>
-            <option value="">None - select manually each time</option>
-            <% Country.find(resource.default_country_id).states.order(:name).each do |state| %>
-              <option value="<%= state.id %>" <%= "selected" if state.id == resource.default_state_id %>><%= state.name %></option>
-            <% end %>
-          <% else %>
-            <option value="">Select a country first</option>
-          <% end %>
-        </select>
-      </div>
-
-      <div class="my-4">
-        <%= f.label :default_city, "Default City", class: "block font-medium" %>
-        <%= f.text_field :default_city, class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full", placeholder: "Optional" %>
-      </div>
-
-      <div class="my-4">
-        <%= f.label :default_county, "Default County", class: "block font-medium" %>
-        <%= f.text_field :default_county, class: "block shadow-sm rounded-md border px-2 py-1 mt-1 w-full", placeholder: "Optional" %>
-      </div>
-    </div>
-
     <div class="mt-6">
       <%= f.submit "Update", class: "btn-primary btn-responsive" %>
     </div>

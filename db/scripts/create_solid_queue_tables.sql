@@ -1,4 +1,4 @@
--- Create SolidQueue tables for mrdbid_production_queue database
+-- Create SolidQueue tables for awareness_production_queue database
 
 CREATE TABLE IF NOT EXISTS `solid_queue_jobs` (
   `id` bigint NOT NULL AUTO_INCREMENT,

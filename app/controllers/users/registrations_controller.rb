@@ -30,17 +30,13 @@ class Users::RegistrationsController < Devise::RegistrationsController
   def update
     Rails.logger.info "=" * 80
     Rails.logger.info "Account update params: #{params[:user]&.keys}"
-    Rails.logger.info "Default country ID: #{params[:user]&.[](:default_country_id)}"
-    Rails.logger.info "Default state ID: #{params[:user]&.[](:default_state_id)}"
-    Rails.logger.info "Default city: #{params[:user]&.[](:default_city)}"
-    Rails.logger.info "Default county: #{params[:user]&.[](:default_county)}"
     Rails.logger.info "=" * 80
     super
   end
 
   # Allow updating without password if only updating non-sensitive fields
   def update_resource(resource, params)
-    # If user is only updating location preferences (not email or password), skip password requirement
+    # If user is only updating non-sensitive profile fields, skip password requirement
     if params[:password].blank? && params[:email] == resource.email
       resource.update_without_password(params.except(:current_password))
     else
@@ -65,7 +61,7 @@ class Users::RegistrationsController < Devise::RegistrationsController
   end
 
   def configure_account_update_params
-    devise_parameter_sanitizer.permit(:account_update, keys: [:display_name, :default_country_id, :default_state_id, :default_city, :default_county])
+    devise_parameter_sanitizer.permit(:account_update, keys: [:display_name])
   end
 
   private

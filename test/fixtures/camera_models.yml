@@ -1,9 +1,0 @@
-one:
-  name: "EOS 5D"
-  created_at: <%= 1.day.ago %>
-  updated_at: <%= 1.day.ago %>
-
-two:
-  name: "D850"
-  created_at: <%= 1.day.ago %>
-  updated_at: <%= 1.day.ago %>

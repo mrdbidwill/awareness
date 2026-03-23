@@ -1,0 +1,45 @@
+<% content_for :title, "Admin · References" %>
+
+<div class="w-full">
+  <div class="mb-4 flex items-center justify-between gap-2">
+    <h1 class="text-2xl font-bold">References</h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded bg-gray-600 px-3 py-2 text-white hover:bg-gray-700" %>
+      <%= link_to "New Reference", new_admin_reference_path, class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+    </div>
+  </div>
+
+  <% if @references.any? %>
+    <div class="space-y-2">
+      <% @references.each do |reference| %>
+        <div class="rounded border bg-white p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold">
+                <%= link_to reference.name, admin_reference_path(reference), class: "text-blue-700 hover:underline" %>
+              </h2>
+              <p class="text-sm text-gray-600">
+                <%= reference.author.presence || "Unknown author" %>
+                <% if reference.publish_date.present? %>
+                  · <%= reference.publish_date %>
+                <% end %>
+              </p>
+              <% if reference.description.present? %>
+                <p class="mt-2 text-sm text-gray-700"><%= truncate(reference.description, length: 220) %></p>
+              <% end %>
+            </div>
+            <%= render "admin/shared/resource_actions", record: reference, delete: true %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded border bg-white p-6 text-sm text-gray-600">
+      No references yet. Add one to get started.
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <%= paginate @references %>
+  </div>
+</div>

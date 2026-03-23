@@ -12,6 +12,6 @@ FactoryBot.define do
   end
 
   sequence :scientific_name do |n|
-    "Species #{n}"
+    "Label #{n}"
   end
 end

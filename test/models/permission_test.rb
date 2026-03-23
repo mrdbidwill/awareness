@@ -14,19 +14,8 @@ class PermissionTest < ActiveSupport::TestCase
 
   # === Associations ===
 
-  test "should have many role_permissions" do
-    assert_respond_to @permission, :role_permissions
-  end
-
-  test "should have many roles through role_permissions" do
-    assert_respond_to @permission, :roles
-  end
-
-  test "should return correct roles through association" do
-    role = roles(:admin)
-    RolePermission.create!(role: role, permission: @permission)
-
-    assert_includes @permission.roles, role
+  test "should have many users" do
+    assert_respond_to @permission, :users
   end
 
   # === Attributes ===
@@ -47,20 +36,6 @@ class PermissionTest < ActiveSupport::TestCase
   test "should have timestamps" do
     assert_not_nil @permission.created_at
     assert_not_nil @permission.updated_at
-  end
-
-  # === Multiple Associations ===
-
-  test "should allow multiple roles for same permission" do
-    role1 = roles(:admin)
-    role2 = roles(:manager)
-
-    RolePermission.create!(role: role1, permission: @permission)
-    RolePermission.create!(role: role2, permission: @permission)
-
-    assert_equal 2, @permission.roles.count
-    assert_includes @permission.roles, role1
-    assert_includes @permission.roles, role2
   end
 
   # === CRUD Operations ===

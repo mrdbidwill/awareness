@@ -11,7 +11,7 @@ one:
 two:
   title: "Another Article"
   slug: "another-article"
-  subject: tree_identification
+  subject: wellness
   body: "Another test body."
   published: false
   created_at: <%= 1.day.ago %>

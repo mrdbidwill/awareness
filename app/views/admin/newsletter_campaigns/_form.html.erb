@@ -17,7 +17,7 @@
 
   <div>
     <%= f.label :from_email, class: "block text-sm font-medium" %>
-    <%= f.email_field :from_email, placeholder: ENV.fetch("MAILER_FROM", "contact@awareness.mrdbid.com"),
+    <%= f.email_field :from_email, placeholder: ENV.fetch("MAILER_FROM", "contact@awareness.example.com"),
                        class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
     <p class="mt-1 text-xs text-gray-500">Optional. Leave blank to use default mailer sender.</p>
   </div>

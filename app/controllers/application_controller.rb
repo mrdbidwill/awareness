@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   before_action :set_paper_trail_whodunnit
   before_action :set_view_debug_identifier, if: -> { Rails.env.development? || Rails.env.test? }  # see file name on each page
   before_action :_debug_views_reset, if: -> { Rails.env.development? || Rails.env.test? }
-  before_action :check_temporary_admin_expiration, if: :user_signed_in?
   helper_method :rendered_views_debug
 
   include Pundit::Authorization # Updated inclusion for Pundit
@@ -23,7 +22,6 @@ class ApplicationController < ActionController::Base
   # Only allow modern browsers supporting webp images, web push, badges, import maps, CSS nesting, and CSS :has.
   allow_browser versions: :modern
   helper :all # This includes all helpers in view contexts
-  helper MrCharactersHelper
 
   # Configure permitted parameters for Devise
   before_action :configure_permitted_parameters, if: :devise_controller?
@@ -34,21 +32,8 @@ class ApplicationController < ActionController::Base
   after_action :verify_authorized, unless: -> { devise_controller? || action_name == 'index' }
   after_action :verify_policy_scoped, unless: -> { devise_controller? || action_name != 'index' || !action_has_index? }
 
-  # Check if current user is an elevated admin (Owner/Admin only)
-  # This method is made available to views via helper_method (see below)
-  #
-  # Purpose: Enable inline edit links for admins in user-facing workflows
-  # Admin users see small edit icons (⚙️, ✏️) next to characters and lookup items
-  # that link directly to admin edit pages with automatic return navigation.
-  #
-  # Returns:
-  #   true - if user is signed in AND has admin permissions
-  #   false - if user not signed in or not an admin
-  #
-  # Usage in views:
-  #   <% if admin_user? %>
-  #     <%= link_to "Edit", edit_admin_path(..., return_to: request.fullpath) %>
-  #   <% end %>
+  # Check if current user is an elevated admin (Owner/Admin only).
+  # This method is exposed to views via helper_method.
   def admin_user?
     # Helper method to check admin status
     user_signed_in? && current_user.elevated_admin?
@@ -80,16 +65,6 @@ class ApplicationController < ActionController::Base
 
   def after_inactive_sign_up_path_for(resource)
     root_path
-  end
-
-  def check_temporary_admin_expiration
-    return unless current_user.admin_expired?
-
-    if current_user.check_and_downgrade_expired_admin!
-      sign_out current_user
-      support_email = ENV.fetch("SUPPORT_EMAIL", "support@awareness.mrdbid.com")
-      redirect_to root_path, alert: "Your temporary admin access has expired. To continue, please create a regular account and email #{support_email} to request permanent admin access."
-    end
   end
 
   def require_admin!

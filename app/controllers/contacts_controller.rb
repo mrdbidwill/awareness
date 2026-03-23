@@ -26,11 +26,11 @@ class ContactsController < ApplicationController
     end
 
     # Validate recipient is one of the allowed addresses
-    allowed_recipients = ENV.fetch("CONTACT_RECIPIENTS", "contact@awareness.mrdbid.com,webmaster@awareness.mrdbid.com")
+    allowed_recipients = ENV.fetch("CONTACT_RECIPIENTS", "contact@awareness.example.com,webmaster@awareness.example.com")
                             .split(",")
                             .map(&:strip)
                             .reject(&:blank?)
-    default_recipient = allowed_recipients.first || "contact@awareness.mrdbid.com"
+    default_recipient = allowed_recipients.first || "contact@awareness.example.com"
     recipient = default_recipient unless allowed_recipients.include?(recipient)
 
     begin

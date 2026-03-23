@@ -77,26 +77,6 @@ class Users::RegistrationsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to authenticated_root_path
   end
 
-  test "should update location preferences" do
-    sign_in @user
-    country = countries(:one)
-    state = states(:one)
-
-    patch user_registration_url, params: {
-      user: {
-        default_country_id: country.id,
-        default_state_id: state.id,
-        default_city: "Test City",
-        default_county: "Test County",
-        email: @user.email
-      }
-    }
-
-    assert_redirected_to authenticated_root_path
-    @user.reload
-    assert_equal country.id, @user.default_country_id
-  end
-
   test "should destroy user account" do
     sign_in @user
     # Delete dependent records that would prevent user deletion

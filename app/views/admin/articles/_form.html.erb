@@ -10,20 +10,7 @@
 
   <div>
     <%= f.label :title, class: "block text-sm font-medium" %>
-    <div class="relative" data-controller="inline-autocomplete"
-         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
-         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
-         data-inline-autocomplete-min-value="4">
-      <%= f.text_field :title,
-          class: "border rounded px-2 py-1 w-full",
-          data: {
-            inline_autocomplete_target: "textarea",
-            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
-          } %>
-      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
-          data-inline-autocomplete-target="dropdown"
-          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
-    </div>
+    <%= f.text_field :title, class: "border rounded px-2 py-1 w-full" %>
   </div>
 
   <div>
@@ -49,28 +36,10 @@
 
   <div>
     <%= f.label :summary, class: "block text-sm font-medium" %>
-    <div class="relative" data-controller="inline-autocomplete"
-         data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
-         data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
-         data-inline-autocomplete-min-value="4">
-      <%= f.text_area :summary,
-          rows: 3,
-          class: "border rounded px-2 py-1 w-full",
-          data: {
-            inline_autocomplete_target: "textarea",
-            action: "input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
-          } %>
-      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
-          data-inline-autocomplete-target="dropdown"
-          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
-    </div>
+    <%= f.text_area :summary, rows: 3, class: "border rounded px-2 py-1 w-full" %>
   </div>
 
-  <div data-controller="text-formatter inline-autocomplete"
-       data-text-formatter-max-length-value="16777215"
-       data-inline-autocomplete-genus-url-value="<%= mycowriter.genera_autocomplete_path %>"
-       data-inline-autocomplete-species-url-value="<%= mycowriter.species_autocomplete_path %>"
-       data-inline-autocomplete-min-value="4">
+  <div data-controller="text-formatter" data-text-formatter-max-length-value="16777215">
     <div class="flex justify-between items-center mb-2">
       <%= f.label :body, class: "block text-sm font-medium" %>
       <span data-text-formatter-target="charCount" class="text-xs text-gray-500"></span>
@@ -122,12 +91,8 @@
           class: "border rounded px-2 py-1 w-full font-mono",
           data: {
             text_formatter_target: "textarea",
-            inline_autocomplete_target: "textarea",
-            action: "input->text-formatter#updateCharCount input->inline-autocomplete#onInput keydown->inline-autocomplete#onKeydown"
+            action: "input->text-formatter#updateCharCount"
           } %>
-      <ul class="absolute z-50 border-4 border-red-500 rounded bg-white overflow-auto shadow-lg hidden"
-          data-inline-autocomplete-target="dropdown"
-          style="width: 300px; max-height: 300px; top: 100%; left: 0; margin-top: 4px;"></ul>
     </div>
     <details class="text-xs text-gray-700 mt-2 bg-gray-50 p-3 rounded border">
       <summary class="cursor-pointer font-semibold text-gray-800 hover:text-blue-600">💡 Click for HTML styling guide</summary>
@@ -142,17 +107,6 @@
           <li><code>class="text-green"</code> - <span style="color: #16a34a;">Green</span></li>
           <li><code>class="text-purple"</code> - <span style="color: #9333ea;">Purple</span></li>
         </ul>
-
-        <p><strong>🍄 Mycowriter Autocomplete:</strong></p>
-        <p class="ml-4 bg-orange-50 p-2 rounded border border-orange-300">
-          <strong>While typing, genus and species names auto-complete!</strong><br>
-          • Type a <strong>capital letter + 4 characters</strong> (e.g., "Gano") → red dropdown shows genus matches<br>
-          • Select "Ganoderma" → automatically italicized: <em>Ganoderma</em><br>
-          • Continue typing after genus (e.g., " sess") → <strong>keep typing until dropdown shows species</strong><br>
-          • Select "Ganoderma sessile" → replaces with properly formatted: <em>Ganoderma sessile</em><br>
-          • <strong>Scientific names are automatically italicized</strong> per binomial nomenclature standards<br>
-          <em>Watch for the red bordered dropdown as you type!</em>
-        </p>
 
         <p><strong>📚 Auto-Glossary (For Readers):</strong></p>
         <p class="ml-4 bg-blue-50 p-2 rounded border border-blue-200">

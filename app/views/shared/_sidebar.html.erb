@@ -17,14 +17,11 @@
     </svg>
   </button>
 
-  <!-- Logo/Title - Clickable -->
+  <!-- Title - Clickable (logo intentionally removed for new branding setup) -->
   <div class="mb-4 mt-8 lg:mt-0">
-    <%= link_to root_path, class: "block hover:opacity-80 transition" do %>
-      <%= image_tag "awareness_logo.svg",
-                    alt: "Awareness — Mycology Articles",
-                    class: "block h-10 w-auto select-none mb-2",
-                    draggable: false %>
-      <p class="text-xs text-gray-600">Awareness Mycology Articles</p>
+    <%= link_to root_path, class: "block rounded border border-amber-300 bg-amber-50 px-3 py-2 hover:bg-amber-100 transition" do %>
+      <p class="text-xl font-bold tracking-wide text-red-900">Awareness</p>
+      <p class="text-xs text-red-800">Articles, books, newsletter, and contact</p>
     <% end %>
   </div>
 
@@ -41,59 +38,26 @@
     <%= link_to "Home", root_path, class: "block px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition text-center" %>
   </div>
 
-  <!-- Context-aware section for the current mushroom -->
-  <% if defined?(@mushroom) && @mushroom.present? && @mushroom.persisted? %>
-    <div class="mb-4 p-3 bg-blue-50 lg:bg-blue-100 border border-blue-300 rounded">
-      <div class="text-xs font-semibold text-blue-900 mb-2">Current Mushroom:</div>
-      <div class="text-sm font-medium text-blue-800 mb-3"><%= @mushroom.name || "Unnamed" %></div>
-
-      <div class="space-y-1">
-        <% if current_page?(controller: 'mushrooms', action: 'show', id: @mushroom.id) %>
-          <%= link_to "Edit Mushroom", edit_mushroom_path(@mushroom), class: "block px-2 py-1.5 text-xs rounded bg-green-600 hover:bg-green-700 text-white font-medium transition text-center" %>
-        <% elsif current_page?(controller: 'mushrooms', action: 'edit', id: @mushroom.id) %>
-          <%= link_to "View Mushroom", mushroom_path(@mushroom), class: "block px-2 py-1.5 text-xs rounded bg-blue-600 hover:bg-blue-700 text-white font-medium transition text-center" %>
-        <% end %>
-
-        <%= link_to "Upload Image", new_mushroom_image_mushroom_path(@mushroom), class: "block px-2 py-1.5 text-xs rounded bg-sky-600 hover:bg-sky-700 text-white font-medium transition text-center" %>
-        <%= link_to "Compare", mushroom_mushroom_comparisons_path(mushroom_id: @mushroom.id), class: "block px-2 py-1.5 text-xs rounded bg-purple-600 hover:bg-purple-700 text-white font-medium transition text-center" %>
-
-        <% if user_signed_in? && @mushroom.user_id == current_user.id %>
-          <%= button_to "Delete Mushroom", mushroom_path(@mushroom), method: :delete,
-              class: "w-full px-2 py-1.5 text-xs rounded bg-red-600 hover:bg-red-700 text-white font-medium transition text-center",
-              data: { turbo_confirm: "Are you sure you want to delete this mushroom?" } %>
-        <% end %>
-      </div>
-    </div>
-
-    <hr class="my-4 border-gray-300">
-  <% end %>
-
   <!-- Navigation Links -->
   <nav class="space-y-1">
+    <%= link_to "Articles", articles_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+    <%= link_to "Newsletter", new_newsletter_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+    <%= link_to "Contact", contact_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+    <%= link_to "Terms of Service", terms_path, class: "block px-3 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium transition" %>
+
+    <div class="my-2 border-t border-gray-400"></div>
+
     <% if user_signed_in? %>
-      <%= link_to "Articles", articles_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Newsletter", new_newsletter_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Books", books_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Contact", contact_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Terms of Service", terms_path, class: "block px-3 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium transition" %>
-
-      <div class="my-2 border-t border-gray-400"></div>
-
       <% if current_user&.admin? %>
+        <% if controller_path == "admin/dashboard" %>
+          <%= link_to "References", admin_references_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
+        <% end %>
         <%= link_to "Admin Dashboard", admin_root_path, class: "block px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition" %>
-        <div class="my-2 border-t border-gray-400"></div>
       <% end %>
-
       <%= link_to "Account", edit_user_registration_path, class: "block px-3 py-2 rounded bg-orange-600 hover:bg-orange-700 text-white text-sm font-medium transition" %>
       <%= button_to "Logout", destroy_user_session_path, method: :delete, data: { turbo: false }, class: "w-full text-left px-3 py-2 rounded bg-yellow-600 hover:bg-yellow-700 text-white text-sm font-medium transition" %>
     <% else %>
-      <%= link_to "Articles", articles_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Newsletter", new_newsletter_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Books", books_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Contact", contact_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Terms of Service", terms_path, class: "block px-3 py-2 rounded bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Sign In", new_user_session_path, class: "block px-3 py-2 rounded bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium transition" %>
-      <%= link_to "Create Account", new_user_registration_path, class: "block px-3 py-2 rounded bg-green-600 hover:bg-green-700 text-white text-sm font-medium transition" %>
+      <%= link_to "Log In", new_user_session_path, class: "block px-3 py-2 rounded bg-red-600 hover:bg-red-700 text-white text-sm font-medium transition" %>
     <% end %>
   </nav>
 </aside>

@@ -20,8 +20,7 @@ class User < ApplicationRecord
   devise :two_factor_backupable, otp_number_of_backup_codes: 10
 
   # Add methods to generate OTP secret and provisioning URI
-  # Skip OTP generation for temporary admins
-  before_create :generate_otp_secret, unless: :temporary_admin?
+  before_create :generate_otp_secret
   def generate_otp_secret
     self.otp_secret ||= User.generate_otp_secret
   end
@@ -68,64 +67,10 @@ class User < ApplicationRecord
     permission_id.present? && permission_id == 1  # Owner-1
   end
 
-  def temporary_admin?
-    temporary_admin == true
-  end
-
-  def admin_expired?
-    temporary_admin? && admin_expires_at.present? && admin_expires_at < Time.current
-  end
-
-  def check_and_downgrade_expired_admin!
-    return unless admin_expired?
-
-    # Downgrade to Member (permission_id = 9)
-    update_columns(
-      permission_id: 9,
-      temporary_admin: false,
-      admin_expires_at: nil
-    )
-    true
-  end
-
-  def time_until_expiration
-    return nil unless temporary_admin? && admin_expires_at.present?
-
-    seconds = (admin_expires_at - Time.current).to_i
-    return nil if seconds <= 0
-
-    hours = seconds / 3600
-    minutes = (seconds % 3600) / 60
-
-    if hours > 0
-      "#{hours}h #{minutes}m"
-    else
-      "#{minutes}m"
-    end
-  end
-
-  # Association with mushrooms
-  has_many :mushrooms, dependent: :destroy
-  has_many :all_groups, dependent: :destroy
-  has_many :clusters, dependent: :destroy
-  has_many :projects, dependent: :destroy
-  has_many :user_roles, dependent: :destroy
-  has_many :roles, through: :user_roles
+  # Content and account associations
   has_many :trusted_devices, dependent: :destroy
   has_many :articles, dependent: :nullify
   has_many :newsletter_campaigns, dependent: :destroy
-  has_many :source_data, class_name: 'SourceData', dependent: :nullify
-
-  # Invitation associations
-  has_many :created_invitations, class_name: 'InvitationToken', foreign_key: 'created_by_user_id', dependent: :destroy
-  has_one :invitation_token, foreign_key: 'invited_user_id'
-
-  # Default location preferences
-  belongs_to :default_country, class_name: 'Country', optional: true
-  belongs_to :default_state, class_name: 'State', optional: true
-
-  validates :default_city, length: { maximum: 255 }
-  validates :default_county, length: { maximum: 255 }
 
   # Trusted device methods
   def trust_device!(fingerprint)

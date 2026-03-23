@@ -11,12 +11,6 @@ class PagesController < ApplicationController
     @newsletter_subscriber = NewsletterSubscriber.new
   end
 
-  def contact
-  end
-
-  def trees_of_blakeley_signs
-  end
-
   def terms
   end
 end
