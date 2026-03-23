@@ -1,0 +1,2 @@
+class MbList < ApplicationRecord
+end

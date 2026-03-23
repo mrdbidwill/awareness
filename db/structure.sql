@@ -108,6 +108,31 @@ CREATE TABLE `comments` (
   CONSTRAINT `fk_rails_03de2dc08c` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `mb_lists`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `mb_lists` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `mblist_id` text COLLATE utf8mb4_0900_as_cs,
+  `taxon_name` text COLLATE utf8mb4_0900_as_cs,
+  `authors` text COLLATE utf8mb4_0900_as_cs,
+  `rank_name` text COLLATE utf8mb4_0900_as_cs,
+  `year_of_effective_publication` text COLLATE utf8mb4_0900_as_cs,
+  `name_status` text COLLATE utf8mb4_0900_as_cs,
+  `mycobank_number` text COLLATE utf8mb4_0900_as_cs,
+  `hyperlink` text COLLATE utf8mb4_0900_as_cs,
+  `classification` text COLLATE utf8mb4_0900_as_cs,
+  `current_name` text COLLATE utf8mb4_0900_as_cs,
+  `synonymy` text COLLATE utf8mb4_0900_as_cs,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_mblists_on_taxon_name_and_rank_name` (`taxon_name`(255),`rank_name`(255)),
+  KEY `index_mblists_on_taxon_name` (`taxon_name`(255)),
+  KEY `index_mblists_on_rank_name` (`rank_name`(255)),
+  KEY `index_mblists_on_name_status` (`name_status`(255))
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `newsletter_campaigns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -470,5 +495,6 @@ CREATE TABLE `versions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20260323173001'),
 ('20260323173000'),
 ('20260323150000');
