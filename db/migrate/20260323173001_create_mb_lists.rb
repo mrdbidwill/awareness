@@ -1,5 +1,7 @@
 class CreateMbLists < ActiveRecord::Migration[8.0]
-  def change
+  def up
+    return if table_exists?(:mb_lists)
+
     create_table :mb_lists do |t|
       t.text :mblist_id
       t.text :taxon_name
@@ -35,5 +37,9 @@ class CreateMbLists < ActiveRecord::Migration[8.0]
     add_index :mb_lists, :name_status,
               name: "index_mblists_on_name_status",
               length: 255
+  end
+
+  def down
+    drop_table :mb_lists, if_exists: true
   end
 end
