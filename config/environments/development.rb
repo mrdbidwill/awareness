@@ -37,6 +37,25 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :letter_opener
   config.action_mailer.perform_deliveries = true
 
+  # Development defaults for encrypted attributes used by devise-two-factor.
+  # Production must use real secrets from credentials and/or environment.
+  config.active_record.encryption.primary_key =
+    ENV["ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :primary_key) ||
+    "0123456789abcdef0123456789abcdef"
+  config.active_record.encryption.deterministic_key =
+    ENV["ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :deterministic_key) ||
+    "abcdef0123456789abcdef0123456789"
+  config.active_record.encryption.key_derivation_salt =
+    ENV["ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT"].presence ||
+    Rails.application.credentials.dig(:active_record_encryption, :key_derivation_salt) ||
+    "development-key-derivation-salt-1234567890"
+
+  if ENV["OTP_SECRET_ENCRYPTION_KEY"].blank? || ENV["OTP_SECRET_ENCRYPTION_KEY"] == "your_otp_secret_key_here"
+    ENV["OTP_SECRET_ENCRYPTION_KEY"] = "0123456789abcdef0123456789abcdef"
+  end
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

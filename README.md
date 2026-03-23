@@ -104,12 +104,6 @@ sudo apt-get install mysql-server libmysqlclient-dev imagemagick libvips-tools l
 Create a `.env` file in the root directory (see `.env.example`) and set:
 
 ```bash
-# Rails credentials
-RAILS_MASTER_KEY=your_master_key_here
-
-# Two-factor authentication encryption key
-OTP_SECRET_ENCRYPTION_KEY=your_otp_secret_key_here
-
 # App host (used in links/emails)
 APP_HOST=localhost:3000
 
@@ -131,9 +125,16 @@ R2_PUBLIC_BASE_URL=https://images.awareness.com
 # AdSense (public pages only)
 ADSENSE_ENABLED=false
 ADSENSE_CLIENT_ID=ca-pub-...
+
+# Optional local overrides for encrypted attributes used by 2FA
+# (development has safe defaults if omitted)
+ACTIVE_RECORD_ENCRYPTION_PRIMARY_KEY=0123456789abcdef0123456789abcdef
+ACTIVE_RECORD_ENCRYPTION_DETERMINISTIC_KEY=abcdef0123456789abcdef0123456789
+ACTIVE_RECORD_ENCRYPTION_KEY_DERIVATION_SALT=development-key-derivation-salt-1234567890
+OTP_SECRET_ENCRYPTION_KEY=0123456789abcdef0123456789abcdef
 ```
 
-Generate an OTP secret key if needed:
+Generate keys for production/staging secrets if needed:
 ```bash
 bundle exec rails secret
 ```
