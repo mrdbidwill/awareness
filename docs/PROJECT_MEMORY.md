@@ -35,6 +35,8 @@ This document is the living memory for Awareness. It captures the rules, decisio
 - **Turbo confirm:** Use `data: { turbo_confirm: "..." }` for destructive/confirm actions (no rails-ujs).
 - **Button audit coverage:** System test `test/system/button_ux_audit_test.rb` validates core button flows (create/edit/delete, image upload, export buttons).
 - **Coverage baseline (2026-03-14):** 80.75% line, 56.29% branch; continue raising toward 80%/60%.
+- **IDE copy/paste reliability:** This IDE can lose or truncate text outside the visible window. Treat long outputs as unsafe unless fully visible.
+- **Window-safe delivery rule:** For long SQL/commands/code, deliver in small numbered chunks that fit one window (for example `Part 1/4`, `Part 2/4`) instead of one large block.
 
 ## Authorization & Ownership Rules (Non-Negotiable)
 
@@ -55,6 +57,7 @@ These requirements apply to any AI-assisted changes in this repo:
 2a. **Deploy Discipline:** After completing a fix, the AI must **commit, push to `main`, and deploy** unless explicitly told to pause. If the fix is part of a larger review branch, the AI must only commit/push and wait for explicit deploy approval.
 3. **Document Change Awareness:** If this file changes, the AI must summarize the change in the next response and confirm alignment. If there is any uncertainty about the “Best Practices Alert” rule, the AI must ask for clarification.
 4. **End-of-Task Prompt:** End each task response with a brief prompt asking whether `PROJECT_MEMORY.md` and/or `decision-log.md` should be updated for the work just completed.
+5. **Window-Safe Output:** Assume the IDE may not preserve text that is not visible. Do not send critical executable content as one oversized block; send chunked, visible-window-sized output by default.
 
 ### Definitions
 
