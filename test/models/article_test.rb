@@ -29,7 +29,7 @@ class ArticleTest < ActiveSupport::TestCase
   end
 
   test "should require unique slug" do
-    Article.create!(title: "Test", slug: "unique-slug", body: "Body")
+    Article.create!(title: "Test", slug: "unique-slug", body: "Body", author_name: "Test Author")
     duplicate = Article.new(title: "Test 2", slug: "unique-slug", body: "Body 2")
     assert_not duplicate.valid?
     assert_includes duplicate.errors[:slug], "has already been taken"
@@ -60,6 +60,13 @@ class ArticleTest < ActiveSupport::TestCase
   test "should have timestamps" do
     assert_not_nil @article.created_at
     assert_not_nil @article.updated_at
+  end
+
+  test "should require author_name when no user display name can be applied" do
+    article = Article.new(title: "No Author", slug: "no-author", body: "Body")
+
+    assert_not article.valid?
+    assert article.errors[:author_name].any?
   end
 
   test "captures author_name from user display_name on create when blank" do

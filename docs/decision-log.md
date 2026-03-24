@@ -15,7 +15,7 @@ Short, durable records of decisions that affect architecture, behavior, or long-
 - Date: 2026-03-24
 - Decision: Persist article bylines in `articles.author_name` and model source/page references via `article_source_citations`.
 - Rationale: `user_id` alone does not guarantee stable byline attribution over time, and source page references must be stored per article citation instance rather than on the shared source record.
-- Consequences: New article records snapshot `author_name` from the creator's `display_name` when blank; admin article editing supports attaching sources with `page_locator`, `note`, and order; public/admin article pages render byline and citations.
+- Consequences: New article records snapshot `author_name` from the creator's `display_name` when blank; `author_name` is required at model/database level (with fallback backfill for legacy rows); admin article editing supports attaching sources with `page_locator`, `note`, and order; public/admin article pages render byline and citations.
 - Alternatives Considered: Derive byline only from `articles.user_id` (rejected due mutable/missing user profile risk); add page fields directly on `sources` (rejected because one source can be cited at many different pages across articles).
 
 - Date: 2026-03-20

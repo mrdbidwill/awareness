@@ -28,6 +28,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
       title: "Slug Test",
       slug: "slug-test-public",
       body: "Content",
+      author_name: "Public Author",
       published: true,
       published_at: Time.current
     )
@@ -41,6 +42,7 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
       title: "Unpublished",
       slug: "unpublished",
       body: "Content",
+      author_name: "Public Author",
       subject: subjects(:mycology),
       published: false
     )

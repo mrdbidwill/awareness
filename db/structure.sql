@@ -100,7 +100,7 @@ CREATE TABLE `articles` (
   `updated_at` datetime(6) NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `subject_id` bigint DEFAULT NULL,
-  `author_name` varchar(255) DEFAULT NULL,
+  `author_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_articles_on_slug` (`slug`),
   KEY `index_articles_on_published_at` (`published_at`),
@@ -514,6 +514,7 @@ CREATE TABLE `versions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20260324162000'),
 ('20260324143001'),
 ('20260324143000'),
 ('20260324100000'),

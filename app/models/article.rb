@@ -4,12 +4,12 @@ class Article < ApplicationRecord
   has_many :article_source_citations, -> { ordered }, dependent: :destroy, inverse_of: :article, strict_loading: false
   has_many :sources, through: :article_source_citations
 
-  validates :title, :slug, :body, presence: true
+  validates :title, :slug, :body, :author_name, presence: true
   validates :slug, uniqueness: true
 
   # Keep slugs URL-friendly
   before_validation :normalize_slug
-  before_validation :assign_author_name_from_user, on: :create
+  before_validation :assign_author_name_from_user
   accepts_nested_attributes_for :article_source_citations, allow_destroy: true,
                                                          reject_if: :article_source_citation_blank?
 

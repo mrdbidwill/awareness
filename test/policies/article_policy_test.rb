@@ -115,7 +115,7 @@ class ArticlePolicyTest < ActiveSupport::TestCase
   test "owner scope returns all articles" do
     article1 = Article.create!(title: "Article 1", slug: "article-1", body: "Content", user: @owner_user)
     article2 = Article.create!(title: "Article 2", slug: "article-2", body: "Content", user: @admin_user)
-    article3 = Article.create!(title: "Article 3", slug: "article-3", body: "Content", user: nil)
+    article3 = Article.create!(title: "Article 3", slug: "article-3", body: "Content", user: nil, author_name: "External Author")
 
     scoped = Pundit.policy_scope(@owner_user, Article)
     assert_includes scoped, article1
