@@ -22,6 +22,10 @@
     <% end %>
   </div>
 
+  <div class="mb-3">
+    <%= render "shared/pagination", collection: @sources %>
+  </div>
+
   <% if @sources.any? %>
     <div class="space-y-1">
       <% @sources.each do |source| %>
