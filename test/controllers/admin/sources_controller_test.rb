@@ -14,6 +14,39 @@ class Admin::SourcesControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, @source.name
   end
 
+  test "admin list is ordered alphabetically while ignoring leading articles" do
+    sign_in @owner_user
+    Source.create!(name: "The Zebra Manual")
+    Source.create!(name: "An Apple Study")
+    Source.create!(name: "Mushroom Compendium")
+
+    get admin_sources_url
+    assert_response :success
+
+    body = response.body
+    apple_index = body.index("An Apple Study")
+    mushroom_index = body.index("Mushroom Compendium")
+    zebra_index = body.index("The Zebra Manual")
+
+    assert apple_index.present?
+    assert mushroom_index.present?
+    assert zebra_index.present?
+    assert_operator apple_index, :<, mushroom_index
+    assert_operator mushroom_index, :<, zebra_index
+  end
+
+  test "admin can search sources" do
+    sign_in @owner_user
+    matching = Source.create!(name: "Unique Search Source")
+    Source.create!(name: "Completely Different Name")
+
+    get admin_sources_url, params: { q: "Unique Search Source" }
+    assert_response :success
+    assert_includes response.body, matching.name
+    assert_includes response.body, "value=\"Unique Search Source\""
+    refute_includes response.body, "Completely Different Name"
+  end
+
   test "admin can create source" do
     sign_in @owner_user
 

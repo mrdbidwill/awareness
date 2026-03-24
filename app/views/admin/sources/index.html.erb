@@ -9,6 +9,19 @@
     </div>
   </div>
 
+  <div class="mb-3 rounded border bg-white p-3">
+    <%= form_with url: admin_sources_path, method: :get, local: true, class: "flex flex-wrap items-end gap-2" do %>
+      <div class="min-w-64 flex-1">
+        <%= label_tag :q, "Search sources", class: "block text-sm font-medium text-gray-700" %>
+        <%= text_field_tag :q, @query, placeholder: "Name, author, or description", class: "mt-1 w-full rounded border border-gray-300 px-3 py-2" %>
+      </div>
+      <%= submit_tag "Search", class: "rounded bg-gray-700 px-3 py-2 text-white hover:bg-gray-800" %>
+      <% if @query.present? %>
+        <%= link_to "Clear", admin_sources_path, class: "rounded border border-gray-300 bg-white px-3 py-2 text-gray-700 hover:bg-gray-50" %>
+      <% end %>
+    <% end %>
+  </div>
+
   <% if @sources.any? %>
     <div class="space-y-1">
       <% @sources.each do |source| %>
@@ -40,11 +53,15 @@
     </div>
   <% else %>
     <div class="rounded border bg-white p-6 text-sm text-gray-600">
-      No sources yet. Add one to get started.
+      <% if @query.present? %>
+        No sources matched "<%= @query %>".
+      <% else %>
+        No sources yet. Add one to get started.
+      <% end %>
     </div>
   <% end %>
 
   <div class="mt-3">
-    <%= paginate @sources %>
+    <%= render "shared/pagination", collection: @sources %>
   </div>
 </div>

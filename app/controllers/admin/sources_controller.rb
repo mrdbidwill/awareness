@@ -6,7 +6,12 @@ module Admin
 
     def index
       authorize Source
-      @sources = policy_scope(Source).recent_first.page(params[:page]).per(15)
+      @query = params[:q].to_s.strip
+      @sources = policy_scope(Source)
+                 .search(@query)
+                 .alphabetical_by_name
+                 .page(params[:page])
+                 .per(15)
     end
 
     def show

@@ -8,6 +8,21 @@ class Source < ApplicationRecord
   validate :publish_year_format
 
   scope :recent_first, -> { order(publish_date: :desc, created_at: :desc) }
+  scope :alphabetical_by_name, lambda {
+    normalized_name_sql = "LOWER(TRIM(COALESCE(sources.name, '')))"
+    stripped_name_sql = "REGEXP_REPLACE(#{normalized_name_sql}, '^(the|an|a)[[:space:][:punct:]]+', '')"
+    order(Arel.sql("#{stripped_name_sql} ASC, #{normalized_name_sql} ASC, sources.id ASC"))
+  }
+  scope :search, lambda { |query|
+    q = query.to_s.strip
+    next all if q.blank?
+
+    like = "%#{ActiveRecord::Base.sanitize_sql_like(q)}%"
+    where(
+      "sources.name LIKE :like OR sources.author LIKE :like OR sources.description LIKE :like",
+      like: like
+    )
+  }
 
   before_validation :assign_publish_date_from_publish_year
 
