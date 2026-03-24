@@ -65,7 +65,7 @@ end
 
 class ActiveSupport::TestCase
   # Ensure core fixtures are loaded first
-  self.fixtures :users, :permissions, :subjects, :articles, :newsletter_subscribers, :newsletter_campaigns, :sources
+  self.fixtures :users, :permissions, :subjects, :articles, :sources, :article_source_citations, :newsletter_subscribers, :newsletter_campaigns
 end
 
 

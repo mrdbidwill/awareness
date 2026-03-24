@@ -19,6 +19,8 @@ class ArticlesControllerTest < ActionDispatch::IntegrationTest
   test "should show published article without authentication" do
     get article_url(@article)
     assert_response :success
+    assert_includes response.body, "By:"
+    assert_includes response.body, "Sources"
   end
 
   test "should find article by slug" do

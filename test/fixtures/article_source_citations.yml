@@ -1,0 +1,6 @@
+one:
+  article: one
+  source: one
+  page_locator: "p. 42"
+  note: "Primary definition reference"
+  position: 0

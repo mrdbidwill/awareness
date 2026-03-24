@@ -65,6 +65,26 @@ CREATE TABLE `ar_internal_metadata` (
   PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `article_source_citations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `article_source_citations` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `article_id` bigint NOT NULL,
+  `source_id` bigint NOT NULL,
+  `page_locator` varchar(255) DEFAULT NULL,
+  `note` text,
+  `position` int NOT NULL DEFAULT '0',
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_article_source_citations_on_article_id` (`article_id`),
+  KEY `index_article_source_citations_on_source_id` (`source_id`),
+  KEY `index_article_source_citations_on_article_and_position` (`article_id`,`position`),
+  CONSTRAINT `fk_rails_139ea8ece0` FOREIGN KEY (`article_id`) REFERENCES `articles` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rails_ee5c756e4e` FOREIGN KEY (`source_id`) REFERENCES `sources` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `articles`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -80,6 +100,7 @@ CREATE TABLE `articles` (
   `updated_at` datetime(6) NOT NULL,
   `user_id` bigint DEFAULT NULL,
   `subject_id` bigint DEFAULT NULL,
+  `author_name` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_articles_on_slug` (`slug`),
   KEY `index_articles_on_published_at` (`published_at`),
@@ -493,9 +514,10 @@ CREATE TABLE `versions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20260324143001'),
+('20260324143000'),
 ('20260324100000'),
 ('20260323190000'),
 ('20260323173001'),
 ('20260323173000'),
 ('20260323150000');
-

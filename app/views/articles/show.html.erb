@@ -7,6 +7,7 @@
 <div class="prose prose-p:text-gray-900 prose-lg max-w-none mx-auto px-6">
   <h1><%= sanitize(@article.title, tags: %w[em i]) %></h1>
   <div class="text-sm text-gray-500 mb-4">
+    <span class="mr-2">By: <%= @article.display_author_name %></span>
     <% if @article.subject.present? %>
       <span class="mr-2">
         Subject:
@@ -25,6 +26,25 @@
         attributes: %w[href src alt title class style])) %>
   <% else %>
     <%= raw mark_glossary_terms(simple_format(@article.body)) %>
+  <% end %>
+
+  <% if @article.article_source_citations.any? %>
+    <div class="mt-8 rounded border bg-white p-4 not-prose">
+      <h2 class="text-lg font-semibold mb-2">Sources</h2>
+      <ol class="list-decimal pl-5 space-y-1 text-sm text-gray-700">
+        <% @article.article_source_citations.each do |citation| %>
+          <li>
+            <span class="font-medium"><%= citation.source.name %></span>
+            <% if citation.page_locator.present? %>
+              <span> · <%= citation.page_locator %></span>
+            <% end %>
+            <% if citation.note.present? %>
+              <span> — <%= citation.note %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </div>
   <% end %>
 
   <div class="flex gap-2 m-6">

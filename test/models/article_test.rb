@@ -61,4 +61,30 @@ class ArticleTest < ActiveSupport::TestCase
     assert_not_nil @article.created_at
     assert_not_nil @article.updated_at
   end
+
+  test "captures author_name from user display_name on create when blank" do
+    user = users(:three)
+    article = Article.create!(
+      title: "Author Snapshot",
+      slug: "author-snapshot",
+      body: "Body",
+      user: user
+    )
+
+    assert_equal "Admin User", article.author_name
+  end
+
+  test "preserves author_name snapshot if user display name changes later" do
+    user = users(:three)
+    article = Article.create!(
+      title: "Author Snapshot Frozen",
+      slug: "author-snapshot-frozen",
+      body: "Body",
+      user: user
+    )
+    user.update!(display_name: "Renamed Admin")
+
+    assert_equal "Admin User", article.reload.author_name
+    assert_equal "Admin User", article.display_author_name
+  end
 end

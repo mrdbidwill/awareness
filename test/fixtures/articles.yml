@@ -1,6 +1,8 @@
 one:
   title: "Test Article"
   slug: "test-article"
+  user: one
+  author_name: "Owner User"
   subject: mycology
   body: "This is a test article body."
   published: true
@@ -11,6 +13,8 @@ one:
 two:
   title: "Another Article"
   slug: "another-article"
+  user: three
+  author_name: "Admin User"
   subject: wellness
   body: "Another test body."
   published: false

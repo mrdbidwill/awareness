@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Source < ApplicationRecord
+  has_many :article_source_citations, dependent: :destroy, inverse_of: :source, strict_loading: false
+  has_many :articles, through: :article_source_citations
+
   validates :name, presence: true
   validate :publish_year_format
 

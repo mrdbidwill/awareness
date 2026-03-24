@@ -34,6 +34,12 @@
     <p class="text-xs text-gray-500 mt-1">If blank, it will be generated from the title.</p>
   </div>
 
+  <div>
+    <%= f.label :author_name, "Author Name (Byline)", class: "block text-sm font-medium" %>
+    <%= f.text_field :author_name, class: "border rounded px-2 py-1 w-full", placeholder: "Auto-filled from your display name when blank" %>
+    <p class="text-xs text-gray-500 mt-1">Stored on the article so bylines remain available even if user profiles change later.</p>
+  </div>
+
   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
     <div>
       <%= f.label :subject_id, "Subject", class: "block text-sm font-medium" %>
@@ -166,6 +172,44 @@
   <div class="flex items-center gap-3">
     <%= f.check_box :published %>
     <%= f.label :published, "Published", class: "text-sm" %>
+  </div>
+
+  <div class="border rounded p-3 bg-white">
+    <h3 class="text-sm font-semibold mb-2">Source Citations</h3>
+    <p class="text-xs text-gray-500 mb-3">Attach sources with optional page references (for example: p. 37, pp. 40-42, fig. 2).</p>
+
+    <% source_options = Source.recent_first.to_a %>
+    <div class="space-y-2">
+      <%= f.fields_for :article_source_citations do |citation_fields| %>
+        <div class="grid grid-cols-1 gap-2 rounded border border-gray-200 p-2 sm:grid-cols-12">
+          <div class="sm:col-span-4">
+            <%= citation_fields.label :source_id, "Source", class: "block text-xs font-medium text-gray-700" %>
+            <%= citation_fields.select :source_id,
+                                       options_from_collection_for_select(source_options, :id, :name, citation_fields.object.source_id),
+                                       { include_blank: "(select source)" },
+                                       class: "mt-1 w-full rounded border px-2 py-1 text-sm" %>
+          </div>
+          <div class="sm:col-span-2">
+            <%= citation_fields.label :page_locator, "Page(s)", class: "block text-xs font-medium text-gray-700" %>
+            <%= citation_fields.text_field :page_locator, class: "mt-1 w-full rounded border px-2 py-1 text-sm", placeholder: "p. 37" %>
+          </div>
+          <div class="sm:col-span-5">
+            <%= citation_fields.label :note, "Citation note", class: "block text-xs font-medium text-gray-700" %>
+            <%= citation_fields.text_field :note, class: "mt-1 w-full rounded border px-2 py-1 text-sm", placeholder: "Optional detail or quote note" %>
+          </div>
+          <div class="sm:col-span-1">
+            <%= citation_fields.label :position, "Order", class: "block text-xs font-medium text-gray-700" %>
+            <%= citation_fields.number_field :position, class: "mt-1 w-full rounded border px-2 py-1 text-sm", min: 0 %>
+          </div>
+          <% if citation_fields.object.persisted? %>
+            <div class="sm:col-span-12 flex items-center gap-2 text-xs text-red-700">
+              <%= citation_fields.check_box :_destroy %>
+              <%= citation_fields.label :_destroy, "Remove this citation" %>
+            </div>
+          <% end %>
+        </div>
+      <% end %>
+    </div>
   </div>
 
   <div class="flex gap-2">

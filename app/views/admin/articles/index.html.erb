@@ -16,7 +16,8 @@
           <div>
             <div class="font-semibold"><%= link_to sanitize(a.title, tags: %w[em i]), admin_article_path(a) %></div>
             <div class="text-xs text-gray-500">
-              <span>Slug: <%= a.slug %></span>
+              <span>By: <%= a.display_author_name %></span>
+              <span class="ml-2">Slug: <%= a.slug %></span>
               <% if a.subject.present? %><span class="ml-2">Subject: <%= a.subject.name %></span><% end %>
               <% if a.published_at.present? %><span class="ml-2"><%= a.published_at.to_date %></span><% end %>
               <span class="ml-2"><%= a.published? ? "Published" : "Draft" %></span>

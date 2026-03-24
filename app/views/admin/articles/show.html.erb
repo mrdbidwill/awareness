@@ -11,6 +11,7 @@
 </div>
 
 <div class="text-sm text-gray-500 mb-3">
+  <span class="mr-2">By: <%= @article.display_author_name %></span>
   <% if @article.subject.present? %><span class="mr-2">Subject: <%= @article.subject.name %></span><% end %>
   <% if @article.published_at.present? %><span class="mr-2"><%= @article.published_at.to_date %></span><% end %>
   <span>Status: <%= @article.published? ? "Published" : "Draft" %></span>
@@ -21,6 +22,25 @@
     <%= sanitize(@article.body, tags: %w[p br ul ol li h2 h3 h4 strong em a blockquote code pre img], attributes: %w[href src alt title class]) %>
   <% else %>
     <%= simple_format(@article.body) %>
+  <% end %>
+
+  <% if @article.article_source_citations.any? %>
+    <div class="mt-6 rounded border bg-white p-3">
+      <h2 class="text-base font-semibold mb-2">Source Citations</h2>
+      <ol class="list-decimal pl-5 space-y-1 text-sm text-gray-700">
+        <% @article.article_source_citations.each do |citation| %>
+          <li>
+            <span class="font-medium"><%= citation.source.name %></span>
+            <% if citation.page_locator.present? %>
+              <span> · <%= citation.page_locator %></span>
+            <% end %>
+            <% if citation.note.present? %>
+              <span> — <%= citation.note %></span>
+            <% end %>
+          </li>
+        <% end %>
+      </ol>
+    </div>
   <% end %>
 
   <div class="mt-4">

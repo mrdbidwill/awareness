@@ -26,13 +26,13 @@ class ArticlesController < ApplicationController
   end
 
   def show
-    @article = Article.published.includes(:subject).find_by!(slug: params[:id])
+    @article = Article.published.includes(:subject, :user, article_source_citations: :source).find_by!(slug: params[:id])
   end
 
   private
 
   def filtered_articles(subject:, year: nil, month: nil)
-    scope = Article.published.includes(:subject)
+    scope = Article.published.includes(:subject, :user)
     scope = scope.where(subject: subject) if subject.present?
     scope = scope.for_year(year) if year.present?
     scope = scope.for_month(year, month) if month.present?

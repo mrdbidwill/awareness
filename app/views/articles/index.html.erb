@@ -32,6 +32,7 @@
           <div class="flex flex-wrap items-center justify-between gap-2">
             <h2 class="text-xl font-semibold text-blue-600"><%= sanitize(article.title, tags: %w[em i]) %></h2>
             <div class="text-xs text-gray-500">
+              <span class="mr-2">By: <%= article.display_author_name %></span>
               <% if article.subject.present? %>
                 <span class="mr-2">Subject: <%= article.subject.name %></span>
               <% end %>

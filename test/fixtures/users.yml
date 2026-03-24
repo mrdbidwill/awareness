@@ -1,6 +1,7 @@
 demo:
   id: 1
   email: "demo@example.com"
+  display_name: "Demo User"
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -11,6 +12,7 @@ demo:
 
 one:
   email: "user1@example.com"
+  display_name: "Owner User"
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %> # Matches "password" used in tests
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -21,6 +23,7 @@ one:
 
 two:
   email: "user2@example.com"
+  display_name: "Regular User"
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>
@@ -31,6 +34,7 @@ two:
 
 three:
   email: "admin@example.com"
+  display_name: "Admin User"
   encrypted_password: <%= Devise::Encryptor.digest(User, "password") %>
   created_at: <%= Time.current %>
   updated_at: <%= Time.current %>

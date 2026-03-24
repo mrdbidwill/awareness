@@ -23,6 +23,8 @@ This document is the living memory for Awareness. It captures the rules, decisio
 - **Memory ack required:** Run `script/ack_project_memory.sh` before any changes, then use `bin/with_project_memory <command>` for guarded commands.
 - **Core sequencing model:** Core character ordering is per fungus type via `core_character_sequences` (not `mr_characters.core_sequence`).
 - **Core entry UX:** Core mode routes to one-character-at-a-time sequential entry with `Save Character`, `Save & Next`, `Back`, and `Done`.
+- **Article byline persistence:** `articles.author_name` stores a byline snapshot so author attribution remains available even if user accounts or display names change.
+- **Citation model:** Article source references are stored in `article_source_citations` (join table) with per-article `page_locator`, `note`, and `position`; do not store page references directly on `sources`.
 - **Public demo boundary:** Unauthenticated users can only read demo content (`user_id == 1`). Public show endpoints must enforce this via Pundit.
 - **AdSense gating:** AdSense scripts may render **only** for unauthenticated sessions (`ADSENSE_ENABLED=true` + `ADSENSE_CLIENT_ID`).
 - **Active Storage:** Production image storage uses Cloudflare R2 (`ACTIVE_STORAGE_SERVICE=r2`).

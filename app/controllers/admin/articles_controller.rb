@@ -8,7 +8,7 @@ module Admin
     def index
       authorize Article
       @articles = policy_scope(Article)
-                    .includes(:subject)
+                    .includes(:subject, :user)
                     .order(published: :desc, published_at: :desc, created_at: :desc)
                     .page(params[:page])
                     .per(20)
@@ -22,6 +22,7 @@ module Admin
     # GET /admin/articles/new
     def new
       @article = Article.new
+      build_blank_citations(@article, minimum_blank: 3)
       authorize @article
     end
 
@@ -41,6 +42,7 @@ module Admin
         if @article.save
           redirect_to admin_article_path(@article), notice: "Article created."
         else
+          build_blank_citations(@article, minimum_blank: 3)
           render :new, status: :unprocessable_entity
         end
       end
@@ -48,6 +50,7 @@ module Admin
 
     # GET /admin/articles/:id/edit
     def edit
+      build_blank_citations(@article, minimum_blank: 3)
       authorize @article
     end
 
@@ -66,6 +69,7 @@ module Admin
         if @article.save
           redirect_to admin_article_path(@article), notice: "Article updated."
         else
+          build_blank_citations(@article, minimum_blank: 3)
           render :edit, status: :unprocessable_entity
         end
       end
@@ -82,20 +86,22 @@ module Admin
 
     def set_article
       # Prefer slug, fallback to id
-      @article = Article.includes(:subject).find_by!(slug: params[:id])
+      @article = Article.includes(:subject, :user, article_source_citations: :source).find_by!(slug: params[:id])
     rescue ActiveRecord::RecordNotFound
-      @article = Article.includes(:subject).find(params[:id])
+      @article = Article.includes(:subject, :user, article_source_citations: :source).find(params[:id])
     end
 
     def article_params
       params.require(:article).permit(
         :title,
         :slug,
+        :author_name,
         :subject_id,
         :summary,
         :body,
         :published,
-        :published_at
+        :published_at,
+        article_source_citations_attributes: %i[id source_id page_locator note position _destroy]
       )
     end
 
@@ -122,6 +128,11 @@ module Admin
 
     def subject_assist_param
       params.dig(:article, :subject_assist).to_s.strip
+    end
+
+    def build_blank_citations(article, minimum_blank: 1)
+      blank_count = article.article_source_citations.count { |citation| citation.new_record? }
+      (minimum_blank - blank_count).times { article.article_source_citations.build }
     end
   end
 end

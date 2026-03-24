@@ -59,6 +59,35 @@ class Admin::ArticlesControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to admin_article_url(Article.last)
     assert_equal "Article created.", flash[:notice]
     assert_equal @admin_user.id, Article.last.user_id
+    assert_equal "Admin User", Article.last.author_name
+  end
+
+  test "should create article citations from nested attributes" do
+    sign_in @admin_user
+
+    assert_difference("ArticleSourceCitation.count", 1) do
+      post admin_articles_url, params: {
+        article: {
+          title: "Article With Citation",
+          slug: "article-with-citation",
+          body: "Body content",
+          published: false,
+          article_source_citations_attributes: {
+            "0" => {
+              source_id: sources(:one).id,
+              page_locator: "pp. 10-11",
+              note: "Taxonomy section",
+              position: 0
+            }
+          }
+        }
+      }
+    end
+
+    assert_redirected_to admin_article_url(Article.last)
+    citation = ArticleSourceCitation.where(article_id: Article.last.id).first
+    assert_equal sources(:one).id, citation.source_id
+    assert_equal "pp. 10-11", citation.page_locator
   end
 
   test "creates subject from subject assist when subject is blank" do

@@ -7,6 +7,7 @@
 <div class="flex items-center justify-between mb-3">
   <h1 class="font-bold text-2xl"><%= @article.title.presence || "(Untitled)" %></h1>
   <div class="text-sm text-gray-500">
+    <span class="mr-2">By: <%= @article.display_author_name %></span>
     <% if @preview_subject.present? %><span class="mr-2">Subject: <%= @preview_subject.name %></span><% end %>
     <% if @article.published_at.present? %><span><%= @article.published_at.to_date %></span><% end %>
   </div>
@@ -22,18 +23,47 @@
   <% end %>
 </div>
 
+<% preview_citations = @article.article_source_citations.reject(&:marked_for_destruction?).select { |c| c.source.present? || c.source_id.present? } %>
+<% if preview_citations.any? %>
+  <div class="mb-6 rounded border bg-white p-3">
+    <h2 class="text-base font-semibold mb-2">Source Citations (Preview)</h2>
+    <ol class="list-decimal pl-5 space-y-1 text-sm text-gray-700">
+      <% preview_citations.each do |citation| %>
+        <li>
+          <span class="font-medium"><%= citation.source&.name || "Selected source ##{citation.source_id}" %></span>
+          <% if citation.page_locator.present? %>
+            <span> · <%= citation.page_locator %></span>
+          <% end %>
+          <% if citation.note.present? %>
+            <span> — <%= citation.note %></span>
+          <% end %>
+        </li>
+      <% end %>
+    </ol>
+  </div>
+<% end %>
+
 <div class="flex gap-2">
   <%# Repost the same attributes to create/update by including the original form again %>
   <% if @article.persisted? %>
     <%= form_with model: [:admin, @article], method: :patch do |f| %>
       <%= hidden_field_tag "article[title]", @article.title %>
       <%= hidden_field_tag "article[slug]", @article.slug %>
+      <%= hidden_field_tag "article[author_name]", @article.author_name %>
       <%= hidden_field_tag "article[subject_id]", @article.subject_id %>
       <%= hidden_field_tag "article[subject_assist]", @subject_assist_name %>
       <%= hidden_field_tag "article[summary]", @article.summary %>
       <%= hidden_field_tag "article[body]", @article.body %>
       <%= hidden_field_tag "article[published]", @article.published %>
       <%= hidden_field_tag "article[published_at]", @article.published_at %>
+      <% @article.article_source_citations.each_with_index do |citation, index| %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][id]", citation.id %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][source_id]", citation.source_id %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][page_locator]", citation.page_locator %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][note]", citation.note %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][position]", citation.position %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][_destroy]", citation.marked_for_destruction? %>
+      <% end %>
       <%= f.submit "Save changes", class: "rounded px-3 py-1.5 bg-blue-600 text-white text-sm" %>
     <% end %>
     <%= link_to "Back to edit", edit_admin_article_path(@article), class: "rounded px-3 py-1.5 border text-sm" %>
@@ -41,12 +71,20 @@
     <%= form_with url: admin_articles_path, method: :post do |f| %>
       <%= hidden_field_tag "article[title]", @article.title %>
       <%= hidden_field_tag "article[slug]", @article.slug %>
+      <%= hidden_field_tag "article[author_name]", @article.author_name %>
       <%= hidden_field_tag "article[subject_id]", @article.subject_id %>
       <%= hidden_field_tag "article[subject_assist]", @subject_assist_name %>
       <%= hidden_field_tag "article[summary]", @article.summary %>
       <%= hidden_field_tag "article[body]", @article.body %>
       <%= hidden_field_tag "article[published]", @article.published %>
       <%= hidden_field_tag "article[published_at]", @article.published_at %>
+      <% @article.article_source_citations.each_with_index do |citation, index| %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][source_id]", citation.source_id %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][page_locator]", citation.page_locator %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][note]", citation.note %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][position]", citation.position %>
+        <%= hidden_field_tag "article[article_source_citations_attributes][#{index}][_destroy]", citation.marked_for_destruction? %>
+      <% end %>
       <%= f.submit "Create article", class: "rounded px-3 py-1.5 bg-blue-600 text-white text-sm" %>
     <% end %>
     <%= link_to "Back to new", new_admin_article_path, class: "rounded px-3 py-1.5 border text-sm" %>
