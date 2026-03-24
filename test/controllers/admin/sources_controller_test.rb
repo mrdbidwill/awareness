@@ -32,6 +32,30 @@ class Admin::SourcesControllerTest < ActionDispatch::IntegrationTest
     assert_equal Date.new(2026, 1, 1), Source.last.publish_date
   end
 
+  test "admin can create source with long author and description" do
+    sign_in @owner_user
+
+    long_author = "Author Name; " * 50
+    long_description = "Abstract paragraph. " * 4500
+
+    assert_difference("Source.count", 1) do
+      post admin_sources_url, params: {
+        source: {
+          name: "Long Metadata Source",
+          author: long_author,
+          description: long_description,
+          publish_year: "2025"
+        }
+      }
+    end
+
+    created = Source.order(:id).last
+    assert_redirected_to admin_source_url(created)
+    assert_equal long_author, created.author
+    assert_equal long_description, created.description
+    assert_equal Date.new(2025, 1, 1), created.publish_date
+  end
+
   test "admin can update source" do
     sign_in @owner_user
 

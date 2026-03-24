@@ -94,4 +94,17 @@ class ArticleTest < ActiveSupport::TestCase
     assert_equal "Admin User", article.reload.author_name
     assert_equal "Admin User", article.display_author_name
   end
+
+  test "supports large article bodies" do
+    body_text = "Paragraph content. " * 5_000
+    article = Article.new(
+      title: "Large Body",
+      slug: "large-body",
+      body: body_text,
+      author_name: "Long Form Author"
+    )
+
+    assert article.save
+    assert_equal body_text.length, article.reload.body.length
+  end
 end

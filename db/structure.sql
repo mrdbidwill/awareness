@@ -93,7 +93,7 @@ CREATE TABLE `articles` (
   `title` varchar(255) NOT NULL,
   `slug` varchar(255) NOT NULL,
   `summary` text,
-  `body` text NOT NULL,
+  `body` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `published_at` datetime(6) DEFAULT NULL,
   `published` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` datetime(6) NOT NULL,
@@ -405,8 +405,8 @@ DROP TABLE IF EXISTS `sources`;
 CREATE TABLE `sources` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `author` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `description` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
   `publish_date` date DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
@@ -514,6 +514,7 @@ CREATE TABLE `versions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20260324170000'),
 ('20260324162000'),
 ('20260324143001'),
 ('20260324143000'),
