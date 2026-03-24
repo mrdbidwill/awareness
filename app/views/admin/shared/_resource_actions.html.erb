@@ -3,12 +3,12 @@
 <% btn_class        = local_assigns.fetch(:btn_class, "btn-primary btn-responsive") %>
 <% danger_btn_class = local_assigns.fetch(:danger_btn_class, "btn-danger") %>
 <% confirm_text     = local_assigns.fetch(:confirm, "Are you sure?") %>
+<% wrapper_class    = local_assigns.fetch(:wrapper_class, "w-full sm:w-auto flex flex-col sm:flex-row gap-2") %>
 
-<div class="w-full sm:w-auto flex flex-col sm:flex-row gap-2">
+<div class="<%= wrapper_class %>">
   <%= link_to "Show", polymorphic_path([:admin, record]), class: btn_class %>
   <%= link_to "Edit", edit_polymorphic_path([:admin, record]), class: btn_class %>
   <% if delete %>
     <%= button_to "Delete", polymorphic_path([:admin, record]), method: :delete, form_class: "sm:inline-block", class: danger_btn_class, data: { turbo_confirm: confirm_text } %>
   <% end %>
 </div>
-

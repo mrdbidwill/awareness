@@ -6,7 +6,7 @@ module Admin
 
     def index
       authorize Source
-      @sources = policy_scope(Source).recent_first.page(params[:page]).per(20)
+      @sources = policy_scope(Source).recent_first.page(params[:page]).per(15)
     end
 
     def show
