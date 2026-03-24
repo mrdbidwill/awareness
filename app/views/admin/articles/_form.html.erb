@@ -41,32 +41,6 @@
                    options_from_collection_for_select(Subject.alphabetical, :id, :name, @article.subject_id),
                    { include_blank: "(none)" },
                    class: "border rounded px-2 py-1 w-full" %>
-      <p class="text-xs text-gray-500 mt-1">Subjects are normalized and reusable across archive filters.</p>
-
-      <div class="mt-2"
-           data-controller="mycowriter-inline"
-           data-mycowriter-inline-url-value="<%= genera_autocomplete_path %>"
-           data-mycowriter-inline-min-value="4"
-           data-mycowriter-inline-mode-value="subject"
-           data-mycowriter-inline-select-id-value="article_subject_id">
-        <label class="block text-xs font-medium text-gray-600">Mycowriter Subject Assist</label>
-        <div class="relative mt-1">
-          <%= text_field_tag "article[subject_assist]",
-              params.dig(:article, :subject_assist),
-              class: "border rounded px-2 py-1 w-full text-sm",
-              placeholder: "Type a genus term and pick a suggestion...",
-              autocomplete: "off",
-              data: {
-                mycowriter_inline_target: "input",
-                action: "input->mycowriter-inline#onInput blur->mycowriter-inline#onBlur"
-              } %>
-          <div class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-auto rounded border border-gray-200 bg-white shadow"
-               data-mycowriter-inline-target="dropdown"></div>
-        </div>
-        <p class="mt-1 text-xs text-gray-500" data-mycowriter-inline-target="status">
-          Selecting a suggestion auto-chooses a subject only when an exact subject name match exists.
-        </p>
-      </div>
     </div>
     <div>
       <%= f.label :published_at, class: "block text-sm font-medium" %>

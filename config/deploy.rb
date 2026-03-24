@@ -53,12 +53,27 @@ set :keep_releases, 5
 # and existing databases still run pending migrations.
 set :migration_command, "db:prepare"
 
+namespace :deploy do
+  desc "Prepare Solid Cache database"
+  task :prepare_cache_database do
+    on roles(:app) do
+      within release_path do
+        with rails_env: fetch(:rails_env) do
+          execute :rake, "db:create:cache"
+          execute :rake, "db:migrate:cache"
+        end
+      end
+    end
+  end
+end
+
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
 # Use systemd to restart Puma instead of capistrano-puma's restart
 after "deploy:published", "systemd_puma:restart"
 after "deploy:published", "systemd_solid_queue:restart"
+after "deploy:migrating", "deploy:prepare_cache_database"
 
 # Custom tasks to manage Puma via systemd
 namespace :systemd_puma do
