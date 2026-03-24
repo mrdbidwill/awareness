@@ -19,6 +19,6 @@ class Admin::DashboardControllerTest < ActionDispatch::IntegrationTest
     assert_includes response.body, "Published Articles"
     assert_includes response.body, "Newsletter Subscribers"
     assert_includes response.body, "Subjects"
-    assert_includes response.body, "References"
+    assert_includes response.body, "Sources"
   end
 end

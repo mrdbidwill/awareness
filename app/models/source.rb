@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Reference < ApplicationRecord
+class Source < ApplicationRecord
   validates :name, presence: true
   validate :publish_year_format
 

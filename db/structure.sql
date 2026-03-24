@@ -40,7 +40,7 @@ CREATE TABLE `active_storage_blobs` (
   `created_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `index_active_storage_blobs_on_key` (`key`)
-) ENGINE=InnoDB AUTO_INCREMENT=2680 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2682 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `active_storage_variant_records`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -88,7 +88,7 @@ CREATE TABLE `articles` (
   KEY `index_articles_on_subject_id` (`subject_id`),
   CONSTRAINT `fk_rails_25f84e0977` FOREIGN KEY (`subject_id`) REFERENCES `subjects` (`id`),
   CONSTRAINT `fk_rails_3d31dad1cc` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `comments`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -113,23 +113,23 @@ DROP TABLE IF EXISTS `mb_lists`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `mb_lists` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `mblist_id` text COLLATE utf8mb4_0900_as_cs,
-  `taxon_name` text COLLATE utf8mb4_0900_as_cs,
-  `authors` text COLLATE utf8mb4_0900_as_cs,
-  `rank_name` text COLLATE utf8mb4_0900_as_cs,
-  `year_of_effective_publication` text COLLATE utf8mb4_0900_as_cs,
-  `name_status` text COLLATE utf8mb4_0900_as_cs,
-  `mycobank_number` text COLLATE utf8mb4_0900_as_cs,
-  `hyperlink` text COLLATE utf8mb4_0900_as_cs,
-  `classification` text COLLATE utf8mb4_0900_as_cs,
-  `current_name` text COLLATE utf8mb4_0900_as_cs,
-  `synonymy` text COLLATE utf8mb4_0900_as_cs,
+  `mblist_id` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `taxon_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `authors` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `rank_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `year_of_effective_publication` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `name_status` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `mycobank_number` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `hyperlink` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `classification` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `current_name` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
+  `synonymy` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_as_cs,
   PRIMARY KEY (`id`),
   KEY `index_mblists_on_taxon_name_and_rank_name` (`taxon_name`(255),`rank_name`(255)),
   KEY `index_mblists_on_taxon_name` (`taxon_name`(255)),
   KEY `index_mblists_on_rank_name` (`rank_name`(255)),
   KEY `index_mblists_on_name_status` (`name_status`(255))
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
+) ENGINE=InnoDB AUTO_INCREMENT=1075217 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_as_cs;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `newsletter_campaigns`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -137,9 +137,9 @@ DROP TABLE IF EXISTS `newsletter_campaigns`;
 CREATE TABLE `newsletter_campaigns` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `user_id` bigint NOT NULL,
-  `subject` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `body` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `from_email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `subject` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `body` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `from_email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status` int NOT NULL DEFAULT '0',
   `recipients_count` int NOT NULL DEFAULT '0',
   `delivered_count` int NOT NULL DEFAULT '0',
@@ -147,7 +147,7 @@ CREATE TABLE `newsletter_campaigns` (
   `queued_at` datetime(6) DEFAULT NULL,
   `started_at` datetime(6) DEFAULT NULL,
   `sent_at` datetime(6) DEFAULT NULL,
-  `last_error` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `last_error` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
@@ -162,7 +162,7 @@ DROP TABLE IF EXISTS `newsletter_subscribers`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `newsletter_subscribers` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `status` int NOT NULL DEFAULT '0',
   `confirmation_sent_at` datetime(6) DEFAULT NULL,
   `confirmed_at` datetime(6) DEFAULT NULL,
@@ -187,22 +187,6 @@ CREATE TABLE `permissions` (
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-DROP TABLE IF EXISTS `references`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `references` (
-  `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `author` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `description` text COLLATE utf8mb4_unicode_ci,
-  `publish_date` date DEFAULT NULL,
-  `created_at` datetime(6) NOT NULL,
-  `updated_at` datetime(6) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `index_references_on_name` (`name`),
-  KEY `index_references_on_publish_date` (`publish_date`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `schema_migrations`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
@@ -394,13 +378,29 @@ CREATE TABLE `solid_queue_semaphores` (
   KEY `index_solid_queue_semaphores_on_key_and_value` (`key`,`value`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `sources`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `sources` (
+  `id` bigint NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `author` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci,
+  `publish_date` date DEFAULT NULL,
+  `created_at` datetime(6) NOT NULL,
+  `updated_at` datetime(6) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `index_sources_on_name` (`name`),
+  KEY `index_sources_on_publish_date` (`publish_date`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `subjects`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `subjects` (
   `id` bigint NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `slug` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` datetime(6) NOT NULL,
   `updated_at` datetime(6) NOT NULL,
   PRIMARY KEY (`id`),
@@ -493,6 +493,7 @@ CREATE TABLE `versions` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 INSERT INTO `schema_migrations` (version) VALUES
+('20260324100000'),
 ('20260323190000'),
 ('20260323173001'),
 ('20260323173000'),

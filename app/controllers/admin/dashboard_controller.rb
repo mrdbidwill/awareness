@@ -9,6 +9,6 @@ class Admin::DashboardController < Admin::ApplicationController
     @published_articles_count = Article.published.count
     @newsletter_subscribers_count = NewsletterSubscriber.subscribed.count
     @subjects_count = Subject.count
-    @references_count = Reference.count
+    @sources_count = Source.count
   end
 end

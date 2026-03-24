@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :articles
     resources :subjects
-    resources :references
+    resources :sources
     resources :newsletter_campaigns do
       post :queue_delivery, on: :member
     end

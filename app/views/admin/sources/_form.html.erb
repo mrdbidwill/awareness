@@ -1,9 +1,9 @@
-<%= form_with(model: [:admin, @reference], class: "space-y-4") do |f| %>
-  <% if @reference.errors.any? %>
+<%= form_with(model: [:admin, @source], class: "space-y-4") do |f| %>
+  <% if @source.errors.any? %>
     <div class="rounded border border-red-300 bg-red-50 p-3 text-sm text-red-700">
-      <p class="font-semibold"><%= pluralize(@reference.errors.count, "error") %> prevented saving:</p>
+      <p class="font-semibold"><%= pluralize(@source.errors.count, "error") %> prevented saving:</p>
       <ul class="mt-2 list-disc pl-5">
-        <% @reference.errors.full_messages.each do |message| %>
+        <% @source.errors.full_messages.each do |message| %>
           <li><%= message %></li>
         <% end %>
       </ul>
@@ -31,8 +31,8 @@
   </div>
 
   <%= render "admin/shared/form_actions",
-             record: @reference,
-             back_path: admin_references_path,
-             submit_text: (@reference.persisted? ? "Update Reference" : "Create Reference"),
-             back_text: "Back to References" %>
+             record: @source,
+             back_path: admin_sources_path,
+             submit_text: (@source.persisted? ? "Update Source" : "Create Source"),
+             back_text: "Back to Sources" %>
 <% end %>

@@ -18,7 +18,7 @@ class AdminDashboardTest < ApplicationSystemTestCase
     assert_link "Articles"
     assert_link "Newsletter Campaigns"
     assert_link "Subjects"
-    assert_link "References"
+    assert_link "Sources"
   end
 
   test "dashboard does not show removed legacy links" do

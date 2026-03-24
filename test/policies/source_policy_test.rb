@@ -1,14 +1,14 @@
 require "test_helper"
 
-class ReferencePolicyTest < ActiveSupport::TestCase
+class SourcePolicyTest < ActiveSupport::TestCase
   setup do
     @admin_user = users(:one)
     @regular_user = users(:two)
-    @reference = references(:one)
+    @source = sources(:one)
   end
 
-  test "admin can manage references" do
-    policy = Pundit.policy(@admin_user, @reference)
+  test "admin can manage sources" do
+    policy = Pundit.policy(@admin_user, @source)
 
     assert policy.index?
     assert policy.show?
@@ -17,8 +17,8 @@ class ReferencePolicyTest < ActiveSupport::TestCase
     assert policy.destroy?
   end
 
-  test "regular user cannot manage references" do
-    policy = Pundit.policy(@regular_user, @reference)
+  test "regular user cannot manage sources" do
+    policy = Pundit.policy(@regular_user, @source)
 
     assert_not policy.index?
     assert_not policy.show?

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ReferencePolicy < ApplicationPolicy
+class SourcePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       return scope.none unless user&.admin?

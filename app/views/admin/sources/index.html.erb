@@ -1,0 +1,45 @@
+<% content_for :title, "Admin · Sources" %>
+
+<div class="w-full">
+  <div class="mb-4 flex items-center justify-between gap-2">
+    <h1 class="text-2xl font-bold">Sources</h1>
+    <div class="flex gap-2">
+      <%= link_to "Back to Admin Dashboard", admin_root_path, class: "rounded bg-gray-600 px-3 py-2 text-white hover:bg-gray-700" %>
+      <%= link_to "New Source", new_admin_source_path, class: "rounded bg-blue-600 px-3 py-2 text-white hover:bg-blue-700" %>
+    </div>
+  </div>
+
+  <% if @sources.any? %>
+    <div class="space-y-2">
+      <% @sources.each do |source| %>
+        <div class="rounded border bg-white p-4">
+          <div class="flex flex-wrap items-start justify-between gap-3">
+            <div class="min-w-0">
+              <h2 class="text-lg font-semibold">
+                <%= link_to source.name, admin_source_path(source), class: "text-blue-700 hover:underline" %>
+              </h2>
+              <p class="text-sm text-gray-600">
+                <%= source.author.presence || "Unknown author" %>
+                <% if source.publish_date.present? %>
+                  · <%= source.publish_date.year %>
+                <% end %>
+              </p>
+              <% if source.description.present? %>
+                <p class="mt-2 text-sm text-gray-700"><%= truncate(source.description, length: 220) %></p>
+              <% end %>
+            </div>
+            <%= render "admin/shared/resource_actions", record: source, delete: true %>
+          </div>
+        </div>
+      <% end %>
+    </div>
+  <% else %>
+    <div class="rounded border bg-white p-6 text-sm text-gray-600">
+      No sources yet. Add one to get started.
+    </div>
+  <% end %>
+
+  <div class="mt-4">
+    <%= paginate @sources %>
+  </div>
+</div>
